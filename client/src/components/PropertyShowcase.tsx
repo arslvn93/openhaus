@@ -1,4 +1,142 @@
+import { useEffect, useRef } from 'react';
+
 const PropertyShowcase = () => {
+  const scrollBtnRef = useRef<HTMLDivElement>(null);
+  const controllerRef = useRef<any>(null);
+
+  // Initialize ScrollMagic controller and scenes
+  useEffect(() => {
+    // Scroll button visibility handler
+    const handleScroll = () => {
+      if (scrollBtnRef.current) {
+        if (window.scrollY > 0) {
+          scrollBtnRef.current.classList.add('move');
+        } else {
+          scrollBtnRef.current.classList.remove('move');
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initialize ScrollMagic once it's loaded
+    const initScrollMagic = () => {
+      if (typeof window !== 'undefined' && window.ScrollMagic) {
+        controllerRef.current = new window.ScrollMagic.Controller({ loglevel: 3 });
+        
+        // Scene for the first section
+        new window.ScrollMagic.Scene({
+          triggerElement: "#section2",
+          triggerHook: "onEnter",
+          duration: "100%"
+        }).setPin("#section1 .pinWrapper", {
+          pushFollowers: false
+        }).addTo(controllerRef.current);
+        
+        // Scene for the second section
+        new window.ScrollMagic.Scene({
+          triggerElement: "#section2",
+          triggerHook: "onEnter",
+          duration: "200%"
+        }).setPin("#section2 .pinWrapper", {
+          pushFollowers: false
+        }).addTo(controllerRef.current);
+        
+        // Scene for the third section
+        new window.ScrollMagic.Scene({
+          triggerElement: "#section3",
+          triggerHook: "onEnter",
+          duration: "200%"
+        }).setPin("#section3 .pinWrapper", {
+          pushFollowers: false
+        }).addTo(controllerRef.current);
+        
+        // Scene for the fourth section
+        new window.ScrollMagic.Scene({
+          triggerElement: "#section4",
+          triggerHook: "onEnter",
+          duration: "100%"
+        }).setPin("#section4 .pinWrapper", {
+          pushFollowers: false
+        }).addTo(controllerRef.current);
+      }
+    };
+    
+    // Initialize after a short delay to ensure ScrollMagic is loaded
+    const timeout = setTimeout(() => {
+      initScrollMagic();
+    }, 1000);
+    
+    // Handle video loading animations
+    const handleVideoLoad = () => {
+      const loaderVideo = document.getElementById('loaderVideo');
+      
+      if (loaderVideo) {
+        // Responsive adjustments for the video based on screen size
+        const applyResponsiveStyles = () => {
+          if (window.matchMedia('(max-width: 576px)').matches) {
+            loaderVideo.style.top = "-75%";
+            loaderVideo.style.left = "24px";
+            loaderVideo.style.right = "auto";
+            loaderVideo.style.transform = "translate(0%, -25%)";
+          } else if (window.matchMedia('(max-width: 767px)').matches) {
+            loaderVideo.style.width = "220px";
+            loaderVideo.style.height = "220px";
+            loaderVideo.style.left = "auto";
+            loaderVideo.style.right = "40px";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+          } else if (window.matchMedia('(max-width: 991px)').matches) {
+            loaderVideo.style.width = "310px";
+            loaderVideo.style.height = "310px";
+            loaderVideo.style.left = "auto";
+            loaderVideo.style.right = "40px";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+          } else if (window.matchMedia('(max-width: 1199px)').matches) {
+            loaderVideo.style.width = "400px";
+            loaderVideo.style.height = "400px";
+            loaderVideo.style.left = "auto";
+            loaderVideo.style.right = "60px";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+          } else if (window.matchMedia('(max-width: 1399px)').matches) {
+            loaderVideo.style.width = "450px";
+            loaderVideo.style.height = "450px";
+            loaderVideo.style.left = "auto";
+            loaderVideo.style.right = "80px";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+          } else {
+            loaderVideo.style.width = "500px";
+            loaderVideo.style.height = "500px";
+            loaderVideo.style.top = "50%";
+            loaderVideo.style.left = "auto";
+            loaderVideo.style.right = "100px";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+            loaderVideo.style.position = "absolute";
+          }
+        };
+        
+        // Apply initial responsive styles
+        applyResponsiveStyles();
+        
+        // Update on window resize
+        window.addEventListener('resize', applyResponsiveStyles);
+      }
+    };
+    
+    // Initialize video animations after content loads
+    window.addEventListener('load', handleVideoLoad);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('load', handleVideoLoad);
+      
+      if (controllerRef.current) {
+        controllerRef.current.destroy(true);
+      }
+      
+      clearTimeout(timeout);
+    };
+  }, []);
+  
   // Scroll to contact form section when CTA button is clicked
   const scrollToForm = () => {
     const contactSection = document.getElementById('contact');
@@ -47,13 +185,16 @@ const PropertyShowcase = () => {
             </video>
           </div>
         </div>
-        <div className="scrollBtn absolute bottom-[2.5%] left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+        <div 
+          ref={scrollBtnRef}
+          className="scrollBtn absolute bottom-[2.5%] left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+        >
           <h6 className="text-sm font-['Titillium_Web'] uppercase tracking-widest">scroll</h6>
           <span></span>
         </div>
         
         {/* Property quick info card */}
-        <div className="absolute bottom-8 left-8 bg-primary/80 backdrop-blur-sm p-5 rounded-lg z-20 max-w-xs hidden md:block">
+        <div className="absolute bottom-8 left-8 bg-primary/80 backdrop-blur-sm p-5 rounded-lg z-20 max-w-xs hidden md:block from-left animate-in">
           <h3 className="text-lg font-['Poppins'] uppercase mb-2">24 Kylemount Ave</h3>
           <div className="flex justify-between text-sm font-['Titillium_Web'] mb-2">
             <span>4 Bedrooms</span>
