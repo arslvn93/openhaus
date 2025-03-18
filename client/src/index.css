@@ -147,22 +147,18 @@
 
 #section1 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
-  background-attachment: fixed; /* Performance optimization for improved scrolling */
 }
 
 #section2 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
-  background-attachment: fixed;
 }
 
 #section3 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
-  background-attachment: fixed;
 }
 
 #section4 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
-  background-attachment: fixed;
 }
 
 .pinWrapper {
@@ -170,8 +166,6 @@
   width: 100%;
   position: relative;
   z-index: 11;
-  will-change: transform;
-  contain: layout style; /* Performance optimization: contain layout changes */
 }
 
 .scrollmagic-pin-spacer {
@@ -187,13 +181,11 @@
   position: absolute;
   background-size: cover;
   background-position: center center;
-  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); /* Optimized transition */
+  transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform-origin: center;
   z-index: 8888;
   overflow: hidden;
   border-radius: 0;
-  will-change: transform; /* Performance hint for browser */
-  contain: paint; /* Performance optimization: contain paint operations */
 }
 
 .image:not(#loaderVideo) {

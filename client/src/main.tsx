@@ -33,22 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return passive;
   })();
 
-  // Use passive listeners for scroll events - major performance boost
+  // Use passive listeners for scroll events without forcing repaints
   window.addEventListener('scroll', () => {}, passiveSupported ? { passive: true } : false);
-  
-  // Force repaint to ensure smooth scrolling
-  let scrolling = false;
-  window.addEventListener('scroll', () => {
-    scrolling = true;
-  }, passiveSupported ? { passive: true } : false);
-  
-  setInterval(() => {
-    if (scrolling) {
-      scrolling = false;
-      // Minimal forced style update to prevent layout thrashing
-      document.body.style.transformStyle = document.body.style.transformStyle;
-    }
-  }, 300);
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
