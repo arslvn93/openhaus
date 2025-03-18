@@ -295,13 +295,6 @@ const NeighborhoodOverview = () => {
           </div>
         </motion.div>
       </div>
-
-      {/* LIMITED OPPORTUNITY Banner between sections */}
-      <div className="w-full bg-[#D9A566] text-white py-3 mt-20 text-center font-['Poppins'] text-sm md:text-base">
-        <div className="container mx-auto px-4">
-          <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
-        </div>
-      </div>
     </section>
   );
 };

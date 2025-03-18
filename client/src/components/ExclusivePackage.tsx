@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, BarChart2, GraduationCap, CheckSquare, 
@@ -6,6 +6,37 @@ import {
 } from 'lucide-react';
 
 const ExclusivePackage = () => {
+  const [showSticky, setShowSticky] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  
+  useEffect(() => {
+    // Get header height for correct sticky banner placement
+    const header = document.querySelector('header');
+    if (header) {
+      setHeaderHeight(header.offsetHeight);
+    }
+    
+    const handleScroll = () => {
+      const packageSection = document.getElementById('package');
+      
+      if (packageSection) {
+        const packageRect = packageSection.getBoundingClientRect();
+        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+        
+        // Show sticky banner when we scroll past the original banner
+        // +70 accounts for the original banner + some of the section padding
+        // This banner remains sticky throughout the rest of the page
+        if (packageRect.top <= headerHeight && packageRect.top < -70) {
+          setShowSticky(true);
+        } else {
+          setShowSticky(false);
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const packageItems = [
     {
@@ -60,6 +91,17 @@ const ExclusivePackage = () => {
   
   return (
     <>
+      {/* Sticky LIMITED OPPORTUNITY Banner - appears when scrolled past the original banner */}
+      {showSticky && (
+        <div 
+          className="fixed w-full bg-[#D9A566] text-white py-3 z-40 shadow-md transition-all duration-300"
+          style={{ top: `${headerHeight}px` }}
+        >
+          <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
+          </div>
+        </div>
+      )}
     
       <section id="package" className="py-20 bg-black relative overflow-hidden">
         {/* Radial gradient background for depth */}
@@ -68,7 +110,14 @@ const ExclusivePackage = () => {
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center mix-blend-overlay"></div>
         </div>
         
-        <div className="container mx-auto px-4 relative z-10 pt-6">
+        {/* Original LIMITED OPPORTUNITY Banner */}
+        <div className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base relative z-10">
+          <div className="container mx-auto px-4">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
+          </div>
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -89,7 +138,7 @@ const ExclusivePackage = () => {
           
           {/* Package illustration and interactive list */}
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 max-w-6xl mx-auto">
-            {/* Left side: Animated folder illustration with documents */}
+            {/* Left side: Animated folder illustration */}
             <motion.div 
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -97,122 +146,86 @@ const ExclusivePackage = () => {
               viewport={{ once: true }}
               className="w-full lg:w-2/5 flex justify-center"
             >
-              <div className="relative w-[350px] h-[450px]">
-                {/* Floor plan document - Top Left */}
-                <motion.div
-                  initial={{ rotate: -15, y: 0 }}
-                  animate={{ rotate: -12, y: -5 }}
-                  transition={{ 
-                    repeat: Infinity, 
-                    repeatType: "reverse", 
-                    duration: 3.1 
-                  }}
-                  className="absolute top-0 left-0 z-10"
-                >
-                  <div className="w-[220px] h-[140px] bg-white rounded-md shadow-md overflow-hidden transform origin-bottom-right">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/10"></div>
-                    <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">FLOOR PLAN</div>
-                    <div className="absolute top-2 right-3 text-xs text-gray-600">24 Kylemount Ave</div>
-                    <div className="grid grid-cols-3 gap-1 px-3 pt-10">
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-300 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-300 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-300 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                      <div className="h-3 bg-gray-300 rounded"></div>
-                      <div className="h-3 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
-                </motion.div>
-                
-                {/* Neighborhood data document - Bottom Right */}
-                <motion.div
-                  initial={{ rotate: 8, y: 0 }}
-                  animate={{ rotate: 10, y: 5 }}
-                  transition={{ 
-                    repeat: Infinity, 
-                    repeatType: "reverse", 
-                    duration: 3.5 
-                  }}
-                  className="absolute bottom-5 right-0 z-10"
-                >
-                  <div className="w-[200px] h-[150px] bg-[#f0f0f0] rounded-md shadow-md overflow-hidden transform origin-top-left">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
-                    <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">NEIGHBORHOOD DATA</div>
-                    <div className="px-3 pt-10">
-                      <div className="flex justify-between mb-2">
-                        <div className="h-2 w-12 bg-gray-400 rounded"></div>
-                        <div className="h-2 w-8 bg-gray-400 rounded"></div>
-                      </div>
-                      <div className="h-10 bg-gray-200 rounded-sm w-full"></div>
-                      <div className="mt-4 flex justify-between">
-                        <div className="h-6 w-6 rounded-full bg-[#D9A566]/20"></div>
-                        <div className="h-6 w-16 bg-gray-300 rounded"></div>
-                        <div className="h-6 w-6 rounded-full bg-[#D9A566]/20"></div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-                
-                {/* Property highlights document - Bottom Left */}
-                <motion.div
-                  initial={{ rotate: -5, y: 0 }}
-                  animate={{ rotate: -8, y: 3 }}
-                  transition={{ 
-                    repeat: Infinity, 
-                    repeatType: "reverse", 
-                    duration: 2.8 
-                  }}
-                  className="absolute bottom-20 left-0 z-10"
-                >
-                  <div className="w-[180px] h-[160px] bg-[#f8f8f8] rounded-md shadow-md overflow-hidden transform origin-top-right">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
-                    <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">PROPERTY HIGHLIGHTS</div>
-                    <div className="flex flex-col gap-2 px-3 pt-10">
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
-                        <div className="h-2 w-24 bg-gray-300 rounded"></div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
-                        <div className="h-2 w-20 bg-gray-300 rounded"></div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
-                        <div className="h-2 w-28 bg-gray-300 rounded"></div>
-                      </div>
-                      <div className="flex items-center mt-3">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
-                        <div className="h-2 w-16 bg-gray-300 rounded"></div>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
-                        <div className="h-2 w-24 bg-gray-300 rounded"></div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-                
-                {/* Main folder in center */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                  <div className="w-[280px] h-[360px] bg-gradient-to-br from-[#D9A566] to-[#8B6839] rounded-lg shadow-2xl relative overflow-hidden transform rotate-[-2deg]">
-                    {/* Folder tab */}
-                    <div className="absolute top-0 right-10 w-32 h-10 bg-[#D9A566] rounded-b-lg transform translate-y-[-35%]"></div>
-                    
-                    {/* Folder interior */}
-                    <div className="absolute top-4 left-4 right-4 bottom-4 bg-[#111111] rounded-md flex items-center justify-center overflow-hidden">
-                      <div className="absolute top-4 left-4 w-40 h-1.5 bg-white/10 rounded-full"></div>
-                      <div className="absolute top-10 left-4 w-24 h-1.5 bg-white/10 rounded-full"></div>
-                      <div className="text-[#D9A566] text-5xl font-bold opacity-20">24K</div>
-                    </div>
+              <div className="relative">
+                {/* Main folder */}
+                <div className="w-[280px] h-[360px] bg-gradient-to-br from-[#D9A566] to-[#8B6839] rounded-lg shadow-2xl relative overflow-hidden transform rotate-[-5deg]">
+                  {/* Folder tab */}
+                  <div className="absolute top-0 right-10 w-32 h-10 bg-[#D9A566] rounded-b-lg transform translate-y-[-35%]"></div>
                   
-                    {/* "PREMIUM" stamp */}
-                    <div className="absolute top-8 right-12 w-24 h-24 rounded-full overflow-hidden">
-                      <div className="w-full h-full bg-[#D9A566]/80 flex items-center justify-center transform rotate-[-20deg] border-[3px] border-[#D9A566] text-black font-['Poppins'] font-bold text-lg tracking-wider">
-                        PREMIUM
+                  {/* Folder interior */}
+                  <div className="absolute top-4 left-4 right-4 bottom-4 bg-[#111111] rounded-md flex items-center justify-center overflow-hidden">
+                    <div className="absolute top-4 left-4 w-40 h-1.5 bg-white/10 rounded-full"></div>
+                    <div className="absolute top-10 left-4 w-24 h-1.5 bg-white/10 rounded-full"></div>
+                    <div className="text-[#D9A566] text-5xl font-bold opacity-20">24K</div>
+                  </div>
+                  
+                  {/* 3D papers sticking out */}
+                  <motion.div 
+                    initial={{ y: 30 }}
+                    animate={{ y: 23 }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      repeatType: "reverse", 
+                      duration: 2.5
+                    }}
+                    className="absolute -right-1 top-[40%] w-[290px] h-[130px]"
+                  >
+                    {/* Floor plan document */}
+                    <div className="absolute top-0 right-0 w-[250px] h-[120px] bg-white rounded-l-md shadow-md transform rotate-[-5deg] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/10"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">FLOOR PLAN</div>
+                      <div className="absolute top-2 right-3 text-xs text-gray-600">24 Kylemount Ave</div>
+                      <div className="grid grid-cols-3 gap-1 px-3 pt-10">
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
                       </div>
+                    </div>
+                    
+                    {/* Property highlights document */}
+                    <div className="absolute top-8 right-3 w-[240px] h-[120px] bg-[#f8f8f8] rounded-l-md shadow-md transform rotate-[-3deg] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">PROPERTY HIGHLIGHTS</div>
+                      <div className="flex flex-col gap-2 px-3 pt-10">
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-24 bg-gray-300 rounded"></div>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-20 bg-gray-300 rounded"></div>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-28 bg-gray-300 rounded"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Neighborhood data document */}
+                    <div className="absolute top-16 right-5 w-[230px] h-[120px] bg-[#f0f0f0] rounded-l-md shadow-md overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">NEIGHBORHOOD DATA</div>
+                      <div className="px-3 pt-10">
+                        <div className="flex justify-between mb-2">
+                          <div className="h-2 w-12 bg-gray-400 rounded"></div>
+                          <div className="h-2 w-8 bg-gray-400 rounded"></div>
+                        </div>
+                        <div className="h-10 bg-gray-200 rounded-sm w-full"></div>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* "PREMIUM" stamp */}
+                  <div className="absolute top-8 right-12 w-24 h-24 rounded-full overflow-hidden">
+                    <div className="w-full h-full bg-[#D9A566]/80 flex items-center justify-center transform rotate-[-20deg] border-[3px] border-[#D9A566] text-black font-['Poppins'] font-bold text-lg tracking-wider">
+                      PREMIUM
                     </div>
                   </div>
                 </div>
