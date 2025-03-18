@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Navigation from './Navigation';
 import PropertyShowcase from './PropertyShowcase';
 import PropertyDetails from './PropertyDetails';
@@ -11,31 +11,12 @@ import ContactForm from './ContactForm';
 import Footer from './Footer';
 import Preloader from './Preloader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import Lenis from '@studio-freight/lenis';
 
 const LandingPage = () => {
   const { createScrollScene } = useScrollAnimation();
   const [showExitPopup, setShowExitPopup] = useState(false);
-  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Initialize smooth scrolling with Lenis
-    if (typeof window !== 'undefined') {
-      lenisRef.current = new Lenis({
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        wheelMultiplier: 1,
-        touchMultiplier: 2
-      });
-
-      // Integrate with RAF for smooth animation
-      const rafCallback = (time: number) => {
-        lenisRef.current?.raf(time);
-        requestAnimationFrame(rafCallback);
-      };
-      
-      requestAnimationFrame(rafCallback);
-    }
 
     // Create scroll animations once ScrollMagic is loaded
     const loadAnimationsTimeout = setTimeout(() => {
@@ -115,9 +96,6 @@ const LandingPage = () => {
     }, 3000);
     
     return () => {
-      if (lenisRef.current) {
-        lenisRef.current.destroy();
-      }
       window.removeEventListener('scroll', fadeInOnScroll);
       document.removeEventListener('mouseleave', handleMouseLeave);
       clearTimeout(timer);

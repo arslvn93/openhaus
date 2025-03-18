@@ -5,7 +5,6 @@ import "./index.css";
 // Global declarations for TypeScript - moved to top level
 declare global {
   interface Window {
-    Lenis: any;
     ScrollMagic: any;
   }
 }
