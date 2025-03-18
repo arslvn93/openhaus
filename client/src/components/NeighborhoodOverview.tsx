@@ -228,7 +228,8 @@ const NeighborhoodOverview = () => {
           {/* Right column with map */}
           <motion.div 
             ref={mapRef}
-            className="lg:col-span-2 rounded-xl overflow-hidden shadow-xl border border-white/5 h-[500px]"
+            className="lg:col-span-2 rounded-xl overflow-hidden shadow-xl border border-white/5 relative"
+            style={{ height: "400px", zIndex: 1 }}
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -238,7 +239,7 @@ const NeighborhoodOverview = () => {
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.4761959509288!2d-79.4742281!3d43.8387378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b2ed91559c76d%3A0x7b8315da4f0bc03c!2sThornhill%20Woods%2C%20Vaughan%2C%20ON%2C%20Canada!5e0!3m2!1sen!2sus!4v1663356624389!5m2!1sen!2sus" 
               width="100%" 
               height="100%" 
-              style={{ border: 0 }} 
+              style={{ border: 0, position: "relative" }} 
               allowFullScreen 
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
@@ -250,7 +251,8 @@ const NeighborhoodOverview = () => {
         
         {/* Neighborhood description */}
         <motion.div 
-          className="mt-16 bg-black/50 backdrop-blur-sm border border-white/5 rounded-xl p-8 shadow-xl"
+          className="mt-16 bg-black/50 backdrop-blur-sm border border-white/5 rounded-xl p-8 shadow-xl relative"
+          style={{ zIndex: 2 }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
