@@ -170,9 +170,56 @@ const ExclusivePackage = () => {
                     }}
                     className="absolute -right-1 top-[40%] w-[290px] h-[130px]"
                   >
-                    <div className="absolute top-0 right-0 w-[250px] h-[110px] bg-white rounded-l-md shadow-md transform rotate-[-5deg]"></div>
-                    <div className="absolute top-8 right-3 w-[240px] h-[110px] bg-[#f8f8f8] rounded-l-md shadow-md transform rotate-[-3deg]"></div>
-                    <div className="absolute top-16 right-5 w-[230px] h-[110px] bg-[#f0f0f0] rounded-l-md shadow-md"></div>
+                    {/* Floor plan document */}
+                    <div className="absolute top-0 right-0 w-[250px] h-[120px] bg-white rounded-l-md shadow-md transform rotate-[-5deg] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/10"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">FLOOR PLAN</div>
+                      <div className="absolute top-2 right-3 text-xs text-gray-600">24 Kylemount Ave</div>
+                      <div className="grid grid-cols-3 gap-1 px-3 pt-10">
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                        <div className="h-3 bg-gray-300 rounded"></div>
+                        <div className="h-3 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                    
+                    {/* Property highlights document */}
+                    <div className="absolute top-8 right-3 w-[240px] h-[120px] bg-[#f8f8f8] rounded-l-md shadow-md transform rotate-[-3deg] overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">PROPERTY HIGHLIGHTS</div>
+                      <div className="flex flex-col gap-2 px-3 pt-10">
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-24 bg-gray-300 rounded"></div>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-20 bg-gray-300 rounded"></div>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                          <div className="h-2 w-28 bg-gray-300 rounded"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Neighborhood data document */}
+                    <div className="absolute top-16 right-5 w-[230px] h-[120px] bg-[#f0f0f0] rounded-l-md shadow-md overflow-hidden">
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                      <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">NEIGHBORHOOD DATA</div>
+                      <div className="px-3 pt-10">
+                        <div className="flex justify-between mb-2">
+                          <div className="h-2 w-12 bg-gray-400 rounded"></div>
+                          <div className="h-2 w-8 bg-gray-400 rounded"></div>
+                        </div>
+                        <div className="h-10 bg-gray-200 rounded-sm w-full"></div>
+                      </div>
+                    </div>
                   </motion.div>
                   
                   {/* "PREMIUM" stamp */}
