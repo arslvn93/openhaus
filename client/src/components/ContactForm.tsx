@@ -7,6 +7,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Phone, Mail, Award, Clock } from 'lucide-react';
+import { openHouseDetails, contactInfo, siteBranding, property } from '../config/siteConfig';
 
 // Define schema for form validation
 const formSchema = z.object({
@@ -67,10 +68,17 @@ const ContactForm = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-[#D9A566] font-['Titillium_Web'] tracking-widest inline-block mb-2">YOUR EXCLUSIVE OFFER</span>
-            <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">Request Your Exclusive Home Package</h2>
+            <span 
+              className="font-['Titillium_Web'] tracking-widest inline-block mb-2"
+              style={{ color: siteBranding.colors.primary }}
+            >
+              YOUR EXCLUSIVE OFFER
+            </span>
+            <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">
+              {openHouseDetails.ctaText}
+            </h2>
             <p className="font-['Titillium_Web'] text-lg mt-4">
-              Get the complete details about this property, including floor plans, neighborhood analysis, 
+              Get the complete details about {property.name}, including floor plans, neighborhood analysis, 
               and everything you need to make an informed decision.
             </p>
           </div>
@@ -83,7 +91,13 @@ const ContactForm = () => {
                   <input 
                     type="text" 
                     id="firstName" 
-                    className={`w-full bg-primary border ${errors.firstName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none`}
+                    className={`w-full bg-primary border ${errors.firstName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    style={{ 
+                      borderColor: errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)',
+                      borderWidth: '1px'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                    onBlur={(e) => e.target.style.borderColor = errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)'}
                     {...register('firstName')}
                   />
                   {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
@@ -93,7 +107,13 @@ const ContactForm = () => {
                   <input 
                     type="text" 
                     id="lastName" 
-                    className={`w-full bg-primary border ${errors.lastName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none`}
+                    className={`w-full bg-primary border ${errors.lastName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    style={{ 
+                      borderColor: errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)',
+                      borderWidth: '1px'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                    onBlur={(e) => e.target.style.borderColor = errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)'}
                     {...register('lastName')}
                   />
                   {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
@@ -103,7 +123,13 @@ const ContactForm = () => {
                   <input 
                     type="email" 
                     id="email" 
-                    className={`w-full bg-primary border ${errors.email ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none`}
+                    className={`w-full bg-primary border ${errors.email ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    style={{ 
+                      borderColor: errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)',
+                      borderWidth: '1px'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                    onBlur={(e) => e.target.style.borderColor = errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)'}
                     {...register('email')}
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -113,7 +139,13 @@ const ContactForm = () => {
                   <input 
                     type="tel" 
                     id="phone" 
-                    className={`w-full bg-primary border ${errors.phone ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none`}
+                    className={`w-full bg-primary border ${errors.phone ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    style={{ 
+                      borderColor: errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)',
+                      borderWidth: '1px'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                    onBlur={(e) => e.target.style.borderColor = errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)'}
                     {...register('phone')}
                   />
                   {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
@@ -124,7 +156,13 @@ const ContactForm = () => {
                 <label htmlFor="timeframe" className="block font-['Titillium_Web'] mb-2">When are you looking to move?</label>
                 <select 
                   id="timeframe" 
-                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none"
+                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  style={{ 
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: '1px'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                 >
                   <option value="">Please select...</option>
                   <option value="0-3">Within 3 months</option>
@@ -140,7 +178,13 @@ const ContactForm = () => {
                 <textarea 
                   id="message" 
                   rows={4} 
-                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:border-[#D9A566] focus:outline-none"
+                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  style={{ 
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    borderWidth: '1px'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                   {...register('message')}
                   placeholder="Any specific information you're interested in about the property?"
                 ></textarea>
@@ -161,7 +205,13 @@ const ContactForm = () => {
               
               <button 
                 type="submit" 
-                className="w-full bg-[#D9A566] text-white font-['Poppins'] p-4 rounded-lg hover:bg-[#D9A566]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg font-bold tracking-wider"
+                className="w-full text-white font-['Poppins'] p-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg font-bold tracking-wider"
+                style={{ 
+                  backgroundColor: siteBranding.colors.primary,
+                  ':hover': {
+                    backgroundColor: `${siteBranding.colors.primary}dd`
+                  }
+                } as React.CSSProperties}
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? 'SUBMITTING...' : 'GET MY HOME PACKAGE NOW'}
