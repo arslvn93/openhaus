@@ -4,26 +4,11 @@ import { Link } from 'wouter';
 const Navigation = () => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [showOpportunityBanner, setShowOpportunityBanner] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       // Main navigation becomes opaque when scrolled
       setScrolled(window.scrollY > 50);
-      
-      // Show LIMITED OPPORTUNITY banner when scrolled to the package section
-      const packageSection = document.getElementById('package');
-      if (packageSection) {
-        const packageRect = packageSection.getBoundingClientRect();
-        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-        
-        // If the package section is at or above the header
-        if (packageRect.top <= headerHeight) {
-          setShowOpportunityBanner(true);
-        } else {
-          setShowOpportunityBanner(false);
-        }
-      }
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -74,15 +59,6 @@ const Navigation = () => {
             <li><a href="#contact" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Contact</a></li>
           </ul>
         </div>
-        
-        {/* LIMITED OPPORTUNITY Banner - only shown when scrolled to the package section */}
-        {showOpportunityBanner && (
-          <div className="w-full bg-[#D9A566] text-white py-3 shadow-md">
-            <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
-              <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
-            </div>
-          </div>
-        )}
       </header>
     </>
   );

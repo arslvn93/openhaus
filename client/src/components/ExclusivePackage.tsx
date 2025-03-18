@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, BarChart2, GraduationCap, CheckSquare, 
@@ -6,6 +6,36 @@ import {
 } from 'lucide-react';
 
 const ExclusivePackage = () => {
+  const [showSticky, setShowSticky] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  
+  useEffect(() => {
+    // Get header height for correct sticky banner placement
+    const header = document.querySelector('header');
+    if (header) {
+      setHeaderHeight(header.offsetHeight);
+    }
+    
+    const handleScroll = () => {
+      const packageSection = document.getElementById('package');
+      if (packageSection) {
+        const packageRect = packageSection.getBoundingClientRect();
+        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
+        
+        // Show sticky banner when we scroll past the original banner
+        // +70 accounts for the original banner + some of the section padding
+        if (packageRect.top <= headerHeight && packageRect.top < -70) {
+          setShowSticky(true);
+        } else {
+          setShowSticky(false);
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
   const packageItems = [
     {
       id: 1,
@@ -58,75 +88,89 @@ const ExclusivePackage = () => {
   };
   
   return (
-    <section id="package" className="py-20 bg-black">
-      {/* LIMITED OPPORTUNITY Banner */}
-      <div className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base">
-        <div className="container mx-auto px-4">
-          <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
-        </div>
-      </div>
-      
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mb-14"
+    <>
+      {/* Sticky LIMITED OPPORTUNITY Banner - appears when scrolled past the original banner */}
+      {showSticky && (
+        <div 
+          className="fixed w-full bg-[#D9A566] text-white py-3 z-40 shadow-md transition-all duration-300"
+          style={{ top: `${headerHeight}px` }}
         >
-          <h2 className="text-3xl md:text-4xl font-['Poppins'] text-white uppercase mb-4 tracking-wider">
-            Your Exclusive Home Package
-          </h2>
-          
-          <div className="max-w-3xl mx-auto">
-            <p className="text-lg md:text-xl font-['Titillium_Web'] text-white/70 leading-relaxed">
-              Request your complimentary home package with everything you need to know about this premium property.
-            </p>
+          <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
           </div>
-        </motion.div>
+        </div>
+      )}
+    
+      <section id="package" className="py-20 bg-black">
+        {/* Original LIMITED OPPORTUNITY Banner */}
+        <div className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base">
+          <div className="container mx-auto px-4">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
+          </div>
+        </div>
         
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 p-8 lg:p-10 max-w-5xl mx-auto shadow-2xl"
-        >          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {packageItems.map((item, index) => (
-              <motion.div 
-                key={item.id} 
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="w-16 h-16 rounded-md bg-black border border-white/10 flex items-center justify-center mb-4 shadow-md">
-                  <div className="text-[#D9A566]">{item.icon}</div>
-                </div>
-                <p className="font-['Titillium_Web'] text-white/90 text-sm lg:text-base">{item.title}</p>
-              </motion.div>
-            ))}
-          </div>
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <h2 className="text-3xl md:text-4xl font-['Poppins'] text-white uppercase mb-4 tracking-wider">
+              Your Exclusive Home Package
+            </h2>
+            
+            <div className="max-w-3xl mx-auto">
+              <p className="text-lg md:text-xl font-['Titillium_Web'] text-white/70 leading-relaxed">
+                Request your complimentary home package with everything you need to know about this premium property.
+              </p>
+            </div>
+          </motion.div>
           
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="mt-12 text-center"
-          >
-            <button 
-              onClick={scrollToForm}
-              className="bg-[#D9A566] text-black font-['Poppins'] px-8 py-3 rounded-md hover:bg-[#D9A566]/90 transition-colors text-lg tracking-wider uppercase shadow-lg"
+            className="bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 p-8 lg:p-10 max-w-5xl mx-auto shadow-2xl"
+          >          
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+              {packageItems.map((item, index) => (
+                <motion.div 
+                  key={item.id} 
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-16 h-16 rounded-md bg-black border border-white/10 flex items-center justify-center mb-4 shadow-md">
+                    <div className="text-[#D9A566]">{item.icon}</div>
+                  </div>
+                  <p className="font-['Titillium_Web'] text-white/90 text-sm lg:text-base">{item.title}</p>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
             >
-              Request Your Package
-            </button>
+              <button 
+                onClick={scrollToForm}
+                className="bg-[#D9A566] text-black font-['Poppins'] px-8 py-3 rounded-md hover:bg-[#D9A566]/90 transition-colors text-lg tracking-wider uppercase shadow-lg"
+              >
+                Request Your Package
+              </button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 };
 
