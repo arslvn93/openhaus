@@ -1,19 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const PropertyShowcase = () => {
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [showSticky, setShowSticky] = useState(false);
   const scrollBtnRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<any>(null);
   const loaderVideoRef = useRef<HTMLDivElement>(null);
 
   // Initialize ScrollMagic controller and scenes
   useEffect(() => {
-    // Scroll button visibility handler
+    // Get header height for correct sticky banner placement
+    const header = document.querySelector('header');
+    if (header) {
+      setHeaderHeight(header.offsetHeight);
+    }
+
+    // Scroll event handlers
     const handleScroll = () => {
+      // Scroll button visibility
       if (scrollBtnRef.current) {
         if (window.scrollY > 0) {
           scrollBtnRef.current.classList.add('move');
         } else {
           scrollBtnRef.current.classList.remove('move');
+        }
+      }
+      
+      // Show sticky banner when scrolled past the initial white banner
+      const section2 = document.getElementById('section2');
+      const originalBanner = document.getElementById('originalBanner');
+      
+      if (originalBanner && section2) {
+        const bannerRect = originalBanner.getBoundingClientRect();
+        
+        // When the original banner is scrolled up and out of view
+        if (bannerRect.bottom < headerHeight) {
+          setShowSticky(true);
+        } else {
+          setShowSticky(false);
         }
       }
     };
@@ -274,8 +298,29 @@ const PropertyShowcase = () => {
         </div>
       </div>
       
-      {/* Limited-Time Offer Banner - simplified modern */}
-      <div className="bg-white text-black py-4 text-center sticky top-0 z-40">
+      {/* Sticky White Banner - appears when scrolled past the original */}
+      {showSticky && (
+        <div 
+          className="fixed bg-white text-black py-4 text-center z-40 shadow-md w-full"
+          style={{ top: `${headerHeight}px` }}
+        >
+          <div className="container mx-auto px-4">
+            <p className="font-light flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-3 text-black/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5.51 15.35A9 9 0 0 0 13 21a9 9 0 0 0 9-9A9 9 0 0 0 5.64 4.57a9.1 9.1 0 0 0-1.48 4.88c0 1.5.37 2.9 1.02 4.13"></path>
+                <path d="M12.45 11.95 8.1 17.93"></path>
+                <path d="m14.84 7-2.39 4.95"></path>
+                <path d="M7.1 9.1c1.23-.38 2.6.34 3.05 1.59"></path>
+              </svg>
+              <span className="font-medium mr-2">LIMITED OPPORTUNITY:</span>
+              Receive a detailed neighborhood analysis with your exclusive home package!
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {/* Original Limited-Time Offer Banner */}
+      <div id="originalBanner" className="bg-white text-black py-4 text-center">
         <div className="container mx-auto px-4">
           <p className="font-light flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-3 text-black/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
