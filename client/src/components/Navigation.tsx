@@ -1,9 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
+import { property, siteBranding } from '../config/siteConfig';
+import { Menu } from 'lucide-react';
+
+// Navigation sections
+const navItems = [
+  { id: 'property', label: 'Home' },
+  { id: 'highlights', label: 'Highlights' },
+  { id: 'gallery', label: 'Gallery' },
+  { id: 'neighborhood', label: 'Neighborhood' },
+  { id: 'package', label: 'Package' },
+  { id: 'contact', label: 'Contact' }
+];
 
 const Navigation = () => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
+  const { colors } = siteBranding;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,28 +33,38 @@ const Navigation = () => {
     setMobileMenuVisible(!mobileMenuVisible);
   };
 
+  // Styles using site branding colors
+  const navLinkClasses = `text-white hover:text-[${colors.primary}] transition-colors font-['Titillium_Web'] tracking-wide`;
+
   return (
     <>      
       {/* Main Navigation */}
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-primary/90 backdrop-blur-sm' : ''}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-white font-['Poppins'] text-xl tracking-wider">
-            <span className="text-white">OPEN HOUSE:</span> <span className="text-[#D9A566]">24 KYLEMOUNT AVE</span>
+            <span className="text-white">OPEN HOUSE:</span> <span style={{ color: colors.primary }}>{property.address.street}</span>
           </Link>
           
           <nav className="hidden md:block">
             <ul className="flex space-x-6">
-              <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Home</a></li>
-              <li><a href="#highlights" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Highlights</a></li>
-              <li><a href="#gallery" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Gallery</a></li>
-              <li><a href="#neighborhood" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Neighborhood</a></li>
-              <li><a href="#package" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Package</a></li>
-              <li><a href="#contact" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Contact</a></li>
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <a 
+                    href={`#${item.id}`} 
+                    className={navLinkClasses}
+                    style={{ 
+                      '--hover-color': colors.primary 
+                    } as React.CSSProperties}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
           
-          <button className="md:hidden text-white text-2xl" onClick={toggleMobileMenu}>
-            <i className='bx bx-menu'></i>
+          <button className="md:hidden text-white" onClick={toggleMobileMenu}>
+            <Menu size={24} />
           </button>
         </div>
         
@@ -51,12 +75,20 @@ const Navigation = () => {
           }`}
         >
           <ul className="flex flex-col items-center space-y-4">
-            <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Home</a></li>
-            <li><a href="#highlights" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Highlights</a></li>
-            <li><a href="#gallery" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Gallery</a></li>
-            <li><a href="#neighborhood" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Neighborhood</a></li>
-            <li><a href="#package" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Package</a></li>
-            <li><a href="#contact" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Contact</a></li>
+            {navItems.map((item) => (
+              <li key={item.id}>
+                <a 
+                  href={`#${item.id}`} 
+                  className={navLinkClasses}
+                  onClick={() => setMobileMenuVisible(false)}
+                  style={{ 
+                    '--hover-color': colors.primary 
+                  } as React.CSSProperties}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </header>

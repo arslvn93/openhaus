@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X, Camera, ZoomIn } from 'lucide-react';
+import { galleryImages as configImages, property, siteBranding } from '../config/siteConfig';
 
 // Define type for gallery image
 interface GalleryImage {
@@ -16,57 +17,9 @@ const PhotoGallery = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const galleryImages: GalleryImage[] = [
-    {
-      id: 1,
-      src: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Living Room",
-      category: "Interior"
-    },
-    {
-      id: 2,
-      src: "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Kitchen",
-      category: "Interior"
-    },
-    {
-      id: 3,
-      src: "https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Master Bedroom",
-      category: "Interior"
-    },
-    {
-      id: 4,
-      src: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Bathroom",
-      category: "Interior"
-    },
-    {
-      id: 5,
-      src: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Home Office",
-      category: "Interior"
-    },
-    {
-      id: 6,
-      src: "https://images.unsplash.com/photo-1569152811536-fb47aced8409?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Dining Room",
-      category: "Interior"
-    },
-    {
-      id: 7,
-      src: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "House Exterior",
-      category: "Exterior"
-    },
-    {
-      id: 8,
-      src: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
-      alt: "Front of House",
-      category: "Exterior"
-    }
-  ];
+  
+  // Use gallery images from the config file
+  const galleryImages: GalleryImage[] = configImages;
   
   const openLightbox = (id: number) => {
     setActiveImage(id);
@@ -147,9 +100,9 @@ const PhotoGallery = () => {
           <h2 className="text-4xl font-['Poppins'] uppercase mb-3 tracking-wider text-white">
             Photo Gallery
           </h2>
-          <div className="w-24 h-1 bg-[#D9A566] mx-auto mb-6"></div>
+          <div className="w-24 h-1 mx-auto mb-6" style={{ backgroundColor: siteBranding.colors.primary }}></div>
           <p className="text-white/80 font-['Titillium_Web'] max-w-2xl mx-auto text-lg">
-            Explore the stunning visuals of 24 Kylemount Ave in our comprehensive gallery showcase
+            Explore the stunning visuals of {property.address.street} in our comprehensive gallery showcase
           </p>
         </div>
         
@@ -171,7 +124,10 @@ const PhotoGallery = () => {
               
               <div className="absolute inset-0 p-6 flex flex-col justify-between z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex justify-end">
-                  <span className="bg-[#D9A566] text-white text-sm py-1 px-3 rounded-full font-['Poppins']">
+                  <span 
+                    className="text-white text-sm py-1 px-3 rounded-full font-['Poppins']"
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  >
                     {image.category}
                   </span>
                 </div>
@@ -200,7 +156,11 @@ const PhotoGallery = () => {
                 containerRef.current.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            className="inline-flex items-center gap-2 bg-[#D9A566] hover:bg-[#D9A566]/80 text-white py-3 px-6 rounded-full font-['Poppins'] transition-colors duration-300"
+            className="inline-flex items-center gap-2 text-white py-3 px-6 rounded-full font-['Poppins'] transition-colors duration-300"
+            style={{ 
+              backgroundColor: siteBranding.colors.primary,
+              ':hover': { backgroundColor: `${siteBranding.colors.primary}80` }
+            } as React.CSSProperties}
           >
             <Camera className="w-5 h-5" /> 
             View All Photos

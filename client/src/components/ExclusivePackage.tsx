@@ -74,7 +74,14 @@ const ExclusivePackage = () => {
         {/* Radial gradient background for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black/60 z-0"></div>
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+          <div className="absolute top-0 left-0 w-full h-full" 
+               style={{ 
+                 backgroundImage: `url('${siteBranding.heroImage}')`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+                 mixBlendMode: 'overlay'
+               }}>
+          </div>
         </div>
         
         {/* Original LIMITED OPPORTUNITY Banner */}
