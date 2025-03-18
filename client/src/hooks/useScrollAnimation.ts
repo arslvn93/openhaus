@@ -1,154 +1,145 @@
-import { useCallback } from 'react';
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
-const useScrollAnimation = () => {
-  const initializeAnimations = useCallback(() => {
-    // Ensure the libraries are loaded
-    if (
-      typeof window === 'undefined' ||
-      !window.ScrollMagic ||
-      !window.Lenis
-    ) {
-      console.error('ScrollMagic or Lenis is not loaded');
+// Define types for ScrollMagic since it doesn't have TypeScript definitions
+declare global {
+  interface Window {
+    ScrollMagic: any;
+  }
+}
+
+type ScrollAnimationOptions = {
+  triggerElement: string;
+  duration?: string | number;
+  offset?: number;
+  animation?: 'fadeIn' | 'slideUp' | 'slideLeft' | 'slideRight' | 'zoom' | 'custom';
+  customAnimation?: (element: HTMLElement) => void;
+  triggerHook?: number;
+  reverse?: boolean;
+  debug?: boolean;
+};
+
+/**
+ * Hook for creating scroll-triggered animations using ScrollMagic and GSAP
+ */
+export const useScrollAnimation = () => {
+  const controllerRef = useRef<any>(null);
+
+  // Initialize controller only once
+  useEffect(() => {
+    // Make sure ScrollMagic is available
+    if (typeof window !== 'undefined' && window.ScrollMagic) {
+      controllerRef.current = new window.ScrollMagic.Controller();
+      
+      // Clean up controller on unmount
+      return () => {
+        if (controllerRef.current) {
+          controllerRef.current.destroy(true);
+          controllerRef.current = null;
+        }
+      };
+    }
+  }, []);
+  
+  // Function to create a new scroll scene
+  const createScrollScene = ({
+    triggerElement,
+    duration = '100%',
+    offset = 0,
+    animation = 'fadeIn',
+    customAnimation,
+    triggerHook = 0.8,
+    reverse = false,
+    debug = false
+  }: ScrollAnimationOptions) => {
+    if (!controllerRef.current || typeof window === 'undefined' || !window.ScrollMagic) {
+      console.warn('ScrollMagic not initialized yet');
       return;
     }
-
-    // Initialize Lenis for smooth scrolling
-    const lenis = new window.Lenis();
     
-    const raf = (time: number) => {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    };
+    const element = document.querySelector(triggerElement);
+    if (!element) {
+      console.warn(`Element ${triggerElement} not found`);
+      return;
+    }
     
-    requestAnimationFrame(raf);
-
-    // Initialize ScrollMagic
-    const controller = new window.ScrollMagic.Controller({ loglevel: 3 });
+    // Set initial state based on animation type
+    switch (animation) {
+      case 'fadeIn':
+        gsap.set(element, { opacity: 0 });
+        break;
+      case 'slideUp':
+        gsap.set(element, { opacity: 0, y: 50 });
+        break;
+      case 'slideLeft':
+        gsap.set(element, { opacity: 0, x: 50 });
+        break;
+      case 'slideRight':
+        gsap.set(element, { opacity: 0, x: -50 });
+        break;
+      case 'zoom':
+        gsap.set(element, { opacity: 0, scale: 0.8 });
+        break;
+      case 'custom':
+        // Custom animation will handle initial state
+        break;
+      default:
+        break;
+    }
     
-    // Pin sections for scrolling effects
-    new window.ScrollMagic.Scene({
-      triggerElement: "#section2",
-      triggerHook: "onEnter",
-      duration: "100%"
-    }).setPin("#section1 .pinWrapper", {
-      pushFollowers: false
-    }).addTo(controller);
+    // Create the animation timeline
+    const timeline = gsap.timeline();
     
-    new window.ScrollMagic.Scene({
-      triggerElement: "#section2",
-      triggerHook: "onEnter",
-      duration: "200%"
-    }).setPin("#section2 .pinWrapper", {
-      pushFollowers: false
-    }).addTo(controller);
-    
-    new window.ScrollMagic.Scene({
-      triggerElement: "#section3",
-      triggerHook: "onEnter",
-      duration: "200%"
-    }).setPin("#section3 .pinWrapper", {
-      pushFollowers: false
-    }).addTo(controller);
-    
-    new window.ScrollMagic.Scene({
-      triggerElement: "#section4",
-      triggerHook: "onEnter",
-      duration: "100%"
-    }).setPin("#section4 .pinWrapper", {
-      pushFollowers: false
-    }).addTo(controller);
-
-    // Scroll Down Button visibility
-    const handleScroll = () => {
-      const scrollBtn = document.querySelector('.scrollBtn');
-      if (scrollBtn) {
-        if (window.scrollY > 0) {
-          scrollBtn.classList.add('move');
-        } else {
-          scrollBtn.classList.remove('move');
+    // Add animation based on type
+    switch (animation) {
+      case 'fadeIn':
+        timeline.to(element, { opacity: 1, duration: 0.8 });
+        break;
+      case 'slideUp':
+        timeline.to(element, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+        break;
+      case 'slideLeft':
+        timeline.to(element, { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out' });
+        break;
+      case 'slideRight':
+        timeline.to(element, { opacity: 1, x: 0, duration: 0.8, ease: 'power2.out' });
+        break;
+      case 'zoom':
+        timeline.to(element, { opacity: 1, scale: 1, duration: 0.8, ease: 'power2.out' });
+        break;
+      case 'custom':
+        if (customAnimation && element instanceof HTMLElement) {
+          customAnimation(element);
         }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    // Loader Video Animation
-    window.addEventListener('load', function () {
-      document.body.classList.add('overflow-hidden');
-      document.documentElement.classList.add('overflow-hidden');
-      
-      setTimeout(function () {
-        const loaderVideo = document.getElementById('loaderVideo');
-        if (loaderVideo) {
-          loaderVideo.style.width = '90%';
-          loaderVideo.style.height = '90%';
-          loaderVideo.style.transform = 'translate(-50%, -50%)';
-          loaderVideo.style.top = '50%';
-          loaderVideo.style.left = '50%';
-          loaderVideo.style.position = 'fixed';
-          loaderVideo.style.borderRadius = '12px';
-        }
-      }, 2000);
-      
-      setTimeout(() => {
-        const loaderVideo = document.getElementById('loaderVideo');
-        if (loaderVideo) {
-          if (window.matchMedia('(max-width: 576px)').matches) {
-            loaderVideo.style.width = '220px';
-            loaderVideo.style.height = '220px';
-            loaderVideo.style.top = '25%';
-            loaderVideo.style.left = '24px';
-            loaderVideo.style.right = 'auto';
-            loaderVideo.style.transform = 'translate(0%, -25%)';
-          } else if (window.matchMedia('(max-width: 767px)').matches) {
-            loaderVideo.style.width = '220px';
-            loaderVideo.style.height = '220px';
-            loaderVideo.style.left = 'auto';
-            loaderVideo.style.right = '40px';
-            loaderVideo.style.transform = 'translate(0%, -50%)';
-          } else if (window.matchMedia('(max-width: 991px)').matches) {
-            loaderVideo.style.width = '310px';
-            loaderVideo.style.height = '310px';
-            loaderVideo.style.left = 'auto';
-            loaderVideo.style.right = '40px';
-            loaderVideo.style.transform = 'translate(0%, -50%)';
-          } else if (window.matchMedia('(max-width: 1199px)').matches) {
-            loaderVideo.style.width = '400px';
-            loaderVideo.style.height = '400px';
-            loaderVideo.style.left = 'auto';
-            loaderVideo.style.right = '60px';
-            loaderVideo.style.transform = 'translate(0%, -50%)';
-          } else if (window.matchMedia('(max-width: 1399px)').matches) {
-            loaderVideo.style.width = '450px';
-            loaderVideo.style.height = '450px';
-            loaderVideo.style.left = 'auto';
-            loaderVideo.style.right = '80px';
-            loaderVideo.style.transform = 'translate(0%, -50%)';
-          } else {
-            loaderVideo.style.width = '500px';
-            loaderVideo.style.height = '500px';
-            loaderVideo.style.top = '50%';
-            loaderVideo.style.left = 'auto';
-            loaderVideo.style.right = '100px';
-            loaderVideo.style.transform = 'translate(0%, -50%)';
-            loaderVideo.style.position = 'absolute';
-          }
-        }
-        
-        document.body.classList.remove('overflow-hidden');
-        document.documentElement.classList.remove('overflow-hidden');
-      }, 3000);
-    });
-
-    // Clean up on unmount
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      controller.destroy(true);
-      lenis.destroy();
-    };
-  }, []);
-
-  return { initializeAnimations };
+        break;
+      default:
+        break;
+    }
+    
+    // Create the scene
+    const scene = new window.ScrollMagic.Scene({
+      triggerElement,
+      duration,
+      offset,
+      triggerHook
+    })
+      .setTween(timeline)
+      .addTo(controllerRef.current);
+    
+    // Set reverse option
+    if (!reverse) {
+      scene.reverse(false);
+    }
+    
+    // Add debug indicators if requested
+    if (debug && window.ScrollMagic.debug) {
+      scene.addIndicators();
+    }
+    
+    return scene;
+  };
+  
+  return { createScrollScene };
 };
 
 export default useScrollAnimation;

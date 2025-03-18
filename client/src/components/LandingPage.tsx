@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Navigation from './Navigation';
 import PropertyShowcase from './PropertyShowcase';
 import PropertyDetails from './PropertyDetails';
@@ -10,15 +10,79 @@ import ExclusivePackage from './ExclusivePackage';
 import ContactForm from './ContactForm';
 import Footer from './Footer';
 import Preloader from './Preloader';
-import useScrollAnimation from '@/hooks/useScrollAnimation';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import Lenis from '@studio-freight/lenis';
 
 const LandingPage = () => {
-  const { initializeAnimations } = useScrollAnimation();
+  const { createScrollScene } = useScrollAnimation();
   const [showExitPopup, setShowExitPopup] = useState(false);
+  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    initializeAnimations();
-    // Initialize fade-in animations
+    // Initialize smooth scrolling with Lenis
+    if (typeof window !== 'undefined') {
+      lenisRef.current = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        smoothTouch: false,
+        touchMultiplier: 2
+      });
+
+      // Integrate with RAF for smooth animation
+      function raf(time: number) {
+        lenisRef.current?.raf(time);
+        requestAnimationFrame(raf);
+      }
+      
+      requestAnimationFrame(raf);
+    }
+
+    // Create scroll animations once ScrollMagic is loaded
+    const loadAnimationsTimeout = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.ScrollMagic) {
+        // Section animations
+        createScrollScene({
+          triggerElement: '#highlights',
+          animation: 'fadeIn',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#gallery',
+          animation: 'slideUp',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#neighborhood',
+          animation: 'slideLeft',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#testimonials',
+          animation: 'fadeIn',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#package',
+          animation: 'slideRight',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#contact',
+          animation: 'slideUp',
+          offset: -100
+        });
+      }
+    }, 1000);
+    
+    // Initialize fade-in animations for elements not using ScrollMagic
     const fadeInElements = document.querySelectorAll('.fade-in');
     
     const fadeInOnScroll = () => {
@@ -54,11 +118,15 @@ const LandingPage = () => {
     }, 3000);
     
     return () => {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+      }
       window.removeEventListener('scroll', fadeInOnScroll);
       document.removeEventListener('mouseleave', handleMouseLeave);
       clearTimeout(timer);
+      clearTimeout(loadAnimationsTimeout);
     };
-  }, [initializeAnimations]);
+  }, [createScrollScene]);
 
   const closeExitPopup = () => {
     setShowExitPopup(false);
