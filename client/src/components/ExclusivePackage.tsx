@@ -16,8 +16,12 @@ const ExclusivePackage = () => {
       // Get the banner's position relative to the viewport
       const rect = bannerRef.getBoundingClientRect();
       
-      // When the banner reaches the top of the viewport, make it sticky
-      if (rect.top <= 0 && !stickyBanner) {
+      // Get the header height
+      const header = document.querySelector('header');
+      const headerHeight = header ? header.offsetHeight : 0;
+      
+      // When the banner reaches the bottom of the header, make it sticky
+      if (rect.top <= headerHeight && !stickyBanner) {
         setStickyBanner(true);
       } 
       
@@ -25,7 +29,7 @@ const ExclusivePackage = () => {
       const packageSection = document.getElementById('package');
       if (packageSection) {
         const packageRect = packageSection.getBoundingClientRect();
-        if (packageRect.top > 0 && stickyBanner) {
+        if (packageRect.top > headerHeight && stickyBanner) {
           setStickyBanner(false);
         }
       }
@@ -86,11 +90,34 @@ const ExclusivePackage = () => {
     }
   };
   
+  // Get the header height dynamically for the sticky position
+  const [headerHeight, setHeaderHeight] = useState(0);
+  
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      const header = document.querySelector('header');
+      if (header) {
+        setHeaderHeight(header.offsetHeight);
+      }
+    };
+    
+    // Initial measurement
+    updateHeaderHeight();
+    
+    // Update on resize
+    window.addEventListener('resize', updateHeaderHeight);
+    
+    return () => window.removeEventListener('resize', updateHeaderHeight);
+  }, []);
+  
   return (
     <>
       {/* Sticky Banner - visible when scrolled to the top of the viewport */}
       {stickyBanner && (
-        <div className="fixed top-[64px] left-0 w-full bg-[#D9A566] text-white py-3 z-[60] shadow-md">
+        <div 
+          className="fixed left-0 w-full bg-[#D9A566] text-white py-3 z-[60] shadow-md" 
+          style={{ top: `${headerHeight}px` }}
+        >
           <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
             <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
           </div>
