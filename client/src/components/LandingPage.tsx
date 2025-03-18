@@ -23,21 +23,18 @@ const LandingPage = () => {
     if (typeof window !== 'undefined') {
       lenisRef.current = new Lenis({
         duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        gestureDirection: 'vertical',
-        smooth: true,
-        smoothTouch: false,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        wheelMultiplier: 1,
         touchMultiplier: 2
       });
 
       // Integrate with RAF for smooth animation
-      function raf(time: number) {
+      const rafCallback = (time: number) => {
         lenisRef.current?.raf(time);
-        requestAnimationFrame(raf);
-      }
+        requestAnimationFrame(rafCallback);
+      };
       
-      requestAnimationFrame(raf);
+      requestAnimationFrame(rafCallback);
     }
 
     // Create scroll animations once ScrollMagic is loaded
