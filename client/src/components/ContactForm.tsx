@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
+import { Phone, Mail, Award, Clock } from 'lucide-react';
 
 // Define schema for form validation
 const formSchema = z.object({
@@ -172,36 +174,67 @@ const ContactForm = () => {
           </div>
           
           {/* Agent Information Section */}
-          <div className="mt-16 bg-primary-foreground p-8 rounded-lg shadow-lg border border-gray-800">
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="md:w-1/3">
-                <img 
-                  src="https://randomuser.me/api/portraits/men/85.jpg" 
-                  alt="Real Estate Agent" 
-                  className="w-48 h-48 rounded-full object-cover mx-auto"
-                />
-              </div>
-              <div className="md:w-2/3 text-center md:text-left">
-                <h3 className="text-2xl font-['Poppins'] mb-2">Myless Thornhill</h3>
-                <p className="text-[#D9A566] font-['Titillium_Web'] font-semibold mb-4">Thornhill Real Estate Specialist</p>
-                <p className="font-['Titillium_Web'] text-gray-300 mb-6">
-                  With over 15 years of experience in the Thornhill luxury real estate market, 
-                  I specialize in helping discerning buyers find their perfect home. 
-                  My expertise in the local market ensures you'll get the best value and insights.
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mt-16 bg-black/30 backdrop-blur-sm rounded-xl p-8 lg:p-10 shadow-2xl border border-white/10"
+          >
+            <div className="flex flex-col md:flex-row gap-10 items-center">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="md:w-1/3"
+              >
+                <div className="relative w-52 h-52 md:w-56 md:h-56 mx-auto">
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#D9A566]/30 to-transparent"></div>
+                  <img 
+                    src="https://randomuser.me/api/portraits/men/85.jpg" 
+                    alt="Real Estate Agent" 
+                    className="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg"
+                  />
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="md:w-2/3 text-center md:text-left"
+              >
+                <h3 className="text-2xl md:text-3xl font-['Poppins'] text-white mb-1">Myless Thornhill</h3>
+                <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
+                  <Award className="w-4 h-4 text-[#D9A566]" />
+                  <p className="text-[#D9A566] font-['Titillium_Web'] text-sm tracking-wider">THORNHILL LUXURY SPECIALIST</p>
+                </div>
+                
+                <div className="flex items-center gap-2 text-white/70 mb-2 justify-center md:justify-start">
+                  <Clock className="w-4 h-4 text-white/50" />
+                  <p className="text-sm font-['Titillium_Web']">15+ years of experience in the local market</p>
+                </div>
+                
+                <p className="font-['Titillium_Web'] text-white/70 mb-6 max-w-xl">
+                  I specialize in helping discerning buyers find their perfect luxury home in Thornhill. 
+                  My expertise ensures you'll get the best value and insider market insights.
                 </p>
+                
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                  <a href="tel:+14165551234" className="flex items-center justify-center gap-2 bg-primary/40 hover:bg-primary/60 py-2 px-4 rounded-lg transition-colors">
-                    <i className='bx bxs-phone text-[#D9A566]'></i>
-                    <span className="font-['Titillium_Web']">(416) 555-1234</span>
+                  <a href="tel:+14165551234" className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group">
+                    <Phone className="w-4 h-4 text-[#D9A566] group-hover:scale-110 transition-transform" />
+                    <span className="font-['Titillium_Web'] text-white/90">(416) 555-1234</span>
                   </a>
-                  <a href="mailto:myless@thornhillrealty.com" className="flex items-center justify-center gap-2 bg-primary/40 hover:bg-primary/60 py-2 px-4 rounded-lg transition-colors">
-                    <i className='bx bxs-envelope text-[#D9A566]'></i>
-                    <span className="font-['Titillium_Web']">myless@thornhillrealty.com</span>
+                  <a href="mailto:myless@thornhillrealty.com" className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group">
+                    <Mail className="w-4 h-4 text-[#D9A566] group-hover:scale-110 transition-transform" />
+                    <span className="font-['Titillium_Web'] text-white/90">myless@thornhillrealty.com</span>
                   </a>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
