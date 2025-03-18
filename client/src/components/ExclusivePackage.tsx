@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, BarChart2, GraduationCap, CheckSquare, 
@@ -6,37 +6,6 @@ import {
 } from 'lucide-react';
 
 const ExclusivePackage = () => {
-  const [showSticky, setShowSticky] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  
-  useEffect(() => {
-    // Get header height for correct sticky banner placement
-    const header = document.querySelector('header');
-    if (header) {
-      setHeaderHeight(header.offsetHeight);
-    }
-    
-    const handleScroll = () => {
-      const packageSection = document.getElementById('package');
-      
-      if (packageSection) {
-        const packageRect = packageSection.getBoundingClientRect();
-        const headerHeight = document.querySelector('header')?.offsetHeight || 0;
-        
-        // Show sticky banner when we scroll past the original banner
-        // +70 accounts for the original banner + some of the section padding
-        // This banner remains sticky throughout the rest of the page
-        if (packageRect.top <= headerHeight && packageRect.top < -70) {
-          setShowSticky(true);
-        } else {
-          setShowSticky(false);
-        }
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
   
   const packageItems = [
     {
@@ -91,17 +60,6 @@ const ExclusivePackage = () => {
   
   return (
     <>
-      {/* Sticky banner appears when scrolled past the original banner */}
-      {showSticky && (
-        <div 
-          className="fixed w-full bg-[#D9A566] text-white py-3 z-40 shadow-md transition-all duration-300"
-          style={{ top: `${headerHeight}px` }}
-        >
-          <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
-            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
-          </div>
-        </div>
-      )}
     
       <section id="package" className="py-20 bg-black relative overflow-hidden">
         {/* Radial gradient background for depth */}
