@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  FileText, BarChart2, GraduationCap, CheckSquare, 
-  DollarSign, Map, Search, CreditCard 
-} from 'lucide-react';
+import { packageItems, property, siteBranding } from '../config/siteConfig';
+import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard } from 'lucide-react';
+
+// Map of icon names to their respective components
+const iconMap: Record<string, React.ReactNode> = {
+  FileText: <FileText className="w-8 h-8" />,
+  BarChart2: <BarChart2 className="w-8 h-8" />,
+  GraduationCap: <GraduationCap className="w-8 h-8" />,
+  CheckSquare: <CheckSquare className="w-8 h-8" />,
+  DollarSign: <DollarSign className="w-8 h-8" />,
+  Map: <Map className="w-8 h-8" />,
+  Search: <Search className="w-8 h-8" />,
+  CreditCard: <CreditCard className="w-8 h-8" />
+};
 
 const ExclusivePackage = () => {
   const [showSticky, setShowSticky] = useState(false);
@@ -37,49 +47,6 @@ const ExclusivePackage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
-  const packageItems = [
-    {
-      id: 1,
-      title: "Detailed Floor Plans",
-      icon: <FileText className="w-6 h-6" />
-    },
-    {
-      id: 2,
-      title: "Recent Neighborhood Sales",
-      icon: <BarChart2 className="w-6 h-6" />
-    },
-    {
-      id: 3,
-      title: "School District Information",
-      icon: <GraduationCap className="w-6 h-6" />
-    },
-    {
-      id: 4,
-      title: "Property Feature List",
-      icon: <CheckSquare className="w-6 h-6" />
-    },
-    {
-      id: 5,
-      title: "Utility Cost Estimates",
-      icon: <DollarSign className="w-6 h-6" />
-    },
-    {
-      id: 6,
-      title: "Local Amenities Guide",
-      icon: <Map className="w-6 h-6" />
-    },
-    {
-      id: 7,
-      title: "Home Inspection Tips",
-      icon: <Search className="w-6 h-6" />
-    },
-    {
-      id: 8,
-      title: "Financing Resources",
-      icon: <CreditCard className="w-6 h-6" />
-    }
-  ];
   
   // Function to scroll to contact form
   const scrollToForm = () => {
@@ -260,7 +227,7 @@ const ExclusivePackage = () => {
                     <div className="flex-shrink-0 w-14 h-14 bg-black/40 rounded-md border border-white/10 shadow-lg flex items-center justify-center relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-[#D9A566]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <span className="text-[#D9A566] relative z-10 group-hover:scale-110 transition-transform duration-300">
-                        {item.icon}
+                        {iconMap[item.iconName]}
                       </span>
                     </div>
                     <div>
