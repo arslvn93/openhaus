@@ -4,6 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimize for performance */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Add will-change for elements that will animate */
+.pinWrapper {
+  will-change: transform;
+}
+
 @layer base {
   :root {
     --background: 0 0% 0%;

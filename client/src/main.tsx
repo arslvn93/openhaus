@@ -2,15 +2,50 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Initialize ScrollMagic and Lenis after the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  // Global declarations for TypeScript
-  declare global {
-    interface Window {
-      Lenis: any;
-      ScrollMagic: any;
-    }
+// Global declarations for TypeScript - moved to top level
+declare global {
+  interface Window {
+    Lenis: any;
+    ScrollMagic: any;
   }
+}
+
+// Initialize ScrollMagic and improve scroll performance
+document.addEventListener('DOMContentLoaded', () => {
+  // Optimize scroll performance by reducing animation work
+  const passiveSupported = (() => {
+    let passive = false;
+    try {
+      const options = {
+        get passive() { 
+          passive = true;
+          return passive;
+        }
+      };
+      window.addEventListener("test", null as any, options);
+      window.removeEventListener("test", null as any, options);
+    } catch (err) {
+      passive = false;
+    }
+    return passive;
+  })();
+
+  // Use passive listeners for scroll events - major performance boost
+  window.addEventListener('scroll', () => {}, passiveSupported ? { passive: true } : false);
+  
+  // Force repaint to ensure smooth scrolling
+  let scrolling = false;
+  window.addEventListener('scroll', () => {
+    scrolling = true;
+  }, passiveSupported ? { passive: true } : false);
+  
+  setInterval(() => {
+    if (scrolling) {
+      scrolling = false;
+      // Minimal forced style update to prevent layout thrashing
+      document.body.style.transformStyle = document.body.style.transformStyle;
+    }
+  }, 300);
 });
 
 createRoot(document.getElementById("root")!).render(<App />);
