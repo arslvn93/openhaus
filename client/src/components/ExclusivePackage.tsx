@@ -18,13 +18,17 @@ const ExclusivePackage = () => {
     
     const handleScroll = () => {
       const packageSection = document.getElementById('package');
-      if (packageSection) {
+      const gallerySection = document.getElementById('gallery');
+      
+      if (packageSection && gallerySection) {
         const packageRect = packageSection.getBoundingClientRect();
+        const galleryRect = gallerySection.getBoundingClientRect();
         const headerHeight = document.querySelector('header')?.offsetHeight || 0;
         
         // Show sticky banner when we scroll past the original banner
+        // but hide it when approaching the gallery section
         // +70 accounts for the original banner + some of the section padding
-        if (packageRect.top <= headerHeight && packageRect.top < -70) {
+        if (packageRect.top <= headerHeight && packageRect.top < -70 && galleryRect.top > headerHeight) {
           setShowSticky(true);
         } else {
           setShowSticky(false);

@@ -27,14 +27,18 @@ const PropertyShowcase = () => {
       }
       
       // Show sticky banner when scrolled past the initial white banner
+      // and hide it before the Photo Gallery section
       const section2 = document.getElementById('section2');
       const originalBanner = document.getElementById('originalBanner');
+      const gallerySection = document.getElementById('gallery');
       
-      if (originalBanner && section2) {
+      if (originalBanner && section2 && gallerySection) {
         const bannerRect = originalBanner.getBoundingClientRect();
+        const galleryRect = gallerySection.getBoundingClientRect();
         
-        // When the original banner is scrolled up and out of view
-        if (bannerRect.bottom < headerHeight) {
+        // Show when the original banner is scrolled up and out of view
+        // Hide when approaching the gallery section
+        if (bannerRect.bottom < headerHeight && galleryRect.top > headerHeight) {
           setShowSticky(true);
         } else {
           setShowSticky(false);
