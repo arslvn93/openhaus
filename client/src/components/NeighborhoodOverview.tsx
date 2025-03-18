@@ -1,7 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Map, Building, School, Trees, TrendingUp, Navigation, Coffee, ShoppingBag } from 'lucide-react';
+import { 
+  Map, Building, School, Trees, TrendingUp, Navigation, 
+  Coffee, ShoppingBag, Car, Users, Leaf, Wifi, Clock
+} from 'lucide-react';
+import { 
+  neighborhoodStats as configStats, 
+  neighborhoodAmenities as configAmenities, 
+  property, 
+  siteBranding 
+} from '../config/siteConfig';
 
+// Define types for the neighborhood data
 interface NeighborhoodStat {
   id: number;
   title: string;
@@ -15,75 +25,41 @@ interface Amenity {
   id: number;
   name: string;
   distance: string;
-  category: 'shopping' | 'dining' | 'education' | 'recreation';
+  category: string;
   icon: React.ReactNode;
 }
+
+// Map of icon names to their respective components
+// Map icon names to actual icon components
+const iconMap: Record<string, (props: any) => JSX.Element> = {
+  BadgeCheck: (props) => <Navigation {...props} />,
+  Compass: (props) => <Navigation {...props} />,
+  School: (props) => <School {...props} />,
+  Clock: (props) => <Clock {...props} />,
+  ShoppingBag: (props) => <ShoppingBag {...props} />,
+  Leaf: (props) => <Leaf {...props} />,
+  Coffee: (props) => <Coffee {...props} />,
+  Utensils: (props) => <Coffee {...props} />, // Using Coffee as a substitute for Utensils
+  Car: (props) => <Car {...props} />,
+  Users: (props) => <Users {...props} />,
+  Wifi: (props) => <Wifi {...props} />
+};
 
 const NeighborhoodOverview = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   
-  const neighborhoodStats: NeighborhoodStat[] = [
-    {
-      id: 1,
-      title: "Walk Score",
-      value: "98",
-      icon: <Navigation className="h-8 w-8" />,
-      color: "#D9A566"
-    },
-    {
-      id: 2,
-      title: "School Rating",
-      value: "A+",
-      icon: <School className="h-8 w-8" />,
-      color: "#6AADDA"
-    },
-    {
-      id: 3,
-      title: "Parks Within 1km",
-      value: "5",
-      icon: <Trees className="h-8 w-8" />,
-      color: "#7AC279"
-    },
-    {
-      id: 4,
-      title: "Value Increase",
-      value: "12%",
-      caption: "over 12 months",
-      icon: <TrendingUp className="h-8 w-8" />,
-      color: "#E06469"
-    }
-  ];
+  // Transform the config stats to include React components
+  const neighborhoodStats: NeighborhoodStat[] = configStats.map(stat => ({
+    ...stat,
+    icon: iconMap[stat.iconName] ? iconMap[stat.iconName]({ className: "h-8 w-8" }) : <Navigation className="h-8 w-8" />,
+    color: stat.color.startsWith('#') ? stat.color : `#${stat.color.replace('bg-', '')}`
+  }));
   
-  const nearbyAmenities: Amenity[] = [
-    {
-      id: 1,
-      name: "Thornhill Mall",
-      distance: "0.7 km",
-      category: "shopping",
-      icon: <ShoppingBag className="h-5 w-5" />
-    },
-    {
-      id: 2,
-      name: "Starbucks",
-      distance: "0.3 km",
-      category: "dining",
-      icon: <Coffee className="h-5 w-5" />
-    },
-    {
-      id: 3,
-      name: "Thornhill Secondary School",
-      distance: "1.1 km",
-      category: "education",
-      icon: <School className="h-5 w-5" />
-    },
-    {
-      id: 4,
-      name: "Thornhill Community Center",
-      distance: "0.8 km",
-      category: "recreation",
-      icon: <Building className="h-5 w-5" />
-    }
-  ];
+  // Transform the config amenities to include React components
+  const nearbyAmenities: Amenity[] = configAmenities.map(amenity => ({
+    ...amenity,
+    icon: iconMap[amenity.iconName] ? iconMap[amenity.iconName]({ className: "h-5 w-5" }) : <Building className="h-5 w-5" />,
+  }));
   
   // Animation variants
   const containerVariants = {
@@ -206,17 +182,21 @@ const NeighborhoodOverview = () => {
             <div className="bg-black/50 backdrop-blur-sm border border-white/5 rounded-xl p-6 shadow-xl">
               <h3 className="text-2xl font-['Poppins'] text-white mb-4">Address</h3>
               <div className="space-y-2 text-white/80 font-['Titillium_Web']">
-                <p>24 Kylemount Ave</p>
-                <p>Thornhill, ON L4J 8J5</p>
-                <p className="pt-2 text-[#D9A566]">Thornhill Woods</p>
+                <p>{property.address.street}</p>
+                <p>{property.address.city}, {property.address.state} {property.address.zip}</p>
+                <p className="pt-2" style={{ color: siteBranding.colors.primary }}>Premium Location</p>
               </div>
               
               <div className="mt-6">
                 <a 
-                  href="https://maps.google.com/?q=24+Kylemount+Ave+Thornhill+ON" 
+                  href={`https://maps.google.com/?q=${property.address.street}+${property.address.city}+${property.address.state}`}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#D9A566] hover:bg-[#D9A566]/80 text-white py-2 px-4 rounded-lg font-['Poppins'] text-sm transition-colors duration-300"
+                  className="inline-flex items-center gap-2 text-white py-2 px-4 rounded-lg font-['Poppins'] text-sm transition-colors duration-300"
+                  style={{ 
+                    backgroundColor: siteBranding.colors.primary,
+                    ':hover': { backgroundColor: `${siteBranding.colors.primary}80` }
+                  } as React.CSSProperties}
                 >
                   <Navigation className="w-4 h-4" /> 
                   Get Directions
@@ -271,23 +251,38 @@ const NeighborhoodOverview = () => {
               <h3 className="text-2xl font-['Poppins'] text-white mb-4">Neighborhood Highlights</h3>
               <ul className="space-y-2 text-white/80 font-['Titillium_Web']">
                 <li className="flex items-center">
-                  <span className="inline-block w-2 h-2 bg-[#D9A566] rounded-full mr-2"></span>
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full mr-2" 
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  ></span>
                   Easy access to Highway 407 and public transit
                 </li>
                 <li className="flex items-center">
-                  <span className="inline-block w-2 h-2 bg-[#D9A566] rounded-full mr-2"></span>
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full mr-2" 
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  ></span>
                   Multiple parks and walking trails
                 </li>
                 <li className="flex items-center">
-                  <span className="inline-block w-2 h-2 bg-[#D9A566] rounded-full mr-2"></span>
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full mr-2" 
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  ></span>
                   Top-rated schools within walking distance
                 </li>
                 <li className="flex items-center">
-                  <span className="inline-block w-2 h-2 bg-[#D9A566] rounded-full mr-2"></span>
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full mr-2" 
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  ></span>
                   Shopping centers with premium retailers
                 </li>
                 <li className="flex items-center">
-                  <span className="inline-block w-2 h-2 bg-[#D9A566] rounded-full mr-2"></span>
+                  <span 
+                    className="inline-block w-2 h-2 rounded-full mr-2" 
+                    style={{ backgroundColor: siteBranding.colors.primary }}
+                  ></span>
                   Safe, family-oriented community
                 </li>
               </ul>
