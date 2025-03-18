@@ -16,14 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const passiveSupported = (() => {
     let passive = false;
     try {
+      // Use a proper event type instead of "test"
       const options = {
         get passive() { 
           passive = true;
           return passive;
         }
       };
-      window.addEventListener("test", null as any, options);
-      window.removeEventListener("test", null as any, options);
+      // Use a no-op function instead of null
+      const noop = () => {};
+      window.addEventListener("scroll", noop, options as AddEventListenerOptions);
+      window.removeEventListener("scroll", noop, options as AddEventListenerOptions);
     } catch (err) {
       passive = false;
     }

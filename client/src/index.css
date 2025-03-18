@@ -147,18 +147,22 @@
 
 #section1 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
+  background-attachment: fixed; /* Performance optimization for improved scrolling */
 }
 
 #section2 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+  background-attachment: fixed;
 }
 
 #section3 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+  background-attachment: fixed;
 }
 
 #section4 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+  background-attachment: fixed;
 }
 
 .pinWrapper {
@@ -166,6 +170,8 @@
   width: 100%;
   position: relative;
   z-index: 11;
+  will-change: transform;
+  contain: layout style; /* Performance optimization: contain layout changes */
 }
 
 .scrollmagic-pin-spacer {
@@ -181,11 +187,13 @@
   position: absolute;
   background-size: cover;
   background-position: center center;
-  transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); /* Optimized transition */
   transform-origin: center;
   z-index: 8888;
   overflow: hidden;
   border-radius: 0;
+  will-change: transform; /* Performance hint for browser */
+  contain: paint; /* Performance optimization: contain paint operations */
 }
 
 .image:not(#loaderVideo) {
@@ -376,6 +384,7 @@
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: opacity, transform; /* Performance optimization */
 }
 
 .fade-in.visible {
@@ -383,35 +392,40 @@
   transform: translateY(0);
 }
 
-/* ScrollMagic animations */
+/* ScrollMagic animations - optimized for performance */
 .from-left {
   opacity: 0;
   transform: translateX(-50px);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease; /* Specific properties for better performance */
+  will-change: transform, opacity; /* Performance hint */
 }
 
 .from-right {
   opacity: 0;
   transform: translateX(50px);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: transform, opacity;
 }
 
 .from-bottom {
   opacity: 0;
   transform: translateY(50px);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: transform, opacity;
 }
 
 .from-top {
   opacity: 0;
   transform: translateY(-50px);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: transform, opacity;
 }
 
 .zoom-in {
   opacity: 0;
   transform: scale(0.8);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: transform, opacity;
 }
 
 .animate-in {
