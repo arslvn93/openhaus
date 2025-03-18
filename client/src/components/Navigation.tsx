@@ -26,11 +26,13 @@ const Navigation = () => {
         </Link>
         
         <nav className="hidden md:block">
-          <ul className="flex space-x-8">
-            <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Property</a></li>
-            <li><a href="#details" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Details</a></li>
+          <ul className="flex space-x-6">
+            <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Home</a></li>
+            <li><a href="#highlights" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Highlights</a></li>
             <li><a href="#gallery" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Gallery</a></li>
-            <li><a href="#location" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Location</a></li>
+            <li><a href="#neighborhood" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Neighborhood</a></li>
+            <li><a href="#testimonials" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Testimonials</a></li>
+            <li><a href="#package" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Package</a></li>
             <li><a href="#contact" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Contact</a></li>
           </ul>
         </nav>
@@ -47,10 +49,12 @@ const Navigation = () => {
         }`}
       >
         <ul className="flex flex-col items-center space-y-4">
-          <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Property</a></li>
-          <li><a href="#details" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Details</a></li>
+          <li><a href="#property" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Home</a></li>
+          <li><a href="#highlights" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Highlights</a></li>
           <li><a href="#gallery" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Gallery</a></li>
-          <li><a href="#location" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Location</a></li>
+          <li><a href="#neighborhood" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Neighborhood</a></li>
+          <li><a href="#testimonials" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Testimonials</a></li>
+          <li><a href="#package" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Package</a></li>
           <li><a href="#contact" className="text-white hover:text-[#D9A566] transition-colors font-['Titillium_Web'] tracking-wide">Contact</a></li>
         </ul>
       </div>
