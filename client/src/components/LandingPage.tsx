@@ -106,6 +106,14 @@ const LandingPage = () => {
       <HomeHighlights />
       <PhotoGallery />
       <NeighborhoodOverview />
+      
+      {/* LIMITED OPPORTUNITY Banner between sections */}
+      <div className="w-full bg-[#D9A566] text-white py-4 text-center font-['Poppins'] text-sm md:text-base">
+        <div className="container mx-auto px-4">
+          <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
+        </div>
+      </div>
+      
       <ExclusivePackage />
       <ContactForm />
       <Preloader />
