@@ -90,7 +90,7 @@ const ExclusivePackage = () => {
     <>
       {/* Sticky Banner - visible when scrolled to the top of the viewport */}
       {stickyBanner && (
-        <div className="fixed top-0 left-0 w-full bg-[#D9A566] text-white py-3 z-[100] shadow-md">
+        <div className="fixed top-[64px] left-0 w-full bg-[#D9A566] text-white py-3 z-[60] shadow-md">
           <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
             <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
           </div>
