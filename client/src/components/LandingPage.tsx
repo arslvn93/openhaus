@@ -5,7 +5,6 @@ import PropertyDetails from './PropertyDetails';
 import HomeHighlights from './HomeHighlights';
 import PhotoGallery from './PhotoGallery';
 import NeighborhoodOverview from './NeighborhoodOverview';
-import Testimonials from './Testimonials';
 import ExclusivePackage from './ExclusivePackage';
 import ContactForm from './ContactForm';
 import Preloader from './Preloader';
@@ -36,12 +35,6 @@ const LandingPage = () => {
         createScrollScene({
           triggerElement: '#neighborhood',
           animation: 'slideLeft',
-          offset: -100
-        });
-        
-        createScrollScene({
-          triggerElement: '#testimonials',
-          animation: 'fadeIn',
           offset: -100
         });
         
@@ -113,7 +106,6 @@ const LandingPage = () => {
       <HomeHighlights />
       <PhotoGallery />
       <NeighborhoodOverview />
-      <Testimonials />
       <ExclusivePackage />
       <ContactForm />
       <Preloader />
