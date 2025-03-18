@@ -228,8 +228,8 @@ const NeighborhoodOverview = () => {
           {/* Right column with map */}
           <motion.div 
             ref={mapRef}
-            className="lg:col-span-2 rounded-xl overflow-hidden shadow-xl border border-white/5 relative"
-            style={{ height: "462px", zIndex: 1 }}
+            className="lg:col-span-2 rounded-xl overflow-hidden shadow-xl border border-white/5 relative h-full min-h-[500px]"
+            style={{ zIndex: 1 }}
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
