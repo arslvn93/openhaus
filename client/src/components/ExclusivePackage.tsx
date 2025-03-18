@@ -106,8 +106,8 @@ const ExclusivePackage = () => {
       <section id="package" className="py-20 bg-black relative overflow-hidden">
         {/* Radial gradient background for depth */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black/60 z-0"></div>
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1460317442991-0ec209397118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center mix-blend-overlay"></div>
         </div>
         
         {/* Original LIMITED OPPORTUNITY Banner */}
@@ -123,7 +123,7 @@ const ExclusivePackage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-5xl font-['Poppins'] text-white uppercase mb-6 tracking-wider">
               Your Exclusive Home Package
@@ -136,65 +136,119 @@ const ExclusivePackage = () => {
             </div>
           </motion.div>
           
-          {/* Modern horizontal scrolling carousel for package items */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
-            className="w-full mx-auto relative pb-20"
-          >
-            <div className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
-            
-            <div className="flex overflow-x-auto hide-scrollbar pb-8 space-x-6 px-4">
-              {packageItems.map((item, index) => (
-                <motion.div 
-                  key={item.id} 
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="flex-none w-60 group"
-                >
-                  <div className="relative h-52 bg-gradient-to-br from-black/40 to-black/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(217,165,102,0.3)]">
-                    <div className="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-gradient-to-br from-[#D9A566] to-[#D9A566]/70 opacity-30 blur-2xl group-hover:opacity-50 transition-opacity"></div>
-                    
-                    <div className="flex flex-col items-center justify-center h-full p-6 relative z-10">
-                      <div className="text-[#D9A566] mb-5 transform transition-transform duration-300 group-hover:scale-110 group-hover:text-[#D9A566]">
-                        {item.icon}
-                      </div>
-                      <p className="font-['Titillium_Web'] text-white font-light text-lg text-center group-hover:text-white transition-colors">
-                        {item.title}
-                      </p>
+          {/* Package illustration and interactive list */}
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 max-w-6xl mx-auto">
+            {/* Left side: Animated folder illustration */}
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              viewport={{ once: true }}
+              className="w-full lg:w-2/5 flex justify-center"
+            >
+              <div className="relative">
+                {/* Main folder */}
+                <div className="w-[280px] h-[360px] bg-gradient-to-br from-[#D9A566] to-[#8B6839] rounded-lg shadow-2xl relative overflow-hidden transform rotate-[-5deg]">
+                  {/* Folder tab */}
+                  <div className="absolute top-0 right-10 w-32 h-10 bg-[#D9A566] rounded-b-lg transform translate-y-[-35%]"></div>
+                  
+                  {/* Folder interior */}
+                  <div className="absolute top-4 left-4 right-4 bottom-4 bg-[#111111] rounded-md flex items-center justify-center overflow-hidden">
+                    <div className="absolute top-4 left-4 w-40 h-1.5 bg-white/10 rounded-full"></div>
+                    <div className="absolute top-10 left-4 w-24 h-1.5 bg-white/10 rounded-full"></div>
+                    <div className="text-[#D9A566] text-5xl font-bold opacity-20">24K</div>
+                  </div>
+                  
+                  {/* 3D papers sticking out */}
+                  <motion.div 
+                    initial={{ y: 30 }}
+                    animate={{ y: 23 }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      repeatType: "reverse", 
+                      duration: 2.5
+                    }}
+                    className="absolute -right-1 top-[40%] w-[290px] h-[130px]"
+                  >
+                    <div className="absolute top-0 right-0 w-[250px] h-[110px] bg-white rounded-l-md shadow-md transform rotate-[-5deg]"></div>
+                    <div className="absolute top-8 right-3 w-[240px] h-[110px] bg-[#f8f8f8] rounded-l-md shadow-md transform rotate-[-3deg]"></div>
+                    <div className="absolute top-16 right-5 w-[230px] h-[110px] bg-[#f0f0f0] rounded-l-md shadow-md"></div>
+                  </motion.div>
+                  
+                  {/* "PREMIUM" stamp */}
+                  <div className="absolute top-8 right-12 w-24 h-24 rounded-full overflow-hidden">
+                    <div className="w-full h-full bg-[#D9A566]/80 flex items-center justify-center transform rotate-[-20deg] border-[3px] border-[#D9A566] text-black font-['Poppins'] font-bold text-lg tracking-wider">
+                      PREMIUM
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                </div>
+                
+                {/* Shadow */}
+                <div className="absolute bottom-[-20px] left-5 w-[90%] h-[20px] bg-black/20 blur-md rounded-full"></div>
+                
+                {/* Decorative elements */}
+                <div className="absolute -top-10 -left-10 w-24 h-24 bg-[#D9A566]/20 blur-xl rounded-full"></div>
+                <div className="absolute -bottom-5 right-0 w-32 h-32 bg-[#D9A566]/10 blur-xl rounded-full"></div>
+              </div>
+            </motion.div>
             
+            {/* Right side: Feature list */}
             <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
               viewport={{ once: true }}
-              className="mt-12 text-center"
+              className="w-full lg:w-3/5"
             >
-              <div className="inline-block relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#D9A566] to-[#D9A566]/60 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <button 
-                  onClick={scrollToForm}
-                  className="relative px-10 py-5 bg-gradient-to-br from-[#D9A566] to-[#D9A566]/90 text-black font-['Poppins'] text-lg tracking-wider uppercase shadow-xl backdrop-blur-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,165,102,0.6)]"
-                >
-                  Get Your Premium Package
-                </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {packageItems.map((item, index) => (
+                  <motion.div 
+                    key={item.id} 
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-4 group"
+                  >
+                    <div className="flex-shrink-0 w-14 h-14 bg-black/40 rounded-md border border-white/10 shadow-lg flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#D9A566]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <span className="text-[#D9A566] relative z-10 group-hover:scale-110 transition-transform duration-300">
+                        {item.icon}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="text-white font-['Poppins'] text-lg">
+                        {item.title}
+                      </h3>
+                      <div className="h-0.5 w-0 bg-gradient-to-r from-[#D9A566] to-transparent group-hover:w-full transition-all duration-300"></div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
               
-              <p className="mt-4 text-white/50 text-sm font-['Titillium_Web'] max-w-md mx-auto">
-                Exclusive offer for serious buyers. Complete property analysis, floor plans, and neighborhood insights in one premium package.
-              </p>
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="mt-12"
+              >
+                <div className="inline-block relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[#D9A566] to-[#D9A566]/60 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <button 
+                    onClick={scrollToForm}
+                    className="relative px-10 py-5 bg-gradient-to-br from-[#D9A566] to-[#D9A566]/90 text-black font-['Poppins'] text-lg tracking-wider uppercase shadow-xl backdrop-blur-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,165,102,0.6)]"
+                  >
+                    Get Your Premium Package
+                  </button>
+                </div>
+                
+                <p className="mt-4 text-white/50 text-sm font-['Titillium_Web'] max-w-md">
+                  Exclusive offer for serious buyers. Complete property analysis, floor plans, and neighborhood insights in one premium package.
+                </p>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
         
         {/* Decorative elements */}

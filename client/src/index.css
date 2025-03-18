@@ -68,7 +68,8 @@
     font-feature-settings: "liga" 1, "ss01" 1, "ss02" 1, "cv01" 1, "cv03" 1;
     -webkit-font-smoothing: antialiased;
     font-weight: 300;
-    padding-top: 1rem; /* Add padding to account for the sticky banner */
+    margin: 0;
+    padding: 0;
   }
 
   /* Minimal scrollbar */
