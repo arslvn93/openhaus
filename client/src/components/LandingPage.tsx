@@ -8,7 +8,6 @@ import NeighborhoodOverview from './NeighborhoodOverview';
 import Testimonials from './Testimonials';
 import ExclusivePackage from './ExclusivePackage';
 import ContactForm from './ContactForm';
-import Footer from './Footer';
 import Preloader from './Preloader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
@@ -117,7 +116,6 @@ const LandingPage = () => {
       <Testimonials />
       <ExclusivePackage />
       <ContactForm />
-      <Footer />
       <Preloader />
 
       {/* Exit Intent Popup (Modal) */}
