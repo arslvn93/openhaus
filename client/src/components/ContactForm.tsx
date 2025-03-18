@@ -25,6 +25,55 @@ const ContactForm = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { toast } = useToast();
   
+  // Create handlers for input focus/blur states
+  const handleFirstNameFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handleFirstNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)';
+  };
+  
+  const handleLastNameFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handleLastNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)';
+  };
+  
+  const handleEmailFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)';
+  };
+  
+  const handlePhoneFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handlePhoneBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)';
+  };
+  
+  const handleTextareaFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handleTextareaBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+  };
+  
+  const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
+    e.target.style.borderColor = siteBranding.colors.primary;
+  };
+  
+  const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+    e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+  };
+  
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,13 +140,13 @@ const ContactForm = () => {
                   <input 
                     type="text" 
                     id="firstName" 
-                    className={`w-full bg-primary border ${errors.firstName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
                     style={{ 
                       borderColor: errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                    onBlur={(e) => e.target.style.borderColor = errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)'}
+                    onFocus={handleFirstNameFocus}
+                    onBlur={handleFirstNameBlur}
                     {...register('firstName')}
                   />
                   {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
@@ -107,13 +156,13 @@ const ContactForm = () => {
                   <input 
                     type="text" 
                     id="lastName" 
-                    className={`w-full bg-primary border ${errors.lastName ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
                     style={{ 
                       borderColor: errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                    onBlur={(e) => e.target.style.borderColor = errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)'}
+                    onFocus={handleLastNameFocus}
+                    onBlur={handleLastNameBlur}
                     {...register('lastName')}
                   />
                   {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
@@ -123,13 +172,13 @@ const ContactForm = () => {
                   <input 
                     type="email" 
                     id="email" 
-                    className={`w-full bg-primary border ${errors.email ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
                     style={{ 
                       borderColor: errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                    onBlur={(e) => e.target.style.borderColor = errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)'}
+                    onFocus={handleEmailFocus}
+                    onBlur={handleEmailBlur}
                     {...register('email')}
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -139,13 +188,13 @@ const ContactForm = () => {
                   <input 
                     type="tel" 
                     id="phone" 
-                    className={`w-full bg-primary border ${errors.phone ? 'border-red-500' : 'border-secondary/50'} rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
                     style={{ 
                       borderColor: errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
-                    onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                    onBlur={(e) => e.target.style.borderColor = errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)'}
+                    onFocus={handlePhoneFocus}
+                    onBlur={handlePhoneBlur}
                     {...register('phone')}
                   />
                   {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
@@ -156,13 +205,13 @@ const ContactForm = () => {
                 <label htmlFor="timeframe" className="block font-['Titillium_Web'] mb-2">When are you looking to move?</label>
                 <select 
                   id="timeframe" 
-                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  className="w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
                   style={{ 
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: '1px'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+                  onFocus={handleSelectFocus}
+                  onBlur={handleSelectBlur}
                 >
                   <option value="">Please select...</option>
                   <option value="0-3">Within 3 months</option>
@@ -240,10 +289,15 @@ const ContactForm = () => {
                 className="md:w-1/3"
               >
                 <div className="relative w-52 h-52 md:w-56 md:h-56 mx-auto">
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#D9A566]/30 to-transparent"></div>
+                  <div 
+                    className="absolute inset-0 rounded-xl to-transparent"
+                    style={{ 
+                      background: `linear-gradient(135deg, ${siteBranding.colors.primary}30 0%, transparent 70%)` 
+                    }}
+                  ></div>
                   <img 
-                    src="https://randomuser.me/api/portraits/men/85.jpg" 
-                    alt="Real Estate Agent" 
+                    src={contactInfo.agent.photo} 
+                    alt={contactInfo.agent.name} 
                     className="w-full h-full object-cover rounded-xl border border-white/10 shadow-lg"
                   />
                 </div>
@@ -256,30 +310,50 @@ const ContactForm = () => {
                 viewport={{ once: true }}
                 className="md:w-2/3 text-center md:text-left"
               >
-                <h3 className="text-2xl md:text-3xl font-['Poppins'] text-white mb-1">Myless Thornhill</h3>
+                <h3 className="text-2xl md:text-3xl font-['Poppins'] text-white mb-1">{contactInfo.agent.name}</h3>
                 <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
-                  <Award className="w-4 h-4 text-[#D9A566]" />
-                  <p className="text-[#D9A566] font-['Titillium_Web'] text-sm tracking-wider">THORNHILL LUXURY SPECIALIST</p>
+                  <Award 
+                    className="w-4 h-4" 
+                    style={{ color: siteBranding.colors.primary }}
+                  />
+                  <p 
+                    className="font-['Titillium_Web'] text-sm tracking-wider"
+                    style={{ color: siteBranding.colors.primary }}
+                  >
+                    {contactInfo.agent.company}
+                  </p>
                 </div>
                 
                 <div className="flex items-center gap-2 text-white/70 mb-2 justify-center md:justify-start">
                   <Clock className="w-4 h-4 text-white/50" />
-                  <p className="text-sm font-['Titillium_Web']">15+ years of experience in the local market</p>
+                  <p className="text-sm font-['Titillium_Web']">{contactInfo.agent.license}</p>
                 </div>
                 
                 <p className="font-['Titillium_Web'] text-white/70 mb-6 max-w-xl">
-                  I specialize in helping discerning buyers find their perfect luxury home in Thornhill. 
+                  I specialize in helping discerning buyers find their perfect luxury home in this area. 
                   My expertise ensures you'll get the best value and insider market insights.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                  <a href="tel:+14165551234" className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group">
-                    <Phone className="w-4 h-4 text-[#D9A566] group-hover:scale-110 transition-transform" />
-                    <span className="font-['Titillium_Web'] text-white/90">(416) 555-1234</span>
+                  <a 
+                    href={`tel:${contactInfo.agent.phone.replace(/[^\d]/g, '')}`} 
+                    className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group"
+                  >
+                    <Phone 
+                      className="w-4 h-4 group-hover:scale-110 transition-transform" 
+                      style={{ color: siteBranding.colors.primary }}
+                    />
+                    <span className="font-['Titillium_Web'] text-white/90">{contactInfo.agent.phone}</span>
                   </a>
-                  <a href="mailto:myless@thornhillrealty.com" className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group">
-                    <Mail className="w-4 h-4 text-[#D9A566] group-hover:scale-110 transition-transform" />
-                    <span className="font-['Titillium_Web'] text-white/90">myless@thornhillrealty.com</span>
+                  <a 
+                    href={`mailto:${contactInfo.agent.email}`} 
+                    className="flex items-center justify-center gap-2 bg-black/50 hover:bg-black/70 py-3 px-5 rounded-md border border-white/5 transition-colors group"
+                  >
+                    <Mail 
+                      className="w-4 h-4 group-hover:scale-110 transition-transform" 
+                      style={{ color: siteBranding.colors.primary }}
+                    />
+                    <span className="font-['Titillium_Web'] text-white/90">{contactInfo.agent.email}</span>
                   </a>
                 </div>
               </motion.div>
