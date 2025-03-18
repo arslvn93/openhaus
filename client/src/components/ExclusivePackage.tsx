@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   FileText, BarChart2, GraduationCap, CheckSquare, 
@@ -6,6 +6,35 @@ import {
 } from 'lucide-react';
 
 const ExclusivePackage = () => {
+  const [stickyBanner, setStickyBanner] = useState(false);
+  const [bannerRef, setBannerRef] = useState<HTMLDivElement | null>(null);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!bannerRef) return;
+      
+      // Get the banner's position relative to the viewport
+      const rect = bannerRef.getBoundingClientRect();
+      
+      // When the banner reaches the top of the viewport, make it sticky
+      if (rect.top <= 0 && !stickyBanner) {
+        setStickyBanner(true);
+      } 
+      
+      // When scrolling back up above the package section, unstick the banner
+      const packageSection = document.getElementById('package');
+      if (packageSection) {
+        const packageRect = packageSection.getBoundingClientRect();
+        if (packageRect.top > 0 && stickyBanner) {
+          setStickyBanner(false);
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [bannerRef, stickyBanner]);
+  
   const packageItems = [
     {
       id: 1,
@@ -58,68 +87,89 @@ const ExclusivePackage = () => {
   };
   
   return (
-    <section id="package" className="py-20 bg-black">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mb-14"
+    <>
+      {/* Sticky Banner - visible when scrolled to the top of the viewport */}
+      {stickyBanner && (
+        <div className="fixed top-0 left-0 w-full bg-[#D9A566] text-white py-3 z-[100] shadow-md">
+          <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
+          </div>
+        </div>
+      )}
+      
+      <section id="package" className="py-20 bg-black">
+        {/* Original Banner - becomes sticky when scrolled up */}
+        <div 
+          ref={setBannerRef} 
+          className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base"
         >
-          <h2 className="text-3xl md:text-4xl font-['Poppins'] text-white uppercase mb-4 tracking-wider">
-            Your Exclusive Home Package
-          </h2>
-          
-          <div className="max-w-3xl mx-auto">
-            <p className="text-lg md:text-xl font-['Titillium_Web'] text-white/70 leading-relaxed">
-              Request your complimentary home package with everything you need to know about this premium property.
-            </p>
+          <div className="container mx-auto px-4">
+            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
           </div>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
-          className="bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 p-8 lg:p-10 max-w-5xl mx-auto shadow-2xl"
-        >          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {packageItems.map((item, index) => (
-              <motion.div 
-                key={item.id} 
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="flex flex-col items-center text-center"
-              >
-                <div className="w-16 h-16 rounded-md bg-black border border-white/10 flex items-center justify-center mb-4 shadow-md">
-                  <div className="text-[#D9A566]">{item.icon}</div>
-                </div>
-                <p className="font-['Titillium_Web'] text-white/90 text-sm lg:text-base">{item.title}</p>
-              </motion.div>
-            ))}
-          </div>
+        </div>
+      
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <h2 className="text-3xl md:text-4xl font-['Poppins'] text-white uppercase mb-4 tracking-wider">
+              Your Exclusive Home Package
+            </h2>
+            
+            <div className="max-w-3xl mx-auto">
+              <p className="text-lg md:text-xl font-['Titillium_Web'] text-white/70 leading-relaxed">
+                Request your complimentary home package with everything you need to know about this premium property.
+              </p>
+            </div>
+          </motion.div>
           
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="mt-12 text-center"
-          >
-            <button 
-              onClick={scrollToForm}
-              className="bg-[#D9A566] text-black font-['Poppins'] px-8 py-3 rounded-md hover:bg-[#D9A566]/90 transition-colors text-lg tracking-wider uppercase shadow-lg"
+            className="bg-black/50 backdrop-blur-sm rounded-xl border border-white/10 p-8 lg:p-10 max-w-5xl mx-auto shadow-2xl"
+          >          
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+              {packageItems.map((item, index) => (
+                <motion.div 
+                  key={item.id} 
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-16 h-16 rounded-md bg-black border border-white/10 flex items-center justify-center mb-4 shadow-md">
+                    <div className="text-[#D9A566]">{item.icon}</div>
+                  </div>
+                  <p className="font-['Titillium_Web'] text-white/90 text-sm lg:text-base">{item.title}</p>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
             >
-              Request Your Package
-            </button>
+              <button 
+                onClick={scrollToForm}
+                className="bg-[#D9A566] text-black font-['Poppins'] px-8 py-3 rounded-md hover:bg-[#D9A566]/90 transition-colors text-lg tracking-wider uppercase shadow-lg"
+              >
+                Request Your Package
+              </button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 };
 

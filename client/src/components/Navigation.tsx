@@ -4,16 +4,11 @@ import { Link } from 'wouter';
 const Navigation = () => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [bannerVisible, setBannerVisible] = useState(true);
-  const [stickyBanner, setStickyBanner] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       // Main navigation becomes opaque when scrolled
       setScrolled(window.scrollY > 50);
-      
-      // Banner becomes sticky when scrolled past 300px
-      setStickyBanner(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -24,30 +19,10 @@ const Navigation = () => {
     setMobileMenuVisible(!mobileMenuVisible);
   };
 
-  const closeBanner = () => {
-    setBannerVisible(false);
-  };
-
   return (
-    <>
-      {/* Limited Opportunity Banner */}
-      {bannerVisible && (
-        <div className={`w-full bg-[#D9A566] text-white py-3 text-center font-['Poppins'] text-sm md:text-base z-[60] transition-all duration-300 ${stickyBanner ? 'fixed top-0 left-0 shadow-md' : ''}`}>
-          <div className="container mx-auto px-4 relative">
-            <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
-            <button 
-              onClick={closeBanner}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-200 text-xl"
-              aria-label="Close banner"
-            >
-              &times;
-            </button>
-          </div>
-        </div>
-      )}
-      
+    <>      
       {/* Main Navigation */}
-      <header className={`fixed ${bannerVisible && stickyBanner ? 'top-12' : 'top-0'} left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-primary/90 backdrop-blur-sm' : ''}`}>
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-primary/90 backdrop-blur-sm' : ''}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-white font-['Poppins'] text-xl tracking-wider">
             <span className="text-white">OPEN HOUSE:</span> <span className="text-[#D9A566]">24 KYLEMOUNT AVE</span>
