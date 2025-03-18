@@ -15,6 +15,7 @@ const formSchema = z.object({
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(10, 'Valid phone number is required'),
+  timeframe: z.string().optional(),
   message: z.string().optional(),
   subscribe: z.boolean().optional()
 });
@@ -81,6 +82,7 @@ const ContactForm = () => {
       lastName: '',
       email: '',
       phone: '',
+      timeframe: '',
       message: '',
       subscribe: false
     }
@@ -212,6 +214,7 @@ const ContactForm = () => {
                   }}
                   onFocus={handleSelectFocus}
                   onBlur={handleSelectBlur}
+                  {...register('timeframe')}
                 >
                   <option value="">Please select...</option>
                   <option value="0-3">Within 3 months</option>
@@ -227,13 +230,13 @@ const ContactForm = () => {
                 <textarea 
                   id="message" 
                   rows={4} 
-                  className="w-full bg-primary border border-secondary/50 rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  className="w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
                   style={{ 
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: '1px'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = siteBranding.colors.primary}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
+                  onFocus={handleTextareaFocus}
+                  onBlur={handleTextareaBlur}
                   {...register('message')}
                   placeholder="Any specific information you're interested in about the property?"
                 ></textarea>
@@ -243,7 +246,7 @@ const ContactForm = () => {
                 <label className="flex items-center">
                   <input 
                     type="checkbox" 
-                    className="w-5 h-5 bg-primary border border-secondary/50 rounded mr-3" 
+                    className="w-5 h-5 bg-primary border border-white/10 rounded mr-3 accent-[#c8a456] cursor-pointer" 
                     {...register('subscribe')}
                   />
                   <span className="font-['Titillium_Web']">
