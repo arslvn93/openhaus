@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { siteBranding } from '../config/siteConfig';
 
 const PropertyShowcase = () => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const [showSticky, setShowSticky] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const scrollBtnRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<any>(null);
   const loaderVideoRef = useRef<HTMLDivElement>(null);
@@ -14,6 +16,36 @@ const PropertyShowcase = () => {
     if (header) {
       setHeaderHeight(header.offsetHeight);
     }
+
+    // Preload hero images and video
+    const preloadMedia = async () => {
+      const heroVideo = 'https://www.yudiz.com/codepen/studio-r/bg-video.mp4';
+      const heroImage = siteBranding.heroImage;
+      
+      // Create an array of promises for all the media we want to preload
+      const preloadPromises = [];
+      
+      // Preload images (if any)
+      if (heroImage) {
+        const imagePromise = new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = heroImage;
+        });
+        preloadPromises.push(imagePromise);
+      }
+      
+      // Wait for all media to load
+      await Promise.all(preloadPromises);
+      setImagesLoaded(true);
+      
+      // Properly initialize ScrollMagic once media is loaded
+      initScrollMagic();
+    };
+    
+    // Start preloading
+    preloadMedia();
 
     // Scroll event handlers
     const handleScroll = () => {
@@ -106,11 +138,6 @@ const PropertyShowcase = () => {
       }
     };
     
-    // Initialize after a short delay to ensure ScrollMagic is loaded
-    const timeout = setTimeout(() => {
-      initScrollMagic();
-    }, 1000);
-    
     // Handle video loading animations
     const handleVideoLoad = () => {
       const loaderVideo = document.getElementById('loaderVideo');
@@ -176,8 +203,6 @@ const PropertyShowcase = () => {
       if (controllerRef.current) {
         controllerRef.current.destroy(true);
       }
-      
-      clearTimeout(timeout);
     };
   }, []);
   
@@ -247,7 +272,29 @@ const PropertyShowcase = () => {
           </div>
           
           <div className="image" id="loaderVideo" ref={loaderVideoRef}>
-            <video autoPlay loop muted playsInline className="h-full w-full object-cover object-center absolute top-0 left-0">
+            {/* Low quality placeholder image - will show while content loads */}
+            <div className="h-full w-full object-cover object-center absolute top-0 left-0 bg-black">
+              {/* This inline SVG provides a placeholder gradient effect */}
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
+                <defs>
+                  <radialGradient id="gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                    <stop offset="0%" stopColor="#333333" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#111111" stopOpacity="0.7" />
+                  </radialGradient>
+                </defs>
+                <rect x="0" y="0" width="100" height="100" fill="url(#gradient)" />
+              </svg>
+            </div>
+            
+            {/* Main video - loads on top of placeholder */}
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              preload="auto"
+              className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+            >
               <source src="https://www.yudiz.com/codepen/studio-r/bg-video.mp4" type="video/mp4" />
             </video>
           </div>
