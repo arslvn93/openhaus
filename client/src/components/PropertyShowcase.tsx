@@ -9,6 +9,7 @@ const PropertyShowcase = () => {
   
   // Define all section images to preload
   const sectionImages = {
+    hero: 'https://www.yudiz.com/codepen/studio-r/bg-living.jpg', // Hero section
     kitchen: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
     bedroom: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
     office: 'https://images.unsplash.com/photo-1536954575540-5e96d3c28996?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80'
@@ -211,7 +212,7 @@ const PropertyShowcase = () => {
   return (
     <section id="property" className="events-page">
       {/* Hero Section */}
-      <div id="section1" className="event">
+      <div id="section1" className="event" style={{backgroundImage: `url(${sectionImages.hero})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
@@ -344,7 +345,7 @@ const PropertyShowcase = () => {
       </div>
       
       {/* Room Sections with minimalist design */}
-      <div id="section2" className="event">
+      <div id="section2" className="event" style={{background: '#000'}}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">CHEF'S DREAM</span>
@@ -382,7 +383,7 @@ const PropertyShowcase = () => {
         </div>
       </div>
       
-      <div id="section3" className="event">
+      <div id="section3" className="event" style={{background: '#000'}}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">MASTER RETREAT</span>
@@ -420,7 +421,7 @@ const PropertyShowcase = () => {
         </div>
       </div>
       
-      <div id="section4" className="event">
+      <div id="section4" className="event" style={{background: '#000'}}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">WORK FROM HOME</span>
