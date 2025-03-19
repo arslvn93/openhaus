@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
-import PropertyShowcase from './PropertyShowcase';
+import PropertyShowcaseSimple from './PropertyShowcaseSimple';
 import PropertyDetails from './PropertyDetails';
 import HomeHighlights from './HomeHighlights';
 import PhotoGallery from './PhotoGallery';
@@ -104,7 +104,7 @@ const LandingPage = () => {
   return (
     <>
       <Navigation />
-      <PropertyShowcase />
+      <PropertyShowcaseSimple />
       <HomeHighlights />
       <PhotoGallery />
       <NeighborhoodOverview />

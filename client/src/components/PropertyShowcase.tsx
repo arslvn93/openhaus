@@ -79,12 +79,21 @@ const PropertyShowcase = () => {
     
     // Initialize ScrollMagic once it's loaded - with optimized performance
     const initScrollMagic = () => {
+      console.log("Initializing ScrollMagic");
+      
       if (typeof window !== 'undefined' && window.ScrollMagic) {
         // Create controller with reduced logging and optimized scrolling
         controllerRef.current = new window.ScrollMagic.Controller({
           loglevel: 0,  // Disable logging
           refreshInterval: 200, // Less frequent checks (default is 100)
         });
+        
+        // Ensure all sections are visible first
+        document.querySelectorAll('.event').forEach(section => {
+          section.classList.add('opacity-100');
+        });
+        
+        console.log("Adding scenes to ScrollMagic controller");
         
         // Add performance options to all scenes
         const sceneOptions = {
@@ -94,7 +103,7 @@ const PropertyShowcase = () => {
         };
         
         // Scene for the first section - optimized
-        new window.ScrollMagic.Scene({
+        const scene1 = new window.ScrollMagic.Scene({
           triggerElement: "#section2",
           triggerHook: "onEnter",
           duration: "100%",
@@ -104,7 +113,7 @@ const PropertyShowcase = () => {
         }).addTo(controllerRef.current);
         
         // Scene for the second section - optimized
-        new window.ScrollMagic.Scene({
+        const scene2 = new window.ScrollMagic.Scene({
           triggerElement: "#section2",
           triggerHook: "onEnter",
           duration: "200%",
@@ -114,7 +123,7 @@ const PropertyShowcase = () => {
         }).addTo(controllerRef.current);
         
         // Scene for the third section - optimized
-        new window.ScrollMagic.Scene({
+        const scene3 = new window.ScrollMagic.Scene({
           triggerElement: "#section3",
           triggerHook: "onEnter",
           duration: "200%",
@@ -124,7 +133,7 @@ const PropertyShowcase = () => {
         }).addTo(controllerRef.current);
         
         // Scene for the fourth section - optimized
-        new window.ScrollMagic.Scene({
+        const scene4 = new window.ScrollMagic.Scene({
           triggerElement: "#section4",
           triggerHook: "onEnter",
           duration: "100%",
@@ -132,6 +141,10 @@ const PropertyShowcase = () => {
         }).setPin("#section4 .pinWrapper", {
           pushFollowers: false
         }).addTo(controllerRef.current);
+        
+        console.log("ScrollMagic scenes created:", { scene1, scene2, scene3, scene4 });
+      } else {
+        console.error("ScrollMagic not loaded properly");
       }
     };
     

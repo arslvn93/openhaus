@@ -115,6 +115,9 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  visibility: visible !important; /* Ensure all sections are visible */
+  opacity: 1 !important; /* Force opacity for all sections */
+  display: block !important; /* Make sure sections are displayed */
 }
 
 .event::before {
