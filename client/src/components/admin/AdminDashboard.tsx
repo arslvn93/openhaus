@@ -240,7 +240,7 @@ const AdminDashboard = () => {
               <PackageForm
                 initialData={currentConfig.packageItems}
                 initialDetails={currentConfig.openHouseDetails}
-                saveData={(data, details) => saveConfig({ 
+                saveData={(data: any, details: any) => saveConfig({ 
                   packageItems: data,
                   openHouseDetails: details
                 }, 'Package')}
@@ -251,7 +251,7 @@ const AdminDashboard = () => {
             <TabsContent value="contact">
               <ContactForm
                 initialData={currentConfig.contactInfo}
-                saveData={(data) => saveConfig({ contactInfo: data }, 'Contact')}
+                saveData={(data: any) => saveConfig({ contactInfo: data }, 'Contact')}
                 loading={loading}
               />
             </TabsContent>
@@ -260,7 +260,7 @@ const AdminDashboard = () => {
               <BrandingForm
                 initialData={currentConfig.siteBranding}
                 initialMeta={currentConfig.siteMetadata}
-                saveData={(branding, meta) => saveConfig({ 
+                saveData={(branding: any, meta: any) => saveConfig({ 
                   siteBranding: branding,
                   siteMetadata: meta
                 }, 'Branding')}
