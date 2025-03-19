@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { MapPin, Mail, Phone, Clock, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 
-// Define interfaces based on the siteConfig structure
+interface SocialLinks {
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  youtube?: string;
+  linkedin?: string;
+}
+
 interface ContactInfo {
   email: string;
   phone: string;
@@ -15,13 +23,7 @@ interface ContactInfo {
     lat: number;
     lng: number;
   };
-  socialLinks: {
-    facebook?: string;
-    twitter?: string;
-    instagram?: string;
-    youtube?: string;
-    linkedin?: string;
-  };
+  socialLinks: SocialLinks;
 }
 
 interface ContactFormProps {
@@ -35,46 +37,55 @@ const ContactForm: React.FC<ContactFormProps> = ({
   saveData, 
   loading 
 }) => {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>(initialData);
+  const [contactData, setContactData] = useState<ContactInfo>({
+    ...initialData,
+    mapLocation: initialData.mapLocation || { lat: 0, lng: 0 },
+    socialLinks: initialData.socialLinks || {}
+  });
   
-  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     
-    // Handle nested objects (social links)
     if (name.includes('.')) {
+      // Handle nested objects like socialLinks.facebook
       const [parent, child] = name.split('.');
       if (parent === 'socialLinks') {
-        setContactInfo({
-          ...contactInfo,
+        setContactData({
+          ...contactData,
           socialLinks: {
-            ...contactInfo.socialLinks,
+            ...contactData.socialLinks,
             [child]: value
           }
         });
       }
-    } 
-    // Handle map location as a special case
-    else if (name === 'lat' || name === 'lng') {
-      setContactInfo({
-        ...contactInfo,
-        mapLocation: {
-          ...contactInfo.mapLocation,
-          [name]: parseFloat(value) || 0
-        }
-      });
-    }
-    // Handle normal fields
-    else {
-      setContactInfo({
-        ...contactInfo,
+    } else {
+      setContactData({
+        ...contactData,
         [name]: value
       });
     }
   };
   
+  const handleMapLocationChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    const coord = name === 'lat' ? 'lat' : 'lng';
+    
+    setContactData({
+      ...contactData,
+      mapLocation: {
+        ...contactData.mapLocation,
+        [coord]: Number(value) || 0
+      }
+    });
+  };
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    saveData(contactInfo);
+    saveData(contactData);
   };
   
   return (
@@ -83,160 +94,189 @@ const ContactForm: React.FC<ContactFormProps> = ({
         <div>
           <h3 className="text-xl font-['Poppins'] text-white mb-4">Contact Information</h3>
           <p className="text-white/60 mb-6">
-            Update your contact details and social media links.
+            Edit contact details that will be displayed on the website. This information will be used by visitors to get in touch.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">Email Address</Label>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[#D9A566]" />
+                <Label htmlFor="email" className="text-white">Email Address</Label>
+              </div>
               <Input
                 id="email"
                 name="email"
-                value={contactInfo.email}
-                onChange={handleContactChange}
+                type="email"
+                value={contactData.email}
+                onChange={handleInputChange}
+                placeholder="contact@example.com"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-white">Phone Number</Label>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-[#D9A566]" />
+                <Label htmlFor="phone" className="text-white">Phone Number</Label>
+              </div>
               <Input
                 id="phone"
                 name="phone"
-                value={contactInfo.phone}
-                onChange={handleContactChange}
+                value={contactData.phone}
+                onChange={handleInputChange}
+                placeholder="(123) 456-7890"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
-            
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="address" className="text-white">Office Address</Label>
-              <Input
-                id="address"
-                name="address"
-                value={contactInfo.address}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
+          </div>
+          
+          <div className="space-y-2 mb-6">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-[#D9A566]" />
+              <Label htmlFor="address" className="text-white">Address</Label>
             </div>
-            
-            <div className="space-y-2 md:col-span-2">
+            <Textarea
+              id="address"
+              name="address"
+              value={contactData.address}
+              onChange={handleInputChange}
+              placeholder="123 Main Street, Cityville, State 12345"
+              className="bg-black/50 border-white/10 text-white min-h-[80px]"
+            />
+          </div>
+          
+          <div className="space-y-2 mb-6">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-[#D9A566]" />
               <Label htmlFor="hours" className="text-white">Business Hours</Label>
-              <Textarea
-                id="hours"
-                name="hours"
-                value={contactInfo.hours}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white min-h-[80px]"
-              />
             </div>
+            <Textarea
+              id="hours"
+              name="hours"
+              value={contactData.hours}
+              onChange={handleInputChange}
+              placeholder="Monday - Friday: 9AM - 5PM, Weekends: By appointment only"
+              className="bg-black/50 border-white/10 text-white min-h-[80px]"
+            />
           </div>
-        </div>
-        
-        <Separator className="bg-white/10" />
-        
-        <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Map Location</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="lat" className="text-white">Latitude</Label>
-              <Input
-                id="lat"
-                name="lat"
-                type="number"
-                step="0.000001"
-                value={contactInfo.mapLocation.lat}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
+          <div className="space-y-3 mb-6">
+            <Label className="text-white">Map Location (Coordinates)</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="lat" className="text-white/60 text-sm">Latitude</Label>
+                <Input
+                  id="lat"
+                  name="lat"
+                  type="number"
+                  step="0.0000001"
+                  value={contactData.mapLocation.lat}
+                  onChange={handleMapLocationChange}
+                  placeholder="43.6532"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="lng" className="text-white/60 text-sm">Longitude</Label>
+                <Input
+                  id="lng"
+                  name="lng"
+                  type="number"
+                  step="0.0000001"
+                  value={contactData.mapLocation.lng}
+                  onChange={handleMapLocationChange}
+                  placeholder="-79.3832"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="lng" className="text-white">Longitude</Label>
-              <Input
-                id="lng"
-                name="lng"
-                type="number"
-                step="0.000001"
-                value={contactInfo.mapLocation.lng}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-4 p-4 border border-white/10 rounded-lg bg-black/30">
-            <p className="text-sm text-white/60 mb-2">
-              Map Preview (uses current coordinates)
+            <p className="text-white/40 text-xs">
+              Tip: You can get coordinates by right-clicking on Google Maps and selecting "What's here?"
             </p>
-            <div className="h-48 w-full bg-gray-800 rounded-md flex items-center justify-center">
-              <p className="text-white/40">
-                Map preview would display at coordinates: {contactInfo.mapLocation.lat}, {contactInfo.mapLocation.lng}
-              </p>
-            </div>
           </div>
-        </div>
-        
-        <Separator className="bg-white/10" />
-        
-        <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Social Media Links</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="facebook" className="text-white">Facebook</Label>
-              <Input
-                id="facebook"
-                name="socialLinks.facebook"
-                value={contactInfo.socialLinks.facebook || ''}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
+          <Separator className="bg-white/10 my-8" />
+          
+          <div>
+            <h4 className="text-md font-['Poppins'] text-white mb-4">Social Media Links</h4>
             
-            <div className="space-y-2">
-              <Label htmlFor="twitter" className="text-white">Twitter</Label>
-              <Input
-                id="twitter"
-                name="socialLinks.twitter"
-                value={contactInfo.socialLinks.twitter || ''}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="instagram" className="text-white">Instagram</Label>
-              <Input
-                id="instagram"
-                name="socialLinks.instagram"
-                value={contactInfo.socialLinks.instagram || ''}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="linkedin" className="text-white">LinkedIn</Label>
-              <Input
-                id="linkedin"
-                name="socialLinks.linkedin"
-                value={contactInfo.socialLinks.linkedin || ''}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="youtube" className="text-white">YouTube</Label>
-              <Input
-                id="youtube"
-                name="socialLinks.youtube"
-                value={contactInfo.socialLinks.youtube || ''}
-                onChange={handleContactChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Facebook className="h-4 w-4 text-[#4267B2]" />
+                  <Label htmlFor="social-facebook" className="text-white">Facebook</Label>
+                </div>
+                <Input
+                  id="social-facebook"
+                  name="socialLinks.facebook"
+                  value={contactData.socialLinks.facebook || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://facebook.com/yourpage"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+                  <Label htmlFor="social-twitter" className="text-white">Twitter</Label>
+                </div>
+                <Input
+                  id="social-twitter"
+                  name="socialLinks.twitter"
+                  value={contactData.socialLinks.twitter || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://twitter.com/yourhandle"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Instagram className="h-4 w-4 text-[#E1306C]" />
+                  <Label htmlFor="social-instagram" className="text-white">Instagram</Label>
+                </div>
+                <Input
+                  id="social-instagram"
+                  name="socialLinks.instagram"
+                  value={contactData.socialLinks.instagram || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://instagram.com/yourprofile"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Youtube className="h-4 w-4 text-[#FF0000]" />
+                  <Label htmlFor="social-youtube" className="text-white">YouTube</Label>
+                </div>
+                <Input
+                  id="social-youtube"
+                  name="socialLinks.youtube"
+                  value={contactData.socialLinks.youtube || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://youtube.com/yourchannel"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Linkedin className="h-4 w-4 text-[#0077B5]" />
+                  <Label htmlFor="social-linkedin" className="text-white">LinkedIn</Label>
+                </div>
+                <Input
+                  id="social-linkedin"
+                  name="socialLinks.linkedin"
+                  value={contactData.socialLinks.linkedin || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://linkedin.com/in/yourprofile"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
             </div>
           </div>
         </div>

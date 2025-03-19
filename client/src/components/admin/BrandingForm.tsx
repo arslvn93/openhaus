@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Paintbrush, Image, FileText, Hash, Twitter } from "lucide-react";
 
-// Define interfaces based on the siteConfig structure
 interface SiteBranding {
   companyName: string;
   companyLogo: string;
@@ -30,32 +30,41 @@ interface BrandingFormProps {
 
 const BrandingForm: React.FC<BrandingFormProps> = ({ 
   initialData, 
-  initialMeta, 
+  initialMeta,
   saveData, 
   loading 
 }) => {
-  const [branding, setBranding] = useState<SiteBranding>(initialData);
-  const [metadata, setMetadata] = useState<SiteMetadata>(initialMeta);
+  const [brandingData, setBrandingData] = useState<SiteBranding>({
+    ...initialData
+  });
   
-  const handleBrandingChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const [metaData, setMetaData] = useState<SiteMetadata>({
+    ...initialMeta
+  });
+  
+  const handleBrandingChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setBranding({
-      ...branding,
+    setBrandingData({
+      ...brandingData,
       [name]: value
     });
   };
   
-  const handleMetaChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleMetaChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setMetadata({
-      ...metadata,
+    setMetaData({
+      ...metaData,
       [name]: value
     });
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    saveData(branding, metadata);
+    saveData(brandingData, metaData);
   };
   
   return (
@@ -63,155 +72,181 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
       <div className="space-y-6">
         <div>
           <h3 className="text-xl font-['Poppins'] text-white mb-4">Site Branding</h3>
-          <p className="text-white/60 mb-6">Update your site's branding elements including logo, colors, and core assets.</p>
+          <p className="text-white/60 mb-6">
+            Customize the branding elements of your website including logos, colors, and appearance.
+          </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="space-y-2">
               <Label htmlFor="companyName" className="text-white">Company Name</Label>
               <Input
                 id="companyName"
                 name="companyName"
-                value={branding.companyName}
+                value={brandingData.companyName}
                 onChange={handleBrandingChange}
+                placeholder="Your Real Estate Company"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="accentColor" className="text-white">Accent Color (HEX)</Label>
-              <div className="flex items-center space-x-2">
+              <Label htmlFor="accentColor" className="text-white">Accent Color</Label>
+              <div className="flex gap-2">
                 <Input
                   id="accentColor"
                   name="accentColor"
-                  value={branding.accentColor}
+                  value={brandingData.accentColor}
                   onChange={handleBrandingChange}
-                  className="bg-black/50 border-white/10 text-white"
+                  placeholder="#D9A566"
+                  className="bg-black/50 border-white/10 text-white flex-grow"
                 />
                 <div 
-                  className="w-10 h-10 rounded border border-white/10"
-                  style={{ backgroundColor: branding.accentColor }}
-                ></div>
+                  className="w-10 h-10 rounded border border-white/10 flex-none"
+                  style={{ backgroundColor: brandingData.accentColor || '#D9A566' }}
+                />
               </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="companyLogo" className="text-white">Company Logo URL</Label>
-              <Input
-                id="companyLogo"
-                name="companyLogo"
-                value={branding.companyLogo}
-                onChange={handleBrandingChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-              {branding.companyLogo && (
-                <div className="mt-2 p-2 border border-white/10 rounded-md bg-black/30 inline-block">
-                  <img 
-                    src={branding.companyLogo} 
-                    alt="Company Logo" 
-                    className="h-10 object-contain"
-                  />
-                </div>
-              )}
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="heroImage" className="text-white">Hero Image URL</Label>
-              <Input
-                id="heroImage"
-                name="heroImage"
-                value={branding.heroImage}
-                onChange={handleBrandingChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
-              {branding.heroImage && (
-                <div className="mt-2 border border-white/10 rounded-md overflow-hidden">
-                  <img 
-                    src={branding.heroImage} 
-                    alt="Hero Image" 
-                    className="w-full h-32 object-cover"
-                  />
-                </div>
-              )}
             </div>
           </div>
           
-          <div className="mt-6 space-y-2">
+          <div className="space-y-2 mb-6">
+            <Label htmlFor="companyLogo" className="text-white">Company Logo URL</Label>
+            <Input
+              id="companyLogo"
+              name="companyLogo"
+              value={brandingData.companyLogo}
+              onChange={handleBrandingChange}
+              placeholder="https://example.com/logo.png"
+              className="bg-black/50 border-white/10 text-white"
+            />
+            {brandingData.companyLogo && (
+              <div className="mt-2 p-3 bg-black/20 border border-white/10 rounded-md inline-block">
+                <img 
+                  src={brandingData.companyLogo} 
+                  alt="Company Logo" 
+                  className="max-h-20 max-w-full"
+                />
+              </div>
+            )}
+          </div>
+          
+          <div className="space-y-2 mb-6">
+            <Label htmlFor="heroImage" className="text-white">Hero Image URL</Label>
+            <Input
+              id="heroImage"
+              name="heroImage"
+              value={brandingData.heroImage}
+              onChange={handleBrandingChange}
+              placeholder="https://example.com/hero.jpg"
+              className="bg-black/50 border-white/10 text-white"
+            />
+            {brandingData.heroImage && (
+              <div className="mt-2 bg-black/30 border border-white/10 rounded-md overflow-hidden">
+                <div className="aspect-video relative">
+                  <img 
+                    src={brandingData.heroImage} 
+                    alt="Hero preview"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="space-y-2 mb-6">
             <Label htmlFor="footerText" className="text-white">Footer Text</Label>
             <Textarea
               id="footerText"
               name="footerText"
-              value={branding.footerText}
+              value={brandingData.footerText}
               onChange={handleBrandingChange}
+              placeholder="© 2025 Your Real Estate Company. All rights reserved."
               className="bg-black/50 border-white/10 text-white min-h-[80px]"
             />
           </div>
-        </div>
-        
-        <Separator className="bg-white/10" />
-        
-        <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">SEO & Metadata</h3>
-          <p className="text-white/60 mb-6">Optimize your site for search engines and social sharing.</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-white">Page Title</Label>
-              <Input
-                id="title"
-                name="title"
-                value={metadata.title}
-                onChange={handleMetaChange}
-                className="bg-black/50 border-white/10 text-white"
-              />
+          <Separator className="bg-white/10 my-8" />
+          
+          <div>
+            <h4 className="text-lg font-['Poppins'] text-white mb-4">SEO Metadata</h4>
+            <p className="text-white/60 mb-6">
+              Set up search engine optimization (SEO) metadata to improve your site's visibility in search results.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-white">Site Title</Label>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-[#D9A566]" />
+                  <Input
+                    id="title"
+                    name="title"
+                    value={metaData.title}
+                    onChange={handleMetaChange}
+                    placeholder="24 Kylemount Ave | Luxury Open House"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="twitterHandle" className="text-white">Twitter Handle</Label>
+                <div className="flex items-center gap-2">
+                  <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+                  <Input
+                    id="twitterHandle"
+                    name="twitterHandle"
+                    value={metaData.twitterHandle}
+                    onChange={handleMetaChange}
+                    placeholder="@yourrealestatecompany"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+              </div>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="twitterHandle" className="text-white">Twitter Handle</Label>
-              <Input
-                id="twitterHandle"
-                name="twitterHandle"
-                value={metadata.twitterHandle}
+            <div className="space-y-2 mb-6">
+              <Label htmlFor="description" className="text-white">Meta Description</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={metaData.description}
                 onChange={handleMetaChange}
-                className="bg-black/50 border-white/10 text-white"
+                placeholder="Explore this stunning property at our exclusive open house event..."
+                className="bg-black/50 border-white/10 text-white min-h-[80px]"
               />
+              <p className="text-white/40 text-xs">
+                Aim for 150-160 characters for optimal SEO performance
+              </p>
             </div>
-          </div>
-          
-          <div className="mt-4 space-y-2">
-            <Label htmlFor="description" className="text-white">Meta Description</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={metadata.description}
-              onChange={handleMetaChange}
-              className="bg-black/50 border-white/10 text-white min-h-[80px]"
-            />
-            <p className="text-xs text-white/40 mt-1">
-              Recommended length: 150-160 characters for optimal search engine display.
-            </p>
-          </div>
-          
-          <div className="mt-4 space-y-2">
-            <Label htmlFor="ogImage" className="text-white">Social Sharing Image URL</Label>
-            <Input
-              id="ogImage"
-              name="ogImage"
-              value={metadata.ogImage}
-              onChange={handleMetaChange}
-              className="bg-black/50 border-white/10 text-white"
-            />
-            {metadata.ogImage && (
-              <div className="mt-2 border border-white/10 rounded-md overflow-hidden">
-                <img 
-                  src={metadata.ogImage} 
-                  alt="Social Image" 
-                  className="w-full h-32 object-cover"
+            
+            <div className="space-y-2 mb-6">
+              <Label htmlFor="ogImage" className="text-white">Social Sharing Image URL</Label>
+              <div className="flex items-center gap-2">
+                <Image className="h-4 w-4 text-[#D9A566]" />
+                <Input
+                  id="ogImage"
+                  name="ogImage"
+                  value={metaData.ogImage}
+                  onChange={handleMetaChange}
+                  placeholder="https://example.com/social-share.jpg"
+                  className="bg-black/50 border-white/10 text-white"
                 />
               </div>
-            )}
-            <p className="text-xs text-white/40 mt-1">
-              Recommended size: 1200 x 630 pixels for optimal display on social platforms.
-            </p>
+              {metaData.ogImage && (
+                <div className="mt-2 bg-black/30 border border-white/10 rounded-md overflow-hidden">
+                  <div className="aspect-[1.91/1] relative">
+                    <img 
+                      src={metaData.ogImage} 
+                      alt="Social preview"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-2 bg-black/50">
+                    <p className="text-white/80 text-xs">1200×630 is the recommended size for social sharing</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
@@ -221,7 +256,7 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
             disabled={loading}
             className="bg-[#D9A566] hover:bg-[#D9A566]/80 text-black"
           >
-            {loading ? "Saving..." : "Save Branding & SEO"}
+            {loading ? "Saving..." : "Save Branding Settings"}
           </Button>
         </div>
       </div>
