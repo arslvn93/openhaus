@@ -360,7 +360,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Walk-in pantry</span>
             </div>
           </div>
-          <div className="image">
+          <div className="image" style={{top: '50%', zIndex: 10}}>
             {/* Placeholder until image is loaded */}
             <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
@@ -398,7 +398,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Soaker tub</span>
             </div>
           </div>
-          <div className="image">
+          <div className="image" style={{top: '50%', zIndex: 10}}>
             {/* Placeholder until image is loaded */}
             <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
@@ -436,7 +436,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Garden view</span>
             </div>
           </div>
-          <div className="image">
+          <div className="image" style={{top: '50%', zIndex: 10}}>
             {/* Placeholder until image is loaded */}
             <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
