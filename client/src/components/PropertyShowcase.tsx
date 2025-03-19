@@ -6,18 +6,10 @@ const PropertyShowcase = () => {
   const scrollBtnRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<any>(null);
   const loaderVideoRef = useRef<HTMLDivElement>(null);
-  
-  // Define all section images to preload
-  const sectionImages = {
-    hero: 'https://www.yudiz.com/codepen/studio-r/bg-living.jpg', // Hero section
-    kitchen: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-    bedroom: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-    office: 'https://images.unsplash.com/photo-1536954575540-5e96d3c28996?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80'
-  };
 
   // Initialize ScrollMagic controller and scenes
   useEffect(() => {
-    // Preload hero images and video and all section images
+    // Preload hero images and video
     const preloadMedia = async () => {
       const heroVideo = 'https://www.yudiz.com/codepen/studio-r/bg-video.mp4';
       const heroImage = siteBranding.heroImage;
@@ -25,7 +17,7 @@ const PropertyShowcase = () => {
       // Create an array of promises for all the media we want to preload
       const preloadPromises = [];
       
-      // Preload hero image
+      // Preload images (if any)
       if (heroImage) {
         const imagePromise = new Promise((resolve) => {
           const img = new Image();
@@ -36,22 +28,8 @@ const PropertyShowcase = () => {
         preloadPromises.push(imagePromise);
       }
       
-      // Preload all section images (crucial for smooth scrolling)
-      Object.values(sectionImages).forEach(imageSrc => {
-        const imagePromise = new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve(true);
-          img.onerror = () => resolve(false);
-          img.src = imageSrc;
-        });
-        preloadPromises.push(imagePromise);
-      });
-      
-      console.log('Preloading all images...');
-      
-      // Wait for all media to load before showing anything
+      // Wait for all media to load
       await Promise.all(preloadPromises);
-      console.log('All images preloaded successfully');
       setImagesLoaded(true);
       
       // Properly initialize ScrollMagic once media is loaded
@@ -360,26 +338,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Walk-in pantry</span>
             </div>
           </div>
-          <div className="image" style={{top: '50%', zIndex: 10}}>
-            {/* Placeholder until image is loaded */}
-            <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
-                <defs>
-                  <radialGradient id="gradient2" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                    <stop offset="0%" stopColor="#222222" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#000000" stopOpacity="0.7" />
-                  </radialGradient>
-                </defs>
-                <rect x="0" y="0" width="100" height="100" fill="url(#gradient2)" />
-              </svg>
-            </div>
-            {/* Preloaded actual image */}
-            <img 
-              src={sectionImages.kitchen} 
-              alt="Gourmet Kitchen" 
-              className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
-          </div>
+          <div className="image"></div>
         </div>
       </div>
       
@@ -398,26 +357,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Soaker tub</span>
             </div>
           </div>
-          <div className="image" style={{top: '50%', zIndex: 10}}>
-            {/* Placeholder until image is loaded */}
-            <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
-                <defs>
-                  <radialGradient id="gradient3" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                    <stop offset="0%" stopColor="#222222" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#000000" stopOpacity="0.7" />
-                  </radialGradient>
-                </defs>
-                <rect x="0" y="0" width="100" height="100" fill="url(#gradient3)" />
-              </svg>
-            </div>
-            {/* Preloaded actual image */}
-            <img 
-              src={sectionImages.bedroom} 
-              alt="Primary Suite" 
-              className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
-          </div>
+          <div className="image"></div>
         </div>
       </div>
       
@@ -436,26 +376,7 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Garden view</span>
             </div>
           </div>
-          <div className="image" style={{top: '50%', zIndex: 10}}>
-            {/* Placeholder until image is loaded */}
-            <div className={`h-full w-full absolute top-0 left-0 bg-black transition-opacity duration-1000 ${imagesLoaded ? 'opacity-0' : 'opacity-100'}`}>
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
-                <defs>
-                  <radialGradient id="gradient4" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                    <stop offset="0%" stopColor="#222222" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#000000" stopOpacity="0.7" />
-                  </radialGradient>
-                </defs>
-                <rect x="0" y="0" width="100" height="100" fill="url(#gradient4)" />
-              </svg>
-            </div>
-            {/* Preloaded actual image */}
-            <img 
-              src={sectionImages.office} 
-              alt="Home Office" 
-              className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
-          </div>
+          <div className="image"></div>
         </div>
       </div>
     </section>

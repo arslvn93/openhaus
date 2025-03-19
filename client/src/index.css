@@ -149,26 +149,18 @@
 
 #section1 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 #section2 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 #section3 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 #section4 {
   background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
-  background-size: cover;
-  background-position: center;
 }
 
 .pinWrapper {
@@ -189,15 +181,17 @@
   top: 0%;
   left: 0%;
   position: absolute;
+  background-size: cover;
+  background-position: center center;
   transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform-origin: center;
-  z-index: 10;
+  z-index: 8888;
   overflow: hidden;
   border-radius: 0;
 }
 
 .image:not(#loaderVideo) {
-  top: 50%; /* Position in the middle */
+  top: -50%;
   width: 500px;
   height: 500px;
   left: auto;
@@ -219,7 +213,17 @@
   left: 0;
 }
 
-/* No background images on image divs - using img elements instead */
+#section2 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+}
+
+#section3 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+}
+
+#section4 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+}
 
 /* Section Text */
 .text {
