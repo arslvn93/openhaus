@@ -11,13 +11,24 @@ const PropertyShowcase = () => {
   useEffect(() => {
     // Preload hero images and video
     const preloadMedia = async () => {
+      console.log("Preloading all images...");
+      
+      // Define all images to preload, including hero video and section backgrounds
       const heroVideo = 'https://www.yudiz.com/codepen/studio-r/bg-video.mp4';
       const heroImage = siteBranding.heroImage;
+      
+      // Section background images
+      const sectionImages = [
+        'https://www.yudiz.com/codepen/studio-r/bg-living.jpg',
+        'https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg',
+        'https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg',
+        'https://www.yudiz.com/codepen/studio-r/bg-office.jpg'
+      ];
       
       // Create an array of promises for all the media we want to preload
       const preloadPromises = [];
       
-      // Preload images (if any)
+      // Preload hero image if any
       if (heroImage) {
         const imagePromise = new Promise((resolve) => {
           const img = new Image();
@@ -28,8 +39,21 @@ const PropertyShowcase = () => {
         preloadPromises.push(imagePromise);
       }
       
+      // Preload all section background images
+      sectionImages.forEach(imgSrc => {
+        const imagePromise = new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          // Add cache-busting parameter to force full reload
+          img.src = `${imgSrc}?v=${new Date().getTime()}`;
+        });
+        preloadPromises.push(imagePromise);
+      });
+      
       // Wait for all media to load
       await Promise.all(preloadPromises);
+      console.log("All images preloaded successfully");
       setImagesLoaded(true);
       
       // Properly initialize ScrollMagic once media is loaded
@@ -190,7 +214,12 @@ const PropertyShowcase = () => {
   return (
     <section id="property" className="events-page">
       {/* Hero Section */}
-      <div id="section1" className="event">
+      <div id="section1" className={`event ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ 
+        transition: 'opacity 0.5s ease-in-out',
+        backgroundImage: `url(https://www.yudiz.com/codepen/studio-r/bg-living.jpg?v=${new Date().getTime()})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
@@ -323,7 +352,10 @@ const PropertyShowcase = () => {
       </div>
       
       {/* Room Sections with minimalist design */}
-      <div id="section2" className="event">
+      <div id="section2" className={`event ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ 
+        transition: 'opacity 0.5s ease-in-out',
+        backgroundImage: 'none' 
+      }}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">CHEF'S DREAM</span>
@@ -338,11 +370,35 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Walk-in pantry</span>
             </div>
           </div>
-          <div className="image"></div>
+          <div className="image">
+            {/* Manual background image with inline style (better performance) */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-cover bg-center"
+              style={{ 
+                backgroundImage: `url(https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg?v=${new Date().getTime()})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: imagesLoaded ? 1 : 0,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+            
+            {/* Placeholder gradient while loading */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-gradient-to-r from-neutral-900 to-neutral-800"
+              style={{ 
+                opacity: imagesLoaded ? 0 : 1,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+          </div>
         </div>
       </div>
       
-      <div id="section3" className="event">
+      <div id="section3" className={`event ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ 
+        transition: 'opacity 0.5s ease-in-out',
+        backgroundImage: 'none' 
+      }}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">MASTER RETREAT</span>
@@ -357,11 +413,35 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Soaker tub</span>
             </div>
           </div>
-          <div className="image"></div>
+          <div className="image">
+            {/* Manual background image with inline style (better performance) */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-cover bg-center"
+              style={{ 
+                backgroundImage: `url(https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg?v=${new Date().getTime()})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: imagesLoaded ? 1 : 0,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+            
+            {/* Placeholder gradient while loading */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-gradient-to-r from-neutral-900 to-neutral-800"
+              style={{ 
+                opacity: imagesLoaded ? 0 : 1,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+          </div>
         </div>
       </div>
       
-      <div id="section4" className="event">
+      <div id="section4" className={`event ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`} style={{ 
+        transition: 'opacity 0.5s ease-in-out',
+        backgroundImage: 'none' 
+      }}>
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">WORK FROM HOME</span>
@@ -376,7 +456,28 @@ const PropertyShowcase = () => {
               <span className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">Garden view</span>
             </div>
           </div>
-          <div className="image"></div>
+          <div className="image">
+            {/* Manual background image with inline style (better performance) */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-cover bg-center"
+              style={{ 
+                backgroundImage: `url(https://www.yudiz.com/codepen/studio-r/bg-office.jpg?v=${new Date().getTime()})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: imagesLoaded ? 1 : 0,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+            
+            {/* Placeholder gradient while loading */}
+            <div 
+              className="h-full w-full absolute inset-0 bg-gradient-to-r from-neutral-900 to-neutral-800"
+              style={{ 
+                opacity: imagesLoaded ? 0 : 1,
+                transition: 'opacity 0.5s ease-in-out'
+              }}
+            ></div>
+          </div>
         </div>
       </div>
     </section>
