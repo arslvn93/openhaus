@@ -147,20 +147,9 @@
   backdrop-filter: blur(2px);
 }
 
-#section1 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
-}
-
-#section2 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
-}
-
-#section3 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
-}
-
-#section4 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+/* No background images on sections - we're using image components now */
+#section1, #section2, #section3, #section4 {
+  background: #000;
 }
 
 .pinWrapper {
@@ -213,17 +202,7 @@
   left: 0;
 }
 
-#section2 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
-}
-
-#section3 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
-}
-
-#section4 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
-}
+/* No background images on image divs - using img elements instead */
 
 /* Section Text */
 .text {
