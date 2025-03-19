@@ -147,9 +147,28 @@
   backdrop-filter: blur(2px);
 }
 
-/* No background images on sections - we're using image components now */
-#section1, #section2, #section3, #section4 {
-  background: #000;
+#section1 {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+#section2 {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+#section3 {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+#section4 {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 .pinWrapper {
@@ -170,17 +189,15 @@
   top: 0%;
   left: 0%;
   position: absolute;
-  background-size: cover;
-  background-position: center center;
   transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
   transform-origin: center;
-  z-index: 8888;
+  z-index: 10;
   overflow: hidden;
   border-radius: 0;
 }
 
 .image:not(#loaderVideo) {
-  top: -50%;
+  top: 50%; /* Position in the middle */
   width: 500px;
   height: 500px;
   left: auto;

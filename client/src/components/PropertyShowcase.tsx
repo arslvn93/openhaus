@@ -212,7 +212,7 @@ const PropertyShowcase = () => {
   return (
     <section id="property" className="events-page">
       {/* Hero Section */}
-      <div id="section1" className="event" style={{backgroundImage: `url(${sectionImages.hero})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+      <div id="section1" className="event">
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
@@ -345,7 +345,7 @@ const PropertyShowcase = () => {
       </div>
       
       {/* Room Sections with minimalist design */}
-      <div id="section2" className="event" style={{background: '#000'}}>
+      <div id="section2" className="event">
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">CHEF'S DREAM</span>
@@ -383,7 +383,7 @@ const PropertyShowcase = () => {
         </div>
       </div>
       
-      <div id="section3" className="event" style={{background: '#000'}}>
+      <div id="section3" className="event">
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">MASTER RETREAT</span>
@@ -421,7 +421,7 @@ const PropertyShowcase = () => {
         </div>
       </div>
       
-      <div id="section4" className="event" style={{background: '#000'}}>
+      <div id="section4" className="event">
         <div className="pinWrapper">
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">WORK FROM HOME</span>
