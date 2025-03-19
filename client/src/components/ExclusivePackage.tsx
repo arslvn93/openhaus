@@ -61,7 +61,7 @@ const ExclusivePackage = () => {
       {/* Sticky LIMITED OPPORTUNITY Banner - appears when scrolled past the original banner */}
       {showSticky && (
         <div 
-          className="fixed w-full bg-[#D9A566] text-white py-3 z-40 shadow-md transition-all duration-300"
+          className="fixed w-full bg-[#D9A566] text-white py-3 z-40 shadow-md transition-all duration-300 hidden md:block"
           style={{ top: `${headerHeight}px` }}
         >
           <div className="container mx-auto px-4 text-center font-['Poppins'] text-sm md:text-base">
@@ -85,7 +85,7 @@ const ExclusivePackage = () => {
         </div>
         
         {/* Original LIMITED OPPORTUNITY Banner */}
-        <div className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base relative z-10">
+        <div className="w-full bg-[#D9A566] text-white py-3 mb-16 text-center font-['Poppins'] text-sm md:text-base relative z-10 hidden md:block">
           <div className="container mx-auto px-4">
             <span className="font-bold">LIMITED OPPORTUNITY:</span> Receive a detailed neighborhood analysis with your exclusive home package!
           </div>
@@ -97,7 +97,7 @@ const ExclusivePackage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-16 md:mt-0 mt-8"
           >
             <h2 className="text-3xl md:text-5xl font-['Poppins'] text-white uppercase mb-6 tracking-wider">
               Your Exclusive Home Package
