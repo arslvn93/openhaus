@@ -62,7 +62,7 @@ const AdminDashboard = () => {
     });
   };
   
-  const saveConfig = async (newConfig: any, section: string) => {
+  const saveConfig = async (newConfig: Record<string, any>, section: string) => {
     try {
       setLoading(true);
       
@@ -191,7 +191,7 @@ const AdminDashboard = () => {
             <TabsContent value="property">
               <PropertyForm
                 initialData={currentConfig.property}
-                saveData={(data) => saveConfig({ property: data }, 'Property')}
+                saveData={(data: any) => saveConfig({ property: data }, 'Property')}
                 loading={loading}
               />
             </TabsContent>
@@ -200,7 +200,7 @@ const AdminDashboard = () => {
               <FeaturesForm
                 initialData={currentConfig.propertyFeatures}
                 initialSections={currentConfig.homeShowcaseSections}
-                saveData={(data, sections) => saveConfig({ 
+                saveData={(data: any, sections: any) => saveConfig({ 
                   propertyFeatures: data, 
                   homeShowcaseSections: sections 
                 }, 'Features')}
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
             <TabsContent value="gallery">
               <GalleryForm
                 initialData={currentConfig.galleryImages}
-                saveData={(data) => saveConfig({ galleryImages: data }, 'Gallery')}
+                saveData={(data: any) => saveConfig({ galleryImages: data }, 'Gallery')}
                 loading={loading}
               />
             </TabsContent>
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
             <TabsContent value="testimonials">
               <TestimonialsForm
                 initialData={currentConfig.testimonials}
-                saveData={(data) => saveConfig({ testimonials: data }, 'Testimonials')}
+                saveData={(data: any) => saveConfig({ testimonials: data }, 'Testimonials')}
                 loading={loading}
               />
             </TabsContent>
@@ -228,7 +228,7 @@ const AdminDashboard = () => {
               <NeighborhoodForm
                 initialStats={currentConfig.neighborhoodStats}
                 initialAmenities={currentConfig.neighborhoodAmenities}
-                saveData={(stats, amenities) => saveConfig({ 
+                saveData={(stats: any, amenities: any) => saveConfig({ 
                   neighborhoodStats: stats, 
                   neighborhoodAmenities: amenities 
                 }, 'Neighborhood')}

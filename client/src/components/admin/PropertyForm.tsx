@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { X, Plus } from "lucide-react";
 
-// Define the property interface based on the siteConfig structure
 interface PropertyData {
   address: string;
   price: string;
@@ -27,45 +27,54 @@ interface PropertyFormProps {
   loading: boolean;
 }
 
-const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, loading }) => {
-  const [property, setProperty] = useState<PropertyData>(initialData);
-  const [mainFeatures, setMainFeatures] = useState<string>(initialData.mainFeatures.join('\n'));
+const PropertyForm: React.FC<PropertyFormProps> = ({ 
+  initialData, 
+  saveData, 
+  loading 
+}) => {
+  const [propertyData, setPropertyData] = useState<PropertyData>(initialData);
+  const [newFeature, setNewFeature] = useState('');
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    // Handle numeric inputs
-    if (['beds', 'baths', 'sqft', 'yearBuilt'].includes(name)) {
-      setProperty({
-        ...property,
-        [name]: parseFloat(value) || 0
+    // Handle numeric values
+    if (name === 'beds' || name === 'baths' || name === 'sqft' || name === 'yearBuilt') {
+      setPropertyData({
+        ...propertyData,
+        [name]: parseInt(value) || 0
       });
     } else {
-      setProperty({
-        ...property,
+      setPropertyData({
+        ...propertyData,
         [name]: value
       });
     }
   };
   
-  const handleMainFeaturesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMainFeatures(e.target.value);
+  const addFeature = () => {
+    if (newFeature.trim() === '') return;
+    
+    setPropertyData({
+      ...propertyData,
+      mainFeatures: [...propertyData.mainFeatures, newFeature.trim()]
+    });
+    setNewFeature('');
+  };
+  
+  const removeFeature = (index: number) => {
+    const updatedFeatures = [...propertyData.mainFeatures];
+    updatedFeatures.splice(index, 1);
+    
+    setPropertyData({
+      ...propertyData,
+      mainFeatures: updatedFeatures
+    });
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Split text area content by line breaks and filter empty lines
-    const featuresArray = mainFeatures
-      .split('\n')
-      .map(feature => feature.trim())
-      .filter(feature => feature.length > 0);
-    
-    // Submit the updated data
-    saveData({
-      ...property,
-      mainFeatures: featuresArray
-    });
+    saveData(propertyData);
   };
   
   return (
@@ -73,7 +82,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
       <div className="space-y-6">
         <div>
           <h3 className="text-xl font-['Poppins'] text-white mb-4">Property Details</h3>
-          <p className="text-white/60 mb-6">Edit the core information about your property listing.</p>
+          <p className="text-white/60 mb-6">
+            Update the core details about your property including price, size, features and description.
+          </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -81,8 +92,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
               <Input
                 id="address"
                 name="address"
-                value={property.address}
-                onChange={handleChange}
+                value={propertyData.address}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -92,8 +103,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
               <Input
                 id="price"
                 name="price"
-                value={property.price}
-                onChange={handleChange}
+                value={propertyData.price}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -104,8 +115,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
                 id="beds"
                 name="beds"
                 type="number"
-                value={property.beds}
-                onChange={handleChange}
+                value={propertyData.beds}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -116,8 +127,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
                 id="baths"
                 name="baths"
                 type="number"
-                value={property.baths}
-                onChange={handleChange}
+                value={propertyData.baths}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -128,8 +139,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
                 id="sqft"
                 name="sqft"
                 type="number"
-                value={property.sqft}
-                onChange={handleChange}
+                value={propertyData.sqft}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -139,8 +150,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
               <Input
                 id="lotSize"
                 name="lotSize"
-                value={property.lotSize}
-                onChange={handleChange}
+                value={propertyData.lotSize}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -151,8 +162,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
                 id="yearBuilt"
                 name="yearBuilt"
                 type="number"
-                value={property.yearBuilt}
-                onChange={handleChange}
+                value={propertyData.yearBuilt}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -162,26 +173,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
               <Input
                 id="propertyType"
                 name="propertyType"
-                value={property.propertyType}
-                onChange={handleChange}
+                value={propertyData.propertyType}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
           </div>
-        </div>
-        
-        <Separator className="bg-white/10" />
-        
-        <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Property Description</h3>
           
-          <div className="space-y-2">
-            <Label htmlFor="description" className="text-white">Full Description</Label>
+          <div className="mt-6 space-y-2">
+            <Label htmlFor="description" className="text-white">Property Description</Label>
             <Textarea
               id="description"
               name="description"
-              value={property.description}
-              onChange={handleChange}
+              value={propertyData.description}
+              onChange={handleInputChange}
               className="bg-black/50 border-white/10 text-white min-h-[150px]"
             />
           </div>
@@ -190,18 +195,41 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
         <Separator className="bg-white/10" />
         
         <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Property Features</h3>
-          <p className="text-white/60 mb-4">Enter each feature on a new line. These will be displayed as bullet points.</p>
+          <h3 className="text-xl font-['Poppins'] text-white mb-4">Key Features</h3>
           
-          <div className="space-y-2">
-            <Label htmlFor="mainFeatures" className="text-white">Main Features</Label>
-            <Textarea
-              id="mainFeatures"
-              value={mainFeatures}
-              onChange={handleMainFeaturesChange}
-              className="bg-black/50 border-white/10 text-white min-h-[150px]"
-              placeholder="Enter each feature on a new line"
+          <div className="flex flex-wrap gap-2 mb-4">
+            {propertyData.mainFeatures.map((feature, index) => (
+              <div 
+                key={index} 
+                className="bg-black/30 border border-white/10 rounded-full px-3 py-1 flex items-center"
+              >
+                <span className="text-white mr-2">{feature}</span>
+                <button 
+                  type="button" 
+                  onClick={() => removeFeature(index)}
+                  className="text-white/60 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex gap-2">
+            <Input
+              placeholder="Add a new feature..."
+              value={newFeature}
+              onChange={(e) => setNewFeature(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+              className="bg-black/50 border-white/10 text-white"
             />
+            <Button 
+              type="button" 
+              onClick={addFeature}
+              className="bg-[#D9A566] hover:bg-[#D9A566]/80 text-black"
+            >
+              <Plus className="h-4 w-4 mr-1" /> Add
+            </Button>
           </div>
         </div>
         
@@ -210,20 +238,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
         <div>
           <h3 className="text-xl font-['Poppins'] text-white mb-4">Hero Section</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="heroImage" className="text-white">Hero Image URL</Label>
               <Input
                 id="heroImage"
                 name="heroImage"
-                value={property.heroImage}
-                onChange={handleChange}
+                value={propertyData.heroImage}
+                onChange={handleInputChange}
                 className="bg-black/50 border-white/10 text-white"
               />
-              {property.heroImage && (
+              {propertyData.heroImage && (
                 <div className="mt-2 border border-white/10 rounded-md overflow-hidden">
                   <img 
-                    src={property.heroImage} 
+                    src={propertyData.heroImage} 
                     alt="Hero Preview" 
                     className="w-full h-32 object-cover"
                   />
@@ -233,12 +261,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ initialData, saveData, load
             
             <div className="space-y-2">
               <Label htmlFor="heroCaption" className="text-white">Hero Caption</Label>
-              <Textarea
+              <Input
                 id="heroCaption"
                 name="heroCaption"
-                value={property.heroCaption}
-                onChange={handleChange}
-                className="bg-black/50 border-white/10 text-white min-h-[100px]"
+                value={propertyData.heroCaption}
+                onChange={handleInputChange}
+                className="bg-black/50 border-white/10 text-white"
               />
             </div>
           </div>
