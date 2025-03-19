@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import LandingPage from "@/components/LandingPage";
 import NotFound from "@/pages/not-found";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 
 function Router() {
   return (

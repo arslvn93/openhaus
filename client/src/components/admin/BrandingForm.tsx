@@ -28,7 +28,12 @@ interface BrandingFormProps {
   loading: boolean;
 }
 
-const BrandingForm: React.FC<BrandingFormProps> = ({ initialData, initialMeta, saveData, loading }) => {
+const BrandingForm: React.FC<BrandingFormProps> = ({ 
+  initialData, 
+  initialMeta, 
+  saveData, 
+  loading 
+}) => {
   const [branding, setBranding] = useState<SiteBranding>(initialData);
   const [metadata, setMetadata] = useState<SiteMetadata>(initialMeta);
   
