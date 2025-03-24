@@ -119,11 +119,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Updating key: ${key}`);
         
         // Convert the config data to a string representation
-        const configString = JSON.stringify(configData, null, 2)
-          // Replace double quotes around property names with nothing
-          .replace(/"([^"]+)":/g, '$1:')
-          // Add appropriate spacing
-          .replace(/\n/g, '\n  ');
+        // Ensure proper handling of string values by using a helper function
+        const ensureProperJsValue = (obj: any) => {
+          if (!obj || typeof obj !== 'object') return obj;
+          
+          Object.keys(obj).forEach(k => {
+            // Recursively process nested objects
+            if (obj[k] && typeof obj[k] === 'object' && !Array.isArray(obj[k])) {
+              obj[k] = ensureProperJsValue(obj[k]);
+            } 
+            // Handle string values with special formatting
+            else if (typeof obj[k] === 'string') {
+              // Ensure string values include quotes in the final output
+              obj[k] = obj[k].toString();
+            }
+          });
+          
+          return obj;
+        };
+        
+        // Process the data to ensure proper string handling for JS format
+        const processedData = ensureProperJsValue(JSON.parse(JSON.stringify(configData)));
+        
+        // Format the data as JavaScript object notation
+        // This is a more reliable approach than using regex on JSON.stringify
+        const formatValue = (val: any, indent = 2): string => {
+          if (val === null) return 'null';
+          if (val === undefined) return 'undefined';
+          
+          if (typeof val === 'string') {
+            // Strings get double quotes
+            return `"${val.replace(/"/g, '\\"')}"`;
+          }
+          
+          if (typeof val === 'number' || typeof val === 'boolean') {
+            // Numbers and booleans are printed as-is
+            return String(val);
+          }
+          
+          if (Array.isArray(val)) {
+            // Arrays get formatted with indentation
+            if (val.length === 0) return '[]';
+            
+            const innerIndent = ' '.repeat(indent + 2);
+            const items = val.map(item => 
+              `${innerIndent}${formatValue(item, indent + 2)}`
+            ).join(',\n');
+            
+            return `[\n${items}\n${' '.repeat(indent)}]`;
+          }
+          
+          if (typeof val === 'object') {
+            // Objects get formatted with indentation
+            const keys = Object.keys(val);
+            if (keys.length === 0) return '{}';
+            
+            const innerIndent = ' '.repeat(indent + 2);
+            const items = keys.map(key => 
+              `${innerIndent}${key}: ${formatValue(val[key], indent + 2)}`
+            ).join(',\n');
+            
+            return `{\n${items}\n${' '.repeat(indent)}}`;
+          }
+          
+          // Fallback
+          return String(val);
+        };
+        
+        const configString = formatValue(processedData, 2);
         
         // Create a regex to find the export declaration for this property
         const exportRegex = new RegExp(`export const ${key} = ([\\s\\S]*?);(\\n|\\r\\n)`, 'g');
