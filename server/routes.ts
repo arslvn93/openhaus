@@ -105,117 +105,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const configFilePath = path.resolve('./client/src/config/siteConfig.js');
       console.log(`Config file path: ${configFilePath}`);
       
-      // Read the current file
-      let configFileContent = fs.readFileSync(configFilePath, 'utf8');
+      // Create a completely new configuration file with all the updated values
+      // This is safer than doing regex replacements on the existing file
       
-      // Create a backup of the original file
-      const backupPath = `${configFilePath}.backup`;
-      fs.writeFileSync(backupPath, configFileContent);
-      console.log(`Created backup at: ${backupPath}`);
+      // First, get all existing configs from the module
+      let allConfigs: Record<string, any> = {};
       
-      // For each key in config, update the corresponding export in the file
-      Object.keys(config).forEach(key => {
-        const configData = config[key];
-        console.log(`Updating key: ${key}`);
+      try {
+        // Directly load the module to get the latest values
+        // This avoids any issues with regex parsing
+        const configModule = await import(`${process.cwd()}/client/src/config/siteConfig.js`);
         
-        // Convert the config data to a string representation
-        // Ensure proper handling of string values by using a helper function
-        const ensureProperJsValue = (obj: any) => {
-          if (!obj || typeof obj !== 'object') return obj;
-          
-          Object.keys(obj).forEach(k => {
-            // Recursively process nested objects
-            if (obj[k] && typeof obj[k] === 'object' && !Array.isArray(obj[k])) {
-              obj[k] = ensureProperJsValue(obj[k]);
-            } 
-            // Handle string values with special formatting
-            else if (typeof obj[k] === 'string') {
-              // Ensure string values include quotes in the final output
-              obj[k] = obj[k].toString();
-            }
-          });
-          
-          return obj;
-        };
+        // Get all exports from the module
+        for (const key of Object.keys(configModule)) {
+          if (key !== '__esModule') { // Skip the __esModule marker
+            allConfigs[key] = configModule[key];
+          }
+        }
         
-        // Process the data to ensure proper string handling for JS format
-        const processedData = ensureProperJsValue(JSON.parse(JSON.stringify(configData)));
+        // Override with the new values
+        for (const key of Object.keys(config)) {
+          allConfigs[key] = config[key];
+        }
+      } catch (err) {
+        console.error("Error loading existing config:", err);
+        // If we can't load the module, just use the provided config
+        allConfigs = { ...config };
+      }
+      
+      // Read the current file for backup purposes
+      let originalContent = "";
+      try {
+        originalContent = fs.readFileSync(configFilePath, 'utf8');
         
-        // Format the data as JavaScript object notation
-        // This is a more reliable approach than using regex on JSON.stringify
-        const formatValue = (val: any, indent = 2): string => {
-          if (val === null) return 'null';
-          if (val === undefined) return 'undefined';
-          
-          if (typeof val === 'string') {
-            // Strings get double quotes
-            return `"${val.replace(/"/g, '\\"')}"`;
-          }
-          
-          if (typeof val === 'number' || typeof val === 'boolean') {
-            // Numbers and booleans are printed as-is
-            return String(val);
-          }
-          
-          if (Array.isArray(val)) {
-            // Arrays get formatted with indentation
-            if (val.length === 0) return '[]';
-            
-            const innerIndent = ' '.repeat(indent + 2);
-            const items = val.map(item => 
-              `${innerIndent}${formatValue(item, indent + 2)}`
-            ).join(',\n');
-            
-            return `[\n${items}\n${' '.repeat(indent)}]`;
-          }
-          
-          if (typeof val === 'object') {
-            // Objects get formatted with indentation
-            const keys = Object.keys(val);
-            if (keys.length === 0) return '{}';
-            
-            const innerIndent = ' '.repeat(indent + 2);
-            const items = keys.map(key => 
-              `${innerIndent}${key}: ${formatValue(val[key], indent + 2)}`
-            ).join(',\n');
-            
-            return `{\n${items}\n${' '.repeat(indent)}}`;
-          }
-          
-          // Fallback
+        // Create a backup of the original file
+        const backupPath = `${configFilePath}.backup`;
+        fs.writeFileSync(backupPath, originalContent);
+        console.log(`Created backup at: ${backupPath}`);
+      } catch (err) {
+        console.warn("Could not create backup, file might not exist yet:", err);
+      }
+      
+      // Helper function to format a value as a JS string
+      const formatValue = (val: any, indent = 2): string => {
+        if (val === null) return 'null';
+        if (val === undefined) return 'undefined';
+        
+        if (typeof val === 'string') {
+          return `"${val.replace(/"/g, '\\"')}"`;
+        }
+        
+        if (typeof val === 'number' || typeof val === 'boolean') {
           return String(val);
-        };
-        
-        const configString = formatValue(processedData, 2);
-        
-        // Create a regex to find the export declaration for this property
-        const exportRegex = new RegExp(`export const ${key} = ([\\s\\S]*?);(\\n|\\r\\n)`, 'g');
-        
-        // Check if the regex matched anything
-        const matched = exportRegex.test(configFileContent);
-        if (!matched) {
-          console.warn(`Warning: Could not find export for key: ${key}`);
-          // Reset lastIndex because test() moved it
-          exportRegex.lastIndex = 0; 
         }
         
-        // Replace the export with the new config
-        const newContent = configFileContent.replace(
-          exportRegex, 
-          `export const ${key} = ${configString};\n`
-        );
-        
-        // Check if replacement happened
-        if (newContent === configFileContent) {
-          console.warn(`Warning: No changes made for key: ${key}`);
-        } else {
-          configFileContent = newContent;
-          console.log(`Successfully updated key: ${key}`);
+        if (Array.isArray(val)) {
+          if (val.length === 0) return '[]';
+          
+          const innerIndent = ' '.repeat(indent + 2);
+          const items = val.map(item => 
+            `${innerIndent}${formatValue(item, indent + 2)}`
+          ).join(',\n');
+          
+          return `[\n${items}\n${' '.repeat(indent)}]`;
         }
-      });
+        
+        if (typeof val === 'object') {
+          const keys = Object.keys(val);
+          if (keys.length === 0) return '{}';
+          
+          const innerIndent = ' '.repeat(indent + 2);
+          const items = keys.map(key => 
+            `${innerIndent}${key}: ${formatValue(val[key], indent + 2)}`
+          ).join(',\n');
+          
+          return `{\n${items}\n${' '.repeat(indent)}}`;
+        }
+        
+        return String(val);
+      };
       
-      // Write the updated content back to the file
-      fs.writeFileSync(configFilePath, configFileContent);
+      // Generate the new file content
+      let newFileContent = `/**
+ * Site Configuration
+ * This file contains all configurable content for the website
+ * Last updated: ${new Date().toISOString()}
+ */\n\n`;
+      
+      // Add each configuration section
+      for (const [key, value] of Object.entries(allConfigs)) {
+        newFileContent += `// ${key} configuration\n`;
+        newFileContent += `export const ${key} = ${formatValue(value, 2)};\n\n`;
+      }
+      
+      // Write the new file
+      fs.writeFileSync(configFilePath, newFileContent);
       console.log(`Successfully wrote updated configuration to file`);
       
       res.status(200).json({
@@ -223,6 +207,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error updating configuration:", error);
+      
+      // Try to restore from backup if possible
+      try {
+        const configFilePath = path.resolve('./client/src/config/siteConfig.js');
+        const backupPath = `${configFilePath}.backup`;
+        
+        if (fs.existsSync(backupPath)) {
+          const backupContent = fs.readFileSync(backupPath, 'utf8');
+          fs.writeFileSync(configFilePath, backupContent);
+          console.log("Restored configuration from backup");
+        }
+      } catch (restoreError) {
+        console.error("Failed to restore from backup:", restoreError);
+      }
+      
       res.status(500).json({
         message: "Failed to update configuration. Please try again later."
       });

@@ -139,6 +139,118 @@ const AdminDashboard = () => {
     );
   }
   
+  // Helper function to adapt config data to match component interfaces
+  const adaptConfigForComponents = () => {
+    const adaptedConfig = { ...currentConfig };
+    
+    // Fix property data structure
+    if (adaptedConfig.property) {
+      // Add any missing properties required by the PropertyData interface
+      adaptedConfig.property = {
+        ...adaptedConfig.property,
+        propertyType: adaptedConfig.property.type || 'Single Family Home',
+        heroImage: adaptedConfig.property.heroImage || adaptedConfig.siteBranding?.heroImage || '',
+        heroCaption: adaptedConfig.property.heroCaption || adaptedConfig.property.shortDescription || '',
+        mainFeatures: adaptedConfig.property.mainFeatures || []
+      };
+    }
+    
+    // Adapt property features if they're simple strings
+    if (Array.isArray(adaptedConfig.propertyFeatures) && 
+        adaptedConfig.propertyFeatures.length > 0 && 
+        typeof adaptedConfig.propertyFeatures[0] === 'string') {
+      adaptedConfig.propertyFeatures = adaptedConfig.propertyFeatures.map((feature: string, id: number) => ({
+        id: id + 1,
+        title: feature,
+        description: feature,
+        icon: 'CheckSquare'
+      }));
+    }
+    
+    // Adapt home showcase sections
+    if (Array.isArray(adaptedConfig.homeShowcaseSections)) {
+      adaptedConfig.homeShowcaseSections = adaptedConfig.homeShowcaseSections.map((section: any) => ({
+        ...section,
+        image: section.imageUrl || section.image || '',
+        id: section.id || `section${Math.random().toString(36).substr(2, 9)}`
+      }));
+    }
+    
+    // Adapt testimonials
+    if (Array.isArray(adaptedConfig.testimonials)) {
+      adaptedConfig.testimonials = adaptedConfig.testimonials.map((testimonial: any) => ({
+        ...testimonial,
+        author: testimonial.author || testimonial.name || '',
+        rating: testimonial.rating || 5
+      }));
+    }
+    
+    // Adapt neighborhood stats
+    if (Array.isArray(adaptedConfig.neighborhoodStats)) {
+      adaptedConfig.neighborhoodStats = adaptedConfig.neighborhoodStats.map((stat: any) => ({
+        ...stat,
+        icon: stat.icon || stat.iconName || 'Info'
+      }));
+    }
+    
+    // Adapt neighborhood amenities
+    if (Array.isArray(adaptedConfig.neighborhoodAmenities)) {
+      adaptedConfig.neighborhoodAmenities = adaptedConfig.neighborhoodAmenities.map((amenity: any) => ({
+        ...amenity,
+        icon: amenity.icon || amenity.iconName || 'MapPin'
+      }));
+    }
+    
+    // Adapt open house details
+    if (adaptedConfig.openHouseDetails) {
+      adaptedConfig.openHouseDetails = {
+        ...adaptedConfig.openHouseDetails,
+        date: adaptedConfig.openHouseDetails.nextDate || adaptedConfig.openHouseDetails.date || '',
+        startTime: adaptedConfig.openHouseDetails.time?.split(' - ')[0] || adaptedConfig.openHouseDetails.startTime || '',
+        endTime: adaptedConfig.openHouseDetails.time?.split(' - ')[1] || adaptedConfig.openHouseDetails.endTime || '',
+        location: adaptedConfig.openHouseDetails.location || adaptedConfig.property?.address?.street || '',
+        registerLink: adaptedConfig.openHouseDetails.registerLink || '#'
+      };
+    }
+    
+    // Adapt contact info
+    if (adaptedConfig.contactInfo) {
+      adaptedConfig.contactInfo = {
+        ...adaptedConfig.contactInfo,
+        email: adaptedConfig.contactInfo.email || adaptedConfig.contactInfo.agent?.email || '',
+        phone: adaptedConfig.contactInfo.phone || adaptedConfig.contactInfo.agent?.phone || '',
+        address: adaptedConfig.contactInfo.address || adaptedConfig.property?.address?.street || '',
+        hours: adaptedConfig.contactInfo.hours || 'Mon-Fri: 9am-5pm',
+        mapLocation: adaptedConfig.contactInfo.mapLocation || { lat: 43.7, lng: -79.4 },
+        socialLinks: adaptedConfig.contactInfo.socialLinks || adaptedConfig.contactInfo.social || {}
+      };
+    }
+    
+    // Adapt site branding
+    if (adaptedConfig.siteBranding) {
+      adaptedConfig.siteBranding = {
+        ...adaptedConfig.siteBranding,
+        companyName: adaptedConfig.siteBranding.companyName || adaptedConfig.contactInfo?.agent?.company || '30 Kylemount Ave',
+        companyLogo: adaptedConfig.siteBranding.companyLogo || adaptedConfig.siteBranding.logoUrl || '',
+        accentColor: adaptedConfig.siteBranding.accentColor || adaptedConfig.siteBranding.colors?.primary || '#D9A566',
+        footerText: adaptedConfig.siteBranding.footerText || adaptedConfig.siteBranding.footer?.copyrightText || ''
+      };
+    }
+    
+    // Adapt site metadata
+    if (adaptedConfig.siteMetadata) {
+      adaptedConfig.siteMetadata = {
+        ...adaptedConfig.siteMetadata,
+        twitterHandle: adaptedConfig.siteMetadata.twitterHandle || adaptedConfig.siteMetadata.twitterCard || '@kylemount'
+      };
+    }
+    
+    return adaptedConfig;
+  };
+  
+  // Get adapted config for components
+  const adaptedConfig = adaptConfigForComponents();
+
   return (
     <div className="min-h-screen bg-black/95 font-['Titillium_Web']">
       <header className="border-b border-white/10 bg-black sticky top-0 z-50">
@@ -190,7 +302,7 @@ const AdminDashboard = () => {
           <div className="bg-black border border-white/10 rounded-xl p-6">
             <TabsContent value="property">
               <PropertyForm
-                initialData={currentConfig.property}
+                initialData={adaptedConfig.property}
                 saveData={(data: any) => saveConfig({ property: data }, 'Property')}
                 loading={loading}
               />
@@ -198,8 +310,8 @@ const AdminDashboard = () => {
             
             <TabsContent value="features">
               <FeaturesForm
-                initialData={currentConfig.propertyFeatures}
-                initialSections={currentConfig.homeShowcaseSections}
+                initialData={adaptedConfig.propertyFeatures}
+                initialSections={adaptedConfig.homeShowcaseSections}
                 saveData={(data: any, sections: any) => saveConfig({ 
                   propertyFeatures: data, 
                   homeShowcaseSections: sections 
@@ -210,7 +322,7 @@ const AdminDashboard = () => {
             
             <TabsContent value="gallery">
               <GalleryForm
-                initialData={currentConfig.galleryImages}
+                initialData={adaptedConfig.galleryImages}
                 saveData={(data: any) => saveConfig({ galleryImages: data }, 'Gallery')}
                 loading={loading}
               />
@@ -218,7 +330,7 @@ const AdminDashboard = () => {
             
             <TabsContent value="testimonials">
               <TestimonialsForm
-                initialData={currentConfig.testimonials}
+                initialData={adaptedConfig.testimonials}
                 saveData={(data: any) => saveConfig({ testimonials: data }, 'Testimonials')}
                 loading={loading}
               />
@@ -226,8 +338,8 @@ const AdminDashboard = () => {
             
             <TabsContent value="neighborhood">
               <NeighborhoodForm
-                initialStats={currentConfig.neighborhoodStats}
-                initialAmenities={currentConfig.neighborhoodAmenities}
+                initialStats={adaptedConfig.neighborhoodStats}
+                initialAmenities={adaptedConfig.neighborhoodAmenities}
                 saveData={(stats: any, amenities: any) => saveConfig({ 
                   neighborhoodStats: stats, 
                   neighborhoodAmenities: amenities 
@@ -238,8 +350,8 @@ const AdminDashboard = () => {
             
             <TabsContent value="package">
               <PackageForm
-                initialData={currentConfig.packageItems}
-                initialDetails={currentConfig.openHouseDetails}
+                initialData={adaptedConfig.packageItems}
+                initialDetails={adaptedConfig.openHouseDetails}
                 saveData={(data: any, details: any) => saveConfig({ 
                   packageItems: data,
                   openHouseDetails: details
@@ -250,7 +362,7 @@ const AdminDashboard = () => {
             
             <TabsContent value="contact">
               <ContactForm
-                initialData={currentConfig.contactInfo}
+                initialData={adaptedConfig.contactInfo}
                 saveData={(data: any) => saveConfig({ contactInfo: data }, 'Contact')}
                 loading={loading}
               />
@@ -258,8 +370,8 @@ const AdminDashboard = () => {
             
             <TabsContent value="branding">
               <BrandingForm
-                initialData={currentConfig.siteBranding}
-                initialMeta={currentConfig.siteMetadata}
+                initialData={adaptedConfig.siteBranding}
+                initialMeta={adaptedConfig.siteMetadata}
                 saveData={(branding: any, meta: any) => saveConfig({ 
                   siteBranding: branding,
                   siteMetadata: meta
