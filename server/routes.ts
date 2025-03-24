@@ -101,8 +101,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Path to the siteConfig.ts file
-      const configFilePath = path.resolve('./client/src/config/siteConfig.ts');
+      // Path to the siteConfig.js file
+      const configFilePath = path.resolve('./client/src/config/siteConfig.js');
       console.log(`Config file path: ${configFilePath}`);
       
       // Read the current file
