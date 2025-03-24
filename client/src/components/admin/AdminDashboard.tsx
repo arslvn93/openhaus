@@ -144,7 +144,7 @@ const AdminDashboard = () => {
       <header className="border-b border-white/10 bg-black sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-['Poppins'] text-white">{property.address.street} <span className="text-[#D9A566]">CMS</span></h1>
+            <h1 className="text-xl font-['Poppins'] text-white">{siteConfig.property.address.street} <span className="text-[#D9A566]">CMS</span></h1>
           </div>
           
           <div className="flex items-center gap-4">
@@ -271,7 +271,7 @@ const AdminDashboard = () => {
         </Tabs>
         
         <div className="mt-8 text-center text-white/40 text-sm">
-          <p>CMS Dashboard for {property.address.street} Open House | Designed with ♥</p>
+          <p>CMS Dashboard for {siteConfig.property.address.street} Open House | Designed with ♥</p>
         </div>
       </main>
     </div>

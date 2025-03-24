@@ -8,6 +8,7 @@ import PhotoGallery from './PhotoGallery';
 import NeighborhoodOverview from './NeighborhoodOverview';
 import ExclusivePackage from './ExclusivePackage';
 import ContactForm from './ContactForm';
+import { property } from '../config/siteConfig';
 import Preloader from './Preloader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { siteBranding } from '../config/siteConfig';
