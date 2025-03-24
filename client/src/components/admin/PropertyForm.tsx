@@ -23,10 +23,14 @@ interface PropertyData {
   lotSize: string;
   yearBuilt: number;
   propertyType: string;
+  type: string; // Used by the app for display, we'll sync this with propertyType
+  status?: string;
   description: string;
   mainFeatures: string[];
   heroImage: string;
   heroCaption: string;
+  shortDescription?: string;
+  longDescription?: string;
 }
 
 interface PropertyFormProps {
@@ -74,7 +78,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         ...propertyData,
         [name]: Number(value) || 0
       });
-    } else {
+    } 
+    // Special handling for propertyType to update both fields
+    else if (name === 'propertyType') {
+      setPropertyData({
+        ...propertyData,
+        propertyType: value,
+        type: value // Also update the type field when propertyType changes
+      });
+    }
+    else {
       setPropertyData({
         ...propertyData,
         [name]: value
@@ -105,6 +118,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting property data:", propertyData);
+    
+    // Make sure we use the actual property type field since we removed the duplicate
+    if (propertyData.propertyType && !propertyData.type) {
+      propertyData.type = propertyData.propertyType;
+    }
+    
     saveData(propertyData);
   };
   

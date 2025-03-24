@@ -6,27 +6,26 @@
 
 // Property details
 export const property = {
-    name: "24 Kylemount Ave",
-    address: {
-      street: "25 Kylemount Ave",
-      city: "Toronto",
-      state: "ON",
-      zip: "M6B 3A2",
-      country: "Canada"
-    },
-    price: "$2,495,000",
-    beds: 4,
-    baths: 3.5,
-    sqft: 3250,
-    lotSize: "50 x 125 ft",
-    yearBuilt: 2023,
-    type: "Single Family Home",
-    status: "For Sale",
-    description: "An exceptional modern residence offering luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted neighborhood.",
-    shortDescription: "Luxury modern residence in prime location",
-    longDescription: "This stunning modern residence exemplifies contemporary luxury living with its meticulous design, premium finishes, and thoughtful amenities. Featuring open concept living spaces, designer kitchen, primary suite retreat, and curated outdoor spaces, this exceptional property offers the perfect balance of sophistication and comfort.",
-    mainFeatures: []
-  };
+  name: "24 Kylemount Ave",
+  address: {
+    street: "24 Kylemount Ave",
+    city: "Toronto",
+    state: "ON",
+    zip: "M6B 3A2",
+    country: "Canada",
+  },
+  price: "$2,495,000",
+  beds: 4,
+  baths: 3.5,
+  sqft: 3250,
+  lotSize: "50 x 125 ft",
+  yearBuilt: 2023,
+  type: "Single Family Home",
+  status: "For Sale",
+  description: "An exceptional modern residence offering luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted neighborhood.",
+  shortDescription: "Luxury modern residence in prime location",
+  longDescription: "This stunning modern residence exemplifies contemporary luxury living with its meticulous design, premium finishes, and thoughtful amenities. Featuring open concept living spaces, designer kitchen, primary suite retreat, and curated outdoor spaces, this exceptional property offers the perfect balance of sophistication and comfort."
+};
 
 // Property features
 export const propertyFeatures = [

@@ -91,7 +91,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { section, config } = req.body;
       
+      console.log(`Updating configuration for section: ${section}`);
+      console.log('Configuration data received:', JSON.stringify(config, null, 2));
+      
       if (!section || !config) {
+        console.error("Missing required fields: section or config");
         return res.status(400).json({
           message: "Missing required fields: section and config"
         });
@@ -99,6 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Path to the siteConfig.ts file
       const configFilePath = path.resolve('./client/src/config/siteConfig.ts');
+      console.log(`Config file path: ${configFilePath}`);
       
       // Read the current file
       let configFileContent = fs.readFileSync(configFilePath, 'utf8');
@@ -106,10 +111,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create a backup of the original file
       const backupPath = `${configFilePath}.backup`;
       fs.writeFileSync(backupPath, configFileContent);
+      console.log(`Created backup at: ${backupPath}`);
       
       // For each key in config, update the corresponding export in the file
       Object.keys(config).forEach(key => {
         const configData = config[key];
+        console.log(`Updating key: ${key}`);
         
         // Convert the config data to a string representation
         const configString = JSON.stringify(configData, null, 2)
@@ -121,15 +128,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Create a regex to find the export declaration for this property
         const exportRegex = new RegExp(`export const ${key} = ([\\s\\S]*?);(\\n|\\r\\n)`, 'g');
         
+        // Check if the regex matched anything
+        const matched = exportRegex.test(configFileContent);
+        if (!matched) {
+          console.warn(`Warning: Could not find export for key: ${key}`);
+          // Reset lastIndex because test() moved it
+          exportRegex.lastIndex = 0; 
+        }
+        
         // Replace the export with the new config
-        configFileContent = configFileContent.replace(
+        const newContent = configFileContent.replace(
           exportRegex, 
           `export const ${key} = ${configString};\n`
         );
+        
+        // Check if replacement happened
+        if (newContent === configFileContent) {
+          console.warn(`Warning: No changes made for key: ${key}`);
+        } else {
+          configFileContent = newContent;
+          console.log(`Successfully updated key: ${key}`);
+        }
       });
       
       // Write the updated content back to the file
       fs.writeFileSync(configFilePath, configFileContent);
+      console.log(`Successfully wrote updated configuration to file`);
       
       res.status(200).json({
         message: `Successfully updated ${section} configuration`
