@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { property } from '../config/siteConfig';
 
 const Preloader = () => {
   useEffect(() => {
@@ -32,7 +33,7 @@ const Preloader = () => {
   return (
     <div id="preloader">
       <div className="text-wrapper">
-        <h1 id="first-text" className="font-['Poppins'] text-2xl">123 HILLCREST AVENUE</h1>
+        <h1 id="first-text" className="font-['Poppins'] text-2xl">{property.address.street.toUpperCase()}</h1>
         <h3 id="second-text" className="font-['Titillium_Web'] text-xl">OPEN HOUSE EVENT</h3>
       </div>
     </div>
