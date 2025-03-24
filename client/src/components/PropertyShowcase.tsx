@@ -222,7 +222,7 @@ const PropertyShowcase = () => {
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="9" y1="3" x2="9" y2="21"></line>
                 </svg>
-                <span className="text-sm">3,200 Sq Ft</span>
+                <span className="text-sm">{property.sqft.toLocaleString()} Sq Ft</span>
               </div>
             </div>
             
@@ -317,7 +317,7 @@ const PropertyShowcase = () => {
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            <span>50' x 120' Lot</span>
+            <span>{property.lotSize} Lot</span>
           </div>
         </div>
       </div>

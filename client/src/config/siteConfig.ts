@@ -8,7 +8,7 @@
 export const property = {
     name: "24 Kylemount Ave",
     address: {
-      street: "25 Kylemount Ave",
+      street: "27 Kylemount Ave",
       city: "Toronto",
       state: "ON",
       zip: "M6B 3A2",
