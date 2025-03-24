@@ -1,4 +1,5 @@
 import React from 'react';
+import { property } from '../config/siteConfig';
 
 const Footer = () => {
   return (
@@ -6,7 +7,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
           <div className="md:col-span-4">
-            <h2 className="text-3xl font-light mb-10">24 Kylemount</h2>
+            <h2 className="text-3xl font-light mb-10">{property.address.street.split(' ')[0]} {property.address.street.split(' ')[1]}</h2>
             <p className="text-white/60 font-light mb-12 leading-relaxed">
               Exquisite modern residence with custom finishes in prestigious Thornhill Woods.
             </p>

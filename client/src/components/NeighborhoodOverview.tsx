@@ -96,7 +96,7 @@ const NeighborhoodOverview = () => {
           </h2>
           <div className="w-24 h-1 bg-[#D9A566] mx-auto mb-6"></div>
           <p className="text-white/80 font-['Titillium_Web'] max-w-3xl mx-auto text-lg leading-relaxed">
-            Nestled in the highly sought-after Thornhill Woods community, 24 Kylemount Ave offers the perfect blend of suburban tranquility and urban convenience.
+            Nestled in the highly sought-after Thornhill Woods community, {property.address.street} offers the perfect blend of suburban tranquility and urban convenience.
           </p>
         </div>
         

@@ -148,7 +148,7 @@ const ExclusivePackage = () => {
                     <div className="absolute top-0 right-0 w-[250px] h-[120px] bg-white rounded-l-md shadow-md transform rotate-[-5deg] overflow-hidden">
                       <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/10"></div>
                       <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">FLOOR PLAN</div>
-                      <div className="absolute top-2 right-3 text-xs text-gray-600">24 Kylemount Ave</div>
+                      <div className="absolute top-2 right-3 text-xs text-gray-600">{property.address.street}</div>
                       <div className="grid grid-cols-3 gap-1 px-3 pt-10">
                         <div className="h-3 bg-gray-200 rounded"></div>
                         <div className="h-3 bg-gray-300 rounded"></div>

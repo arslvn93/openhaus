@@ -166,7 +166,7 @@ const LandingPage = () => {
                 <h3 className="text-3xl font-['Poppins'] uppercase tracking-wider mb-3 text-white">Exclusive Offer</h3>
                 <div className="h-1 w-16 bg-gradient-to-r from-[#D9A566] to-transparent mx-auto mb-3"></div>
                 <p className="text-white/70 font-['Titillium_Web'] text-lg max-w-md mx-auto">
-                  Get your premium home package with detailed information about 24 Kylemount Ave before it's gone!
+                  Get your premium home package with detailed information about {property.address.street} before it's gone!
                 </p>
               </motion.div>
               
