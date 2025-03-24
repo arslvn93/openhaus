@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { siteBranding } from '../config/siteConfig';
+import { siteBranding, property } from '../config/siteConfig';
 
 const PropertyShowcase = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -195,7 +195,7 @@ const PropertyShowcase = () => {
           <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
             <h2 className="text-5xl font-extralight mb-6">
-              24 Kylemount <br/><span className="opacity-80">Thornhill</span>
+              {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>
             <p className="text-2xl font-extralight text-white/90 mb-8 leading-relaxed">
               Exquisite modern residence with custom finishes in prestigious Thornhill Woods.
@@ -207,7 +207,7 @@ const PropertyShowcase = () => {
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span className="text-sm">4 Bedrooms</span>
+                <span className="text-sm">{property.beds} Bedrooms</span>
               </div>
               <div className="flex items-center bg-black/30 backdrop-blur-sm px-4 py-2.5 border border-white/5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-3 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -215,7 +215,7 @@ const PropertyShowcase = () => {
                   <path d="M5 11v1h5v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2Z"></path>
                   <path d="M3 12v1a3 3 0 0 0 3 3v2a2 2 0 0 0 4 0v-2h4v2a2 2 0 0 0 4 0v-2a3 3 0 0 0 3-3v-1Z"></path>
                 </svg>
-                <span className="text-sm">3.5 Baths</span>
+                <span className="text-sm">{property.baths} Baths</span>
               </div>
               <div className="flex items-center bg-black/30 backdrop-blur-sm px-4 py-2.5 border border-white/5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-3 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -284,14 +284,14 @@ const PropertyShowcase = () => {
         
         {/* Property quick info card - simplified modern version */}
         <div className="absolute bottom-8 left-8 bg-black/50 backdrop-blur-md border border-white/5 p-6 z-20 max-w-xs hidden md:block">
-          <h3 className="text-lg font-light mb-3">24 Kylemount Ave</h3>
+          <h3 className="text-lg font-light mb-3">{property.address.street}</h3>
           <div className="flex justify-between text-sm text-white/70 font-light mb-3">
             <span className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-2 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
-              4 Bedrooms
+              {property.beds} Bedrooms
             </span>
             <span className="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-2 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -299,7 +299,7 @@ const PropertyShowcase = () => {
                 <path d="M5 11v1h5v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2Z"></path>
                 <path d="M3 12v1a3 3 0 0 0 3 3v2a2 2 0 0 0 4 0v-2h4v2a2 2 0 0 0 4 0v-2a3 3 0 0 0 3-3v-1Z"></path>
               </svg>
-              3.5 Baths
+              {property.baths} Baths
             </span>
           </div>
           <div className="flex justify-between text-sm text-white/70 font-light mb-3">
@@ -308,9 +308,9 @@ const PropertyShowcase = () => {
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="9" y1="3" x2="9" y2="21"></line>
               </svg>
-              3,200 sq ft
+              {property.sqft.toLocaleString()} sq ft
             </span>
-            <span className="text-white">$1,599,000</span>
+            <span className="text-white">{property.price}</span>
           </div>
           <div className="text-sm text-white/70 font-light flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-2 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
