@@ -115,9 +115,6 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  visibility: visible !important; /* Ensure all sections are visible */
-  opacity: 1 !important; /* Force opacity for all sections */
-  display: block !important; /* Make sure sections are displayed */
 }
 
 .event::before {
@@ -150,21 +147,20 @@
   backdrop-filter: blur(2px);
 }
 
-/* Background images are now loaded via inline styles for better control */
 #section1 {
-  /* Removed background-image, now using inline style in React component */
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
 }
 
 #section2 {
-  /* Removed background-image, now using inline style in React component */
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
 }
 
 #section3 {
-  /* Removed background-image, now using inline style in React component */
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
 }
 
 #section4 {
-  /* Removed background-image, now using inline style in React component */
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
 }
 
 .pinWrapper {
@@ -217,9 +213,16 @@
   left: 0;
 }
 
-/* Image backgrounds are now handled with inline styles in React component */
-#section2 .image, #section3 .image, #section4 .image {
-  /* No background images here anymore - using inline React styles instead */
+#section2 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+}
+
+#section3 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+}
+
+#section4 .image {
+  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
 }
 
 /* Section Text */
