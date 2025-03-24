@@ -1,32 +1,31 @@
 /**
  * Site Configuration
  * This file contains all configurable content for the website
- * Edit this file to update content, images, and data across the entire site
  */
 
 // Property details
 export const property = {
-    name: "27 Kylemount Ave",
-    address: {
-      street: "27 Kylemount Ave",
-      city: "Toronto",
-      state: "ON",
-      zip: "M6B 3A2",
-      country: "Canada"
-    },
-    price: "$2,495,000",
-    beds: 4,
-    baths: 3.5,
-    sqft: 3250,
-    lotSize: "50 x 125 ft",
-    yearBuilt: 2023,
-    type: "Single Family Home",
-    status: "For Sale",
-    description: "An exceptional modern residence offering luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted neighborhood.",
-    shortDescription: "Luxury modern residence in prime location",
-    longDescription: "This stunning modern residence exemplifies contemporary luxury living with its meticulous design, premium finishes, and thoughtful amenities. Featuring open concept living spaces, designer kitchen, primary suite retreat, and curated outdoor spaces, this exceptional property offers the perfect balance of sophistication and comfort.",
-    mainFeatures: []
-  };
+  name: "30 Kylemount Ave",
+  address: {
+    street: "30 Kylemount Ave",
+    city: "Toronto",
+    state: "ON",
+    zip: "M6B 3A2",
+    country: "Canada"
+  },
+  price: "$2,495,000",
+  beds: 4,
+  baths: 3.5,
+  sqft: 3250,
+  lotSize: "50 x 125 ft",
+  yearBuilt: 2023,
+  type: "Single Family Home",
+  status: "For Sale",
+  description: "An exceptional modern residence offering luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted neighborhood.",
+  shortDescription: "Luxury modern residence in prime location",
+  longDescription: "This stunning modern residence exemplifies contemporary luxury living with its meticulous design, premium finishes, and thoughtful amenities. Featuring open concept living spaces, designer kitchen, primary suite retreat, and curated outdoor spaces, this exceptional property offers the perfect balance of sophistication and comfort.",
+  mainFeatures: []
+};
 
 // Property features
 export const propertyFeatures = [
@@ -75,7 +74,7 @@ export const galleryImages = [
   {
     id: 1,
     src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    alt: "Exterior view of 27 Kylemount Ave",
+    alt: "Exterior view of 30 Kylemount Ave",
     category: "exterior"
   },
   {
@@ -128,7 +127,7 @@ export const testimonials = [
     id: 1,
     name: "Alex Thompson",
     role: "Recent Homebuyer",
-    content: "The open house at 27 Kylemount was exceptionally well-organized. The materials provided gave us a complete understanding of the property and neighborhood.",
+    content: "The open house at 30 Kylemount was exceptionally well-organized. The materials provided gave us a complete understanding of the property and neighborhood.",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg"
   },
   {
@@ -300,7 +299,7 @@ export const openHouseDetails = {
   time: "1:00 PM - 4:00 PM",
   host: "Michael Anderson",
   phone: "(416) 555-9876",
-  email: "info@27kylemount.com",
+  email: "info@30kylemount.com",
   ctaText: "RSVP for Open House",
   virtualTourAvailable: true,
   virtualTourUrl: "https://example.com/virtual-tour"
@@ -327,7 +326,7 @@ export const contactInfo = {
 // Site branding
 export const siteBranding = {
   logoUrl: "/logo.svg",
-  logoAlt: "27 Kylemount Ave",
+  logoAlt: "30 Kylemount Ave",
   favicon: "/favicon.ico",
   // Primary colors
   colors: {
@@ -341,18 +340,18 @@ export const siteBranding = {
   heroImage: "https://images.unsplash.com/photo-1460317442991-0ec209397118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   // Footer info
   footer: {
-    copyrightText: "© 2024 27 Kylemount Ave. All rights reserved.",
+    copyrightText: "© 2024 30 Kylemount Ave. All rights reserved.",
     disclaimer: "This website is for informational purposes only. Details are subject to change."
   }
 };
 
 // Meta information for SEO
 export const siteMetadata = {
-  title: "27 Kylemount Ave | Luxury Modern Residence",
+  title: "30 Kylemount Ave | Luxury Modern Residence",
   description: "Discover this exceptional modern residence featuring luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted Toronto neighborhood.",
   keywords: "luxury home, modern residence, Toronto real estate, open house, premium property, Kylemount Avenue",
   ogImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   ogType: "website",
   twitterCard: "summary_large_image",
-  canonical: "https://27kylemount.com"
+  canonical: "https://30kylemount.com"
 };
