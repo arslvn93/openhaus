@@ -6,7 +6,7 @@
 
 // Property details
 export const property = {
-    name: "24 Kylemount Ave",
+    name: "27 Kylemount Ave",
     address: {
       street: "27 Kylemount Ave",
       city: "Toronto",
@@ -75,7 +75,7 @@ export const galleryImages = [
   {
     id: 1,
     src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-    alt: "Exterior view of 24 Kylemount Ave",
+    alt: "Exterior view of 27 Kylemount Ave",
     category: "exterior"
   },
   {
@@ -128,7 +128,7 @@ export const testimonials = [
     id: 1,
     name: "Alex Thompson",
     role: "Recent Homebuyer",
-    content: "The open house at 24 Kylemount was exceptionally well-organized. The materials provided gave us a complete understanding of the property and neighborhood.",
+    content: "The open house at 27 Kylemount was exceptionally well-organized. The materials provided gave us a complete understanding of the property and neighborhood.",
     avatar: "https://randomuser.me/api/portraits/men/32.jpg"
   },
   {
@@ -300,7 +300,7 @@ export const openHouseDetails = {
   time: "1:00 PM - 4:00 PM",
   host: "Michael Anderson",
   phone: "(416) 555-9876",
-  email: "info@24kylemount.com",
+  email: "info@27kylemount.com",
   ctaText: "RSVP for Open House",
   virtualTourAvailable: true,
   virtualTourUrl: "https://example.com/virtual-tour"
@@ -327,7 +327,7 @@ export const contactInfo = {
 // Site branding
 export const siteBranding = {
   logoUrl: "/logo.svg",
-  logoAlt: "24 Kylemount Ave",
+  logoAlt: "27 Kylemount Ave",
   favicon: "/favicon.ico",
   // Primary colors
   colors: {
@@ -341,18 +341,18 @@ export const siteBranding = {
   heroImage: "https://images.unsplash.com/photo-1460317442991-0ec209397118?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   // Footer info
   footer: {
-    copyrightText: "© 2024 24 Kylemount Ave. All rights reserved.",
+    copyrightText: "© 2024 27 Kylemount Ave. All rights reserved.",
     disclaimer: "This website is for informational purposes only. Details are subject to change."
   }
 };
 
 // Meta information for SEO
 export const siteMetadata = {
-  title: "24 Kylemount Ave | Luxury Modern Residence",
+  title: "27 Kylemount Ave | Luxury Modern Residence",
   description: "Discover this exceptional modern residence featuring luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted Toronto neighborhood.",
   keywords: "luxury home, modern residence, Toronto real estate, open house, premium property, Kylemount Avenue",
   ogImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   ogType: "website",
   twitterCard: "summary_large_image",
-  canonical: "https://24kylemount.com"
+  canonical: "https://27kylemount.com"
 };
