@@ -6,8 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus, Home } from "lucide-react";
 
+interface AddressData {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+
 interface PropertyData {
-  address: string;
+  address: AddressData;
   price: string;
   beds: number;
   baths: number;
@@ -44,8 +52,19 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   ) => {
     const { name, value } = e.target;
     
+    // Check if this is an address field
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setPropertyData({
+        ...propertyData,
+        address: {
+          ...propertyData.address,
+          [addressField]: value
+        }
+      });
+    }
     // Handle numeric values
-    if (
+    else if (
       name === 'beds' || 
       name === 'baths' || 
       name === 'sqft' || 
@@ -98,19 +117,74 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             Edit the core details of your property listing. These details will be prominently displayed across the website.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="space-y-2">
-              <Label htmlFor="address" className="text-white">Property Address</Label>
-              <Input
-                id="address"
-                name="address"
-                value={propertyData.address}
-                onChange={handleInputChange}
-                placeholder="e.g. 123 Main Street, Cityville"
-                className="bg-black/50 border-white/10 text-white"
-              />
+          <div className="mb-6">
+            <Label className="text-white mb-2 block">Property Address</Label>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="address.street" className="text-white/80 text-sm">Street</Label>
+                <Input
+                  id="address.street"
+                  name="address.street"
+                  value={propertyData.address.street}
+                  onChange={handleInputChange}
+                  placeholder="e.g. 123 Main Street"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="address.city" className="text-white/80 text-sm">City</Label>
+                  <Input
+                    id="address.city"
+                    name="address.city"
+                    value={propertyData.address.city}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Toronto"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="address.state" className="text-white/80 text-sm">State/Province</Label>
+                  <Input
+                    id="address.state"
+                    name="address.state"
+                    value={propertyData.address.state}
+                    onChange={handleInputChange}
+                    placeholder="e.g. ON"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="address.zip" className="text-white/80 text-sm">Zip/Postal Code</Label>
+                  <Input
+                    id="address.zip"
+                    name="address.zip"
+                    value={propertyData.address.zip}
+                    onChange={handleInputChange}
+                    placeholder="e.g. M6B 3A2"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="address.country" className="text-white/80 text-sm">Country</Label>
+                  <Input
+                    id="address.country"
+                    name="address.country"
+                    value={propertyData.address.country}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Canada"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                </div>
+              </div>
             </div>
-            
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="space-y-2">
               <Label htmlFor="price" className="text-white">Listing Price</Label>
               <Input
@@ -119,6 +193,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 value={propertyData.price}
                 onChange={handleInputChange}
                 placeholder="e.g. $1,250,000"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="propertyType" className="text-white">Property Type</Label>
+              <Input
+                id="propertyType"
+                name="propertyType"
+                value={propertyData.propertyType}
+                onChange={handleInputChange}
+                placeholder="e.g. Single Family Home"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -180,7 +266,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
             <div className="space-y-2">
               <Label htmlFor="lotSize" className="text-white">Lot Size</Label>
               <Input
@@ -189,18 +275,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 value={propertyData.lotSize}
                 onChange={handleInputChange}
                 placeholder="e.g. 0.25 acres"
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="propertyType" className="text-white">Property Type</Label>
-              <Input
-                id="propertyType"
-                name="propertyType"
-                value={propertyData.propertyType}
-                onChange={handleInputChange}
-                placeholder="e.g. Single Family Home"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
