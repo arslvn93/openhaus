@@ -216,7 +216,9 @@ const NeighborhoodOverview = () => {
             viewport={{ once: true }}
           >
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2877.4761959509288!2d-79.4742281!3d43.8387378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b2ed91559c76d%3A0x7b8315da4f0bc03c!2sThornhill%20Woods%2C%20Vaughan%2C%20ON%2C%20Canada!5e0!3m2!1sen!2sus!4v1663356624389!5m2!1sen!2sus" 
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD4iE2xVSpkLLOXoyqT-RuPwURN3ddScAI&q=${encodeURIComponent(
+                `${property.address.street}, ${property.address.city}, ${property.address.state} ${property.address.zip}, ${property.address.country}`
+              )}`}
               width="100%" 
               height="100%" 
               style={{ border: 0, position: "relative" }} 
