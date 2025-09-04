@@ -8,7 +8,8 @@ import {
   neighborhoodStats as configStats, 
   neighborhoodAmenities as configAmenities, 
   property, 
-  siteBranding 
+  siteBranding,
+  neighborhood
 } from '../config/siteConfig';
 
 // Define types for the neighborhood data
@@ -96,7 +97,7 @@ const NeighborhoodOverview = () => {
           </h2>
           <div className="w-24 h-1 bg-[#D9A566] mx-auto mb-6"></div>
           <p className="text-white/80 font-['Titillium_Web'] max-w-3xl mx-auto text-lg leading-relaxed">
-            Nestled in the highly sought-after Thornhill Woods community, {property.address.street} offers the perfect blend of suburban tranquility and urban convenience.
+            Located in {neighborhood.city}'s vibrant {neighborhood.name}, {property.address.street} offers the perfect blend of urban luxury and walk-to-everything convenience.
           </p>
         </div>
         
@@ -215,18 +216,17 @@ const NeighborhoodOverview = () => {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            {/* Use a safer approach to embedding the map */}
+            {/* Dynamic map based on property address */}
             {(() => {
-              // We're using a static map that doesn't require the exact address to work
-              // This prevents the app from crashing when the address is changed
               try {
-                // Static map URL that works for the general location (Toronto area)
-                // We don't need to dynamically generate this with the address
-                const staticMapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2885.8673621062536!2d-79.376396684361!3d43.67131597912116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb90d7c63ba5%3A0x3e31c68852c1ab1b!2sKylemount%20Ave%2C%20Toronto%2C%20ON%2C%20Canada!5e0!3m2!1sen!2sus!4v1663356624389!5m2!1sen!2sus";
+                // Create a dynamic map URL based on the property address
+                const address = `${property.address.street}, ${property.address.city}, ${property.address.state} ${property.address.zip}, ${property.address.country}`;
+                const encodedAddress = encodeURIComponent(address);
+                const dynamicMapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}`;
                 
                 return (
                   <iframe 
-                    src={staticMapUrl}
+                    src={dynamicMapUrl}
                     width="100%" 
                     height="100%" 
                     style={{ border: 0, position: "relative" }} 
@@ -238,8 +238,8 @@ const NeighborhoodOverview = () => {
                   />
                 );
               } catch (error) {
-                // If there's any error in creating the URL, use a fallback static map
-                console.error("Error creating map URL:", error);
+                // Fallback to a static map of the general Toronto area if there's an error
+                console.error("Error creating dynamic map URL:", error);
                 return (
                   <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2885.8673621062536!2d-79.376396684361!3d43.67131597912116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cb90d7c63ba5%3A0x3e31c68852c1ab1b!2sKylemount%20Ave%2C%20Toronto%2C%20ON%2C%20Canada!5e0!3m2!1sen!2sus!4v1663356624389!5m2!1sen!2sus"
@@ -269,51 +269,25 @@ const NeighborhoodOverview = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-['Poppins'] text-white mb-4">About Thornhill Woods</h3>
+              <h3 className="text-2xl font-['Poppins'] text-white mb-4">About {neighborhood.name}</h3>
               <div className="space-y-4 text-white/80 font-['Titillium_Web']">
-                <p>Thornhill Woods is one of the most coveted neighborhoods in the Greater Toronto Area, known for its family-friendly atmosphere and luxury homes.</p>
-                <p>The community features award-winning schools, picturesque parks, and premium shopping, all within minutes of your doorstep.</p>
+                <p>{neighborhood.description}</p>
+                <p>The neighborhood features theaters, fine dining, shopping, and easy access to PATH, TTC, and the financial core, all within walking distance.</p>
               </div>
             </div>
             
             <div>
               <h3 className="text-2xl font-['Poppins'] text-white mb-4">Neighborhood Highlights</h3>
               <ul className="space-y-2 text-white/80 font-['Titillium_Web']">
-                <li className="flex items-center">
-                  <span 
-                    className="inline-block w-2 h-2 rounded-full mr-2" 
-                    style={{ backgroundColor: siteBranding.colors.primary }}
-                  ></span>
-                  Easy access to Highway 407 and public transit
-                </li>
-                <li className="flex items-center">
-                  <span 
-                    className="inline-block w-2 h-2 rounded-full mr-2" 
-                    style={{ backgroundColor: siteBranding.colors.primary }}
-                  ></span>
-                  Multiple parks and walking trails
-                </li>
-                <li className="flex items-center">
-                  <span 
-                    className="inline-block w-2 h-2 rounded-full mr-2" 
-                    style={{ backgroundColor: siteBranding.colors.primary }}
-                  ></span>
-                  Top-rated schools within walking distance
-                </li>
-                <li className="flex items-center">
-                  <span 
-                    className="inline-block w-2 h-2 rounded-full mr-2" 
-                    style={{ backgroundColor: siteBranding.colors.primary }}
-                  ></span>
-                  Shopping centers with premium retailers
-                </li>
-                <li className="flex items-center">
-                  <span 
-                    className="inline-block w-2 h-2 rounded-full mr-2" 
-                    style={{ backgroundColor: siteBranding.colors.primary }}
-                  ></span>
-                  Safe, family-oriented community
-                </li>
+                {neighborhood.highlights.map((highlight, index) => (
+                  <li key={index} className="flex items-center">
+                    <span 
+                      className="inline-block w-2 h-2 rounded-full mr-2" 
+                      style={{ backgroundColor: siteBranding.colors.primary }}
+                    ></span>
+                    {highlight}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

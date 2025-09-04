@@ -148,19 +148,31 @@
 }
 
 #section1 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-living.jpg");
+  background-image: var(--section1-bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 #section2 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+  background-image: var(--section2-bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 #section3 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+  background-image: var(--section3-bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 #section4 {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+  background-image: var(--section4-bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .pinWrapper {
@@ -214,15 +226,15 @@
 }
 
 #section2 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-kitchen.jpg");
+  background-image: var(--section2-bg-image);
 }
 
 #section3 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-badroom.jpg");
+  background-image: var(--section3-bg-image);
 }
 
 #section4 .image {
-  background-image: url("https://www.yudiz.com/codepen/studio-r/bg-office.jpg");
+  background-image: var(--section4-bg-image);
 }
 
 /* Section Text */

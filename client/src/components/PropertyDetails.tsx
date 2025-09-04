@@ -1,33 +1,35 @@
+import { property, openHouseDetails, contactInfo } from '../config/siteConfig';
+
 const PropertyDetails = () => {
   const propertyFeatures = [
     {
       icon: 'bxs-building-house',
       title: 'Property Overview',
       details: [
-        { label: 'Type', value: 'Single Family Home' },
-        { label: 'Year Built', value: '2018' },
-        { label: 'Lot Size', value: '0.75 Acres' },
-        { label: 'Square Footage', value: '4,850 sq ft' },
+        { label: 'Type', value: property.type },
+        { label: 'Year Built', value: property.yearBuilt.toString() },
+        { label: 'Lot Size', value: property.lotSize },
+        { label: 'Square Footage', value: `${property.sqft.toLocaleString()} sq ft` },
       ]
     },
     {
       icon: 'bxs-home',
       title: 'Interior Features',
       details: [
-        { label: 'Bedrooms', value: '5' },
-        { label: 'Bathrooms', value: '4.5' },
-        { label: 'Flooring', value: 'Hardwood, Marble' },
-        { label: 'Heating/Cooling', value: 'Central HVAC' },
+        { label: 'Bedrooms', value: property.beds.toString() },
+        { label: 'Bathrooms', value: property.baths.toString() },
+        { label: 'Price', value: property.price },
+        { label: 'Status', value: property.status },
       ]
     },
     {
       icon: 'bxs-tree',
       title: 'Exterior & Community',
       details: [
-        { label: 'Parking', value: '3 Car Garage' },
-        { label: 'Outdoor', value: 'Pool, Patio, Garden' },
-        { label: 'View', value: 'City, Mountain' },
-        { label: 'School District', value: 'Hillcrest District' },
+        { label: 'Address', value: property.address.street },
+        { label: 'City', value: `${property.address.city}, ${property.address.state}` },
+        { label: 'Postal Code', value: property.address.zip },
+        { label: 'Country', value: property.address.country },
       ]
     }
   ];
@@ -37,7 +39,7 @@ const PropertyDetails = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <span className="text-[#D9A566] font-['Titillium_Web'] tracking-widest inline-block mb-2">PROPERTY DETAILS</span>
-          <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">123 Hillcrest Avenue</h2>
+          <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">{property.address.street}</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -65,7 +67,7 @@ const PropertyDetails = () => {
             <div className="md:w-1/2">
               <h3 className="text-2xl font-['Poppins'] mb-3">Open House Information</h3>
               <p className="font-['Titillium_Web'] text-lg mb-6">
-                Don't miss this exclusive opportunity to tour one of the most desirable properties in Hillcrest Estates. Refreshments will be served.
+                Don't miss this exclusive opportunity to tour this exceptional property. Refreshments will be served.
               </p>
               
               <div className="flex flex-col gap-3 mb-6">
@@ -73,21 +75,21 @@ const PropertyDetails = () => {
                   <i className='bx bxs-calendar text-[#D9A566] text-2xl mr-3'></i>
                   <div>
                     <h4 className="font-['Poppins']">Date & Time</h4>
-                    <p className="font-['Titillium_Web']">May 15, 2023 • 1:00-4:00PM</p>
+                    <p className="font-['Titillium_Web']">{openHouseDetails.nextDate} • {openHouseDetails.time}</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <i className='bx bxs-map text-[#D9A566] text-2xl mr-3'></i>
                   <div>
                     <h4 className="font-['Poppins']">Location</h4>
-                    <p className="font-['Titillium_Web']">123 Hillcrest Avenue, Beverly Hills, CA 90210</p>
+                    <p className="font-['Titillium_Web']">{property.address.street}, {property.address.city}, {property.address.state} {property.address.zip}</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <i className='bx bxs-user text-[#D9A566] text-2xl mr-3'></i>
                   <div>
                     <h4 className="font-['Poppins']">Hosted By</h4>
-                    <p className="font-['Titillium_Web']">Sarah Johnson, Luxury Estates Agent</p>
+                    <p className="font-['Titillium_Web']'>{openHouseDetails.host}, {contactInfo.agent.company}</p>
                   </div>
                 </div>
               </div>
@@ -96,15 +98,15 @@ const PropertyDetails = () => {
                 href="#contact" 
                 className="inline-block bg-[#D9A566] text-white font-['Poppins'] px-6 py-3 rounded-lg hover:bg-[#D9A566]/80 transition-colors"
               >
-                RSVP for Open House
+                {openHouseDetails.ctaText}
               </a>
             </div>
             
             <div className="md:w-1/2">
               <img 
-                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80" 
+                src={property.heroImage} 
                 className="w-full h-64 md:h-full object-cover rounded-lg" 
-                alt="Property Exterior" 
+                alt={property.heroCaption} 
               />
             </div>
           </div>
