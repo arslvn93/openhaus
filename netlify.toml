@@ -1,6 +1,8 @@
 [build]
+  # Base directory for the build (root of the repo)
+  base = "."
   # Directory to publish (relative to root of your repo)
-  publish = "client/dist"
+  publish = "dist/public"
   # Default build command
   command = "npm run build"
 
