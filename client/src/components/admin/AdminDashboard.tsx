@@ -363,7 +363,15 @@ const AdminDashboard = () => {
             <TabsContent value="contact">
               <ContactForm
                 initialData={adaptedConfig.contactInfo}
-                saveData={(data: any) => saveConfig({ contactInfo: data }, 'Contact')}
+                saveData={(data: any) => {
+                  // Preserve agent data when saving contact info
+                  const completeContactData = {
+                    ...adaptedConfig.contactInfo, // Keep all existing fields including agent
+                    ...data // Override with form data
+                  };
+                  console.log('Saving contact info with preserved agent data:', completeContactData.agent);
+                  saveConfig({ contactInfo: completeContactData }, 'Contact');
+                }}
                 loading={loading}
               />
             </TabsContent>

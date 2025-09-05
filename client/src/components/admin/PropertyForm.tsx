@@ -31,6 +31,8 @@ interface PropertyData {
   heroCaption: string;
   shortDescription?: string;
   longDescription?: string;
+  // Allow any additional fields
+  [key: string]: any;
 }
 
 interface PropertyFormProps {
@@ -118,14 +120,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting property data:", propertyData);
     
     // Make sure we use the actual property type field since we removed the duplicate
     if (propertyData.propertyType && !propertyData.type) {
       propertyData.type = propertyData.propertyType;
     }
     
-    saveData(propertyData);
+    // Preserve all existing fields from initialData that aren't in the form
+    const completePropertyData = {
+      ...initialData, // Keep all existing fields
+      ...propertyData  // Override with form data
+    };
+    
+    console.log("Submitting complete property data:", completePropertyData);
+    saveData(completePropertyData);
   };
   
   return (
