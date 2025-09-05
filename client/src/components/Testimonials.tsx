@@ -3,6 +3,9 @@ import { testimonials as configTestimonials, property, siteBranding, contactInfo
 import { QuoteIcon, Star } from 'lucide-react';
 
 const Testimonials = () => {
+  // Temporarily hide the Testimonials section
+  return null;
+  
   // Use testimonials from the config file - they will have id, name, content, role, and avatar
   const testimonials = configTestimonials;
   

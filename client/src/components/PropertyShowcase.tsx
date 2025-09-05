@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { siteBranding, property, homeShowcaseSections, openHouseDetails } from '../config/siteConfig';
 
-const PropertyShowcase = () => {
+interface PropertyShowcaseProps {
+  showForSale?: boolean;
+  showOnlyHero?: boolean;
+}
+
+const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: PropertyShowcaseProps) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [heroVideo, setHeroVideo] = useState<any>(undefined);
   const scrollBtnRef = useRef<HTMLDivElement>(null);
@@ -245,7 +250,7 @@ const PropertyShowcase = () => {
       <div id="section1" className="event">
         <div className="pinWrapper">
           <div className="text">
-            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
+            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale ? 'FOR SALE' : 'OPEN HOUSE'}</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight mb-6">
               {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>
@@ -285,7 +290,7 @@ const PropertyShowcase = () => {
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
               </svg>
-              <span className="text-green-400 font-light">{openHouseDetails.nextDate} • {openHouseDetails.time}</span>
+              <span className="text-green-400 font-light">OPEN HOUSE: {openHouseDetails.nextDate} • {openHouseDetails.time}</span>
             </div>
             
             <button 
@@ -332,7 +337,7 @@ const PropertyShowcase = () => {
       </div>
       
       {/* Room Sections with minimalist design - using homeShowcaseSections config (max 3 sections) */}
-      {homeShowcaseSections.slice(0, 3).map((section, index) => (
+      {!showOnlyHero && homeShowcaseSections.slice(0, 3).map((section, index) => (
         <div key={section.id} id={`section${index + 2}`} className="event">
           <div className="pinWrapper">
             <div className="text absolute top-1/2 left-0 transform -translate-y-1/2 translate-x-20 w-5/12 z-10">

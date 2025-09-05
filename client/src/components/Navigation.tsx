@@ -13,7 +13,11 @@ const navItems = [
   { id: 'contact', label: 'Contact' }
 ];
 
-const Navigation = () => {
+interface NavigationProps {
+  showForSale?: boolean;
+}
+
+const Navigation = ({ showForSale = false }: NavigationProps) => {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
@@ -42,7 +46,7 @@ const Navigation = () => {
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-primary/90 backdrop-blur-sm' : ''}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-white font-['Poppins'] text-xl tracking-wider">
-            <span className="text-white">OPEN HOUSE:</span> <span style={{ color: colors.primary }}>{property.address.street}</span>
+            <span className="text-white hidden sm:inline">{showForSale ? 'FOR SALE:' : 'OPEN HOUSE:'}</span> <span style={{ color: colors.primary }}>{property.address.street}</span>
           </Link>
           
           <nav className="hidden md:block">

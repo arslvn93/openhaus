@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16">
           <div className="md:col-span-4">
-            <h2 className="text-3xl font-light mb-10">{property.address.street.split(' ')[0]} {property.address.street.split(' ')[1]}</h2>
+            <h2 className="text-3xl font-light mb-10">{property.address.street}</h2>
             <p className="text-white/60 font-light mb-12 leading-relaxed">
               {property.shortDescription}
             </p>
@@ -44,6 +44,17 @@ const Footer = () => {
             <ul className="space-y-5 text-white/60 font-light">
               <li className="flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-4 mt-0.5 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="m22 21-3-3m0 0a2 2 0 1 0-2.828-2.828A2 2 0 0 0 19 18Z"></path>
+                </svg>
+                <div>
+                  <p className="text-white font-medium">{contactInfo.agent.name}</p>
+                  <p className="text-white/60 text-sm">{contactInfo.agent.company}</p>
+                </div>
+              </li>
+              <li className="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-4 mt-0.5 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
                 <span>{contactInfo.agent.email}</span>
@@ -78,10 +89,6 @@ const Footer = () => {
                 <span>{openHouseDetails.nextDate.split(',')[0]}</span>
                 <span>{openHouseDetails.time.split(' - ')[1]}</span>
               </li>
-              <li className="flex justify-between">
-                <span>Hosted by</span>
-                <span>{openHouseDetails.host}</span>
-              </li>
             </ul>
           </div>
         </div>
@@ -91,8 +98,6 @@ const Footer = () => {
             <p>{siteBranding.footer.copyrightText}</p>
             <div className="flex gap-6">
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Sitemap</a>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import HomeHighlights from './HomeHighlights';
 import PhotoGallery from './PhotoGallery';
 import NeighborhoodOverview from './NeighborhoodOverview';
 import ExclusivePackage from './ExclusivePackage';
-import ContactForm from './ContactForm';
+import OpenHouseSignIn from './OpenHouseSignIn';
 import Testimonials from './Testimonials';
 import Footer from './Footer';
 import PropertyFeatures from './PropertyFeatures';
@@ -16,7 +16,7 @@ import Preloader from './Preloader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { siteBranding } from '../config/siteConfig';
 
-const LandingPage = () => {
+const OpenHousePage = () => {
   const { createScrollScene } = useScrollAnimation();
   const [showExitPopup, setShowExitPopup] = useState(false);
 
@@ -125,16 +125,9 @@ const LandingPage = () => {
 
   return (
     <>
-      <Navigation showForSale={true} />
-      <PropertyShowcase showForSale={true} />
-      <PropertyDetails />
-      <PropertyFeatures />
-      <HomeHighlights />
-      <PhotoGallery />
-      <NeighborhoodOverview />
-      <ExclusivePackage />
-      <Testimonials />
-      <ContactForm />
+      <Navigation />
+      <PropertyShowcase showOnlyHero={true} />
+      <OpenHouseSignIn />
       <Footer />
       <Preloader />
 
@@ -260,4 +253,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default OpenHousePage;

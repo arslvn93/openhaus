@@ -200,6 +200,46 @@ export const openHouseDetails = {
   virtualTourUrl: "https://tours.openhousemedia.ca/sites/80-john-st-2912-toronto-on-m5v-3x4-15850296/branded"
 };
 
+// openHouseBenefits configuration - what visitors will receive after signing in
+export const openHouseBenefits = [
+  {
+    id: 1,
+    title: "Detailed Floor Plans",
+    description: "Complete architectural layouts showing the 2 bedroom, 2 bathroom + den configuration with precise measurements and optimal room flow.",
+    iconName: "FileText"
+  },
+  {
+    id: 2,
+    title: "Recent Neighborhood Sales",
+    description: "Comparative market analysis of recent Condo Apartment sales in the Entertainment District, showing strong demand for larger, renovated suites.",
+    iconName: "BarChart2"
+  },
+  {
+    id: 3,
+    title: "School District Information",
+    description: "Comprehensive overview of TDSB and TCDSB options nearby, including Ogden Junior Public School and local secondary programs with ratings and enrollment details.",
+    iconName: "GraduationCap"
+  },
+  {
+    id: 4,
+    title: "Property Inspection Report",
+    description: "Professional assessment of the unit's condition, highlighting recent upgrades and maintenance history for informed decision-making.",
+    iconName: "CheckSquare"
+  },
+  {
+    id: 5,
+    title: "Financing Options Guide",
+    description: "Current mortgage rates and financing programs available for condo purchases, including first-time buyer incentives and down payment assistance.",
+    iconName: "DollarSign"
+  },
+  {
+    id: 6,
+    title: "Neighborhood Amenities Map",
+    description: "Interactive guide to nearby restaurants, shopping, entertainment venues, and transportation options within walking distance.",
+    iconName: "Map"
+  }
+];
+
 // packageItems configuration
 export const packageItems = [
   {
