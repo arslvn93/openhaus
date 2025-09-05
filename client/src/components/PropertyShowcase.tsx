@@ -170,13 +170,11 @@ const PropertyShowcase = () => {
       const loaderVideo = document.getElementById('loaderVideo');
       
       if (loaderVideo) {
-        // Responsive adjustments for the video based on screen size
+        // Skip video positioning on mobile devices since video is hidden
         const applyResponsiveStyles = () => {
-          if (window.matchMedia('(max-width: 576px)').matches) {
-            loaderVideo.style.top = "-75%";
-            loaderVideo.style.left = "24px";
-            loaderVideo.style.right = "auto";
-            loaderVideo.style.transform = "translate(0%, -25%)";
+          if (window.matchMedia('(max-width: 640px)').matches) {
+            // Mobile - video is hidden, no positioning needed
+            return;
           } else if (window.matchMedia('(max-width: 767px)').matches) {
             loaderVideo.style.width = "220px";
             loaderVideo.style.height = "220px";
@@ -248,10 +246,10 @@ const PropertyShowcase = () => {
         <div className="pinWrapper">
           <div className="text">
             <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">OPEN HOUSE</span>
-            <h2 className="text-5xl font-extralight mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight mb-6">
               {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>
-            <p className="text-2xl font-extralight text-white/90 mb-8 leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl font-extralight text-white/90 mb-8 leading-relaxed">
               {property.shortDescription}
             </p>
             
@@ -341,19 +339,17 @@ const PropertyShowcase = () => {
               <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">
                 {section.title.toUpperCase().replace(/\s+/g, ' ')}
               </span>
-              <h2 className="text-5xl font-extralight mb-6">{section.title}</h2>
-              <p className="text-xl font-light text-white/90 mb-10 leading-relaxed">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extralight mb-6">{section.title}</h2>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white/90 mb-10 leading-relaxed">
                 {section.description}
               </p>
               
               <div className="flex flex-wrap gap-3">
-                {/* Extract key features from the description */}
-                {section.description.split('.').slice(0, 3).map((feature, idx) => (
-                  feature.trim() && (
-                    <span key={idx} className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">
-                      {feature.trim().replace(/^[A-Za-z\s]+/, '').trim() || feature.trim()}
-                    </span>
-                  )
+                {/* Display tags from config */}
+                {section.tags && section.tags.split(',').map((tag, idx) => (
+                  <span key={idx} className="bg-black/30 backdrop-blur-sm px-5 py-2 text-sm text-white/90 border border-white/5">
+                    {tag.trim()}
+                  </span>
                 ))}
               </div>
             </div>

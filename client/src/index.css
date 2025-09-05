@@ -499,9 +499,17 @@
     top: 64%;
   }
   .image:not(#loaderVideo) {
-    top: -75%;
+    top: -80%;
     left: 24px;
     right: auto;
     transform: translate(0%, -25%);
+  }
+  /* Special positioning for section 1 to avoid overlap with text at 64% */
+  #section1 .image:not(#loaderVideo) {
+    top: -75%;
+  }
+  /* Hide video/image on mobile */
+  #loaderVideo {
+    display: none;
   }
 }

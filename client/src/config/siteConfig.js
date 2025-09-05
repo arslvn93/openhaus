@@ -73,19 +73,22 @@ export const homeShowcaseSections = [
     id: "section2",
     title: "Culinary Haven",
     description: "Custom 2021 kitchen with enlarged island, storage on the seating side, and built-in outlet—perfect for prep, laptops, and hosting—finished with cohesive designer materials and fixtures.",
-    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004602781-2912-80 John St-04.jpg"
+    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004602781-2912-80 John St-04.jpg",
+    tags: "Custom Kitchen, Island Seating, Modern Fixtures"
   },
   {
     id: "section3",
     title: "Primary Retreat",
     description: "Quiet, well-proportioned bedroom offers serene rest with bright southeast light and easy access to a beautifully retiled bathroom featuring modern fixtures and floor-to-ceiling tile.",
-    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004609515-2912-80 John St-14.jpg"
+    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004609515-2912-80 John St-14.jpg",
+    tags: "Serene Bedroom, Natural Light, Modern Bathroom"
   },
   {
     id: "section4",
     title: "Productive Workspace",
     description: "A true den separates work from life—ideal for focused WFH, a guest nook, or reading lounge—without compromising the openness of the main living area.",
-    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004643105-2912-80 John St-11.jpg"
+    imageUrl: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757004643105-2912-80 John St-11.jpg",
+    tags: "Home Office, Flexible Space, Private Den"
   }
 ];
 

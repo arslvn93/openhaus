@@ -89,7 +89,7 @@ const PropertyDetails = () => {
                   <i className='bx bxs-user text-[#D9A566] text-2xl mr-3'></i>
                   <div>
                     <h4 className="font-['Poppins']">Hosted By</h4>
-                    <p className="font-['Titillium_Web']'>{openHouseDetails.host}, {contactInfo.agent.company}</p>
+                    <p className="font-['Titillium_Web']">{openHouseDetails.host}, {contactInfo.agent.company}</p>
                   </div>
                 </div>
               </div>

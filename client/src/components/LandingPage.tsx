@@ -8,6 +8,9 @@ import PhotoGallery from './PhotoGallery';
 import NeighborhoodOverview from './NeighborhoodOverview';
 import ExclusivePackage from './ExclusivePackage';
 import ContactForm from './ContactForm';
+import Testimonials from './Testimonials';
+import Footer from './Footer';
+import PropertyFeatures from './PropertyFeatures';
 import { property } from '../config/siteConfig';
 import Preloader from './Preloader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -23,6 +26,18 @@ const LandingPage = () => {
     const loadAnimationsTimeout = setTimeout(() => {
       if (typeof window !== 'undefined' && window.ScrollMagic) {
         // Section animations
+        createScrollScene({
+          triggerElement: '#details',
+          animation: 'fadeIn',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#features',
+          animation: 'slideUp',
+          offset: -100
+        });
+        
         createScrollScene({
           triggerElement: '#highlights',
           animation: 'fadeIn',
@@ -44,6 +59,12 @@ const LandingPage = () => {
         createScrollScene({
           triggerElement: '#package',
           animation: 'slideRight',
+          offset: -100
+        });
+        
+        createScrollScene({
+          triggerElement: '#testimonials',
+          animation: 'fadeIn',
           offset: -100
         });
         
@@ -106,11 +127,15 @@ const LandingPage = () => {
     <>
       <Navigation />
       <PropertyShowcase />
+      <PropertyDetails />
+      <PropertyFeatures />
       <HomeHighlights />
       <PhotoGallery />
       <NeighborhoodOverview />
       <ExclusivePackage />
+      <Testimonials />
       <ContactForm />
+      <Footer />
       <Preloader />
 
       {/* Exit Intent Popup (Modal) */}
