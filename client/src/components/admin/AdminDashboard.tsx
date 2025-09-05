@@ -74,7 +74,7 @@ const AdminDashboard = () => {
       
       setCurrentConfig(updatedConfig);
       
-      // Send to backend API
+      // Send full, merged config to backend API (function forwards to n8n)
       const response = await fetch('/api/config/update', {
         method: 'POST',
         headers: {
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
         },
         body: JSON.stringify({
           section,
-          config: newConfig
+          config: updatedConfig
         }),
       });
       
