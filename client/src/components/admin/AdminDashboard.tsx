@@ -9,11 +9,11 @@ import * as siteConfig from '../../config/siteConfig';
 import PropertyForm from './PropertyForm';
 import FeaturesForm from './FeaturesForm';
 import GalleryForm from './GalleryForm';
-import TestimonialsForm from './TestimonialsForm';
 import NeighborhoodForm from './NeighborhoodForm';
 import PackageForm from './PackageForm';
 import ContactForm from './ContactForm';
 import BrandingForm from './BrandingForm';
+import AgentForm from './AgentForm';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -62,15 +62,27 @@ const AdminDashboard = () => {
     });
   };
   
+  // Deep merge function to properly merge nested objects
+  const deepMerge = (target: any, source: any): any => {
+    const result = { ...target };
+    
+    for (const key in source) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        result[key] = deepMerge(target[key] || {}, source[key]);
+      } else {
+        result[key] = source[key];
+      }
+    }
+    
+    return result;
+  };
+  
   const saveConfig = async (newConfig: Record<string, any>, section: string) => {
     try {
       setLoading(true);
       
-      // Update the current config in state first
-      const updatedConfig = {
-        ...currentConfig,
-        ...newConfig
-      };
+      // Update the current config in state first using deep merge
+      const updatedConfig = deepMerge(currentConfig, newConfig);
       
       setCurrentConfig(updatedConfig);
       
@@ -151,7 +163,8 @@ const AdminDashboard = () => {
         propertyType: adaptedConfig.property.type || 'Single Family Home',
         heroImage: adaptedConfig.property.heroImage || adaptedConfig.siteBranding?.heroImage || '',
         heroCaption: adaptedConfig.property.heroCaption || adaptedConfig.property.shortDescription || '',
-        mainFeatures: adaptedConfig.property.mainFeatures || []
+        mainFeatures: adaptedConfig.property.mainFeatures || [],
+        mapLocation: adaptedConfig.property.mapLocation || adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 }
       };
     }
     
@@ -176,14 +189,6 @@ const AdminDashboard = () => {
       }));
     }
     
-    // Adapt testimonials
-    if (Array.isArray(adaptedConfig.testimonials)) {
-      adaptedConfig.testimonials = adaptedConfig.testimonials.map((testimonial: any) => ({
-        ...testimonial,
-        author: testimonial.author || testimonial.name || '',
-        rating: testimonial.rating || 5
-      }));
-    }
     
     // Adapt neighborhood stats
     if (Array.isArray(adaptedConfig.neighborhoodStats)) {
@@ -230,7 +235,7 @@ const AdminDashboard = () => {
     if (adaptedConfig.siteBranding) {
       adaptedConfig.siteBranding = {
         ...adaptedConfig.siteBranding,
-        companyName: adaptedConfig.siteBranding.companyName || adaptedConfig.contactInfo?.agent?.company || '30 Kylemount Ave',
+        companyName: adaptedConfig.siteBranding.companyName || adaptedConfig.contactInfo?.agent?.company || '',
         companyLogo: adaptedConfig.siteBranding.companyLogo || adaptedConfig.siteBranding.logoUrl || '',
         accentColor: adaptedConfig.siteBranding.accentColor || adaptedConfig.siteBranding.colors?.primary || '#D9A566',
         footerText: adaptedConfig.siteBranding.footerText || adaptedConfig.siteBranding.footer?.copyrightText || ''
@@ -292,9 +297,9 @@ const AdminDashboard = () => {
             <TabsTrigger value="property" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Property</TabsTrigger>
             <TabsTrigger value="features" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Features</TabsTrigger>
             <TabsTrigger value="gallery" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Gallery</TabsTrigger>
-            <TabsTrigger value="testimonials" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Testimonials</TabsTrigger>
             <TabsTrigger value="neighborhood" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Neighborhood</TabsTrigger>
             <TabsTrigger value="package" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Package</TabsTrigger>
+            <TabsTrigger value="agent" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Agent</TabsTrigger>
             <TabsTrigger value="contact" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Contact</TabsTrigger>
             <TabsTrigger value="branding" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Branding</TabsTrigger>
           </TabsList>
@@ -303,7 +308,22 @@ const AdminDashboard = () => {
             <TabsContent value="property">
               <PropertyForm
                 initialData={adaptedConfig.property}
-                saveData={(data: any) => saveConfig({ property: data }, 'Property')}
+                initialHeroVideo={adaptedConfig.heroVideo}
+                saveData={(data: any, heroVideo: any) => {
+                  // Extract mapLocation from property data and save it to contactInfo
+                  const { mapLocation, ...propertyData } = data;
+                  
+                  const updatedContactInfo = {
+                    ...adaptedConfig.contactInfo,
+                    mapLocation: mapLocation || adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 }
+                  };
+                  
+                  saveConfig({ 
+                    property: propertyData,
+                    heroVideo: heroVideo,
+                    contactInfo: updatedContactInfo
+                  }, 'Property');
+                }}
                 loading={loading}
               />
             </TabsContent>
@@ -328,19 +348,13 @@ const AdminDashboard = () => {
               />
             </TabsContent>
             
-            <TabsContent value="testimonials">
-              <TestimonialsForm
-                initialData={adaptedConfig.testimonials}
-                saveData={(data: any) => saveConfig({ testimonials: data }, 'Testimonials')}
-                loading={loading}
-              />
-            </TabsContent>
-            
             <TabsContent value="neighborhood">
               <NeighborhoodForm
+                initialBasics={adaptedConfig.neighborhood}
                 initialStats={adaptedConfig.neighborhoodStats}
                 initialAmenities={adaptedConfig.neighborhoodAmenities}
-                saveData={(stats: any, amenities: any) => saveConfig({ 
+                saveData={(basics: any, stats: any, amenities: any) => saveConfig({ 
+                  neighborhood: basics,
                   neighborhoodStats: stats, 
                   neighborhoodAmenities: amenities 
                 }, 'Neighborhood')}
@@ -360,18 +374,51 @@ const AdminDashboard = () => {
               />
             </TabsContent>
             
+            <TabsContent value="agent">
+              <AgentForm
+                initialData={{
+                  agent: {
+                    ...adaptedConfig.contactInfo?.agent,
+                    companyAddress: adaptedConfig.contactInfo?.address || '',
+                    companyLogo: adaptedConfig.siteBranding?.companyLogo || adaptedConfig.siteBranding?.logoUrl || ''
+                  },
+                  social: adaptedConfig.contactInfo?.social || {}
+                }}
+                saveData={(data: any) => {
+                  console.log('Agent save data:', data);
+                  console.log('Current siteBranding:', adaptedConfig.siteBranding);
+                  const updatedContactInfo = {
+                    ...adaptedConfig.contactInfo,
+                    agent: data.agent,
+                    social: data.social,
+                    // Map companyAddress to the main address field for backward compatibility
+                    address: data.agent.companyAddress || adaptedConfig.contactInfo?.address || ''
+                  };
+
+                  const updatedSiteBranding = {
+                    ...adaptedConfig.siteBranding,
+                    logoUrl: data.agent.companyLogo || adaptedConfig.siteBranding?.logoUrl || '',
+                    companyLogo: data.agent.companyLogo || adaptedConfig.siteBranding?.companyLogo || ''
+                  };
+
+                  saveConfig({ 
+                    contactInfo: updatedContactInfo,
+                    siteBranding: updatedSiteBranding
+                  }, 'Agent');
+                }}
+                loading={loading}
+              />
+            </TabsContent>
+            
             <TabsContent value="contact">
               <ContactForm
-                initialData={adaptedConfig.contactInfo}
+                initialData={{ mapLocation: adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 } }}
                 saveData={(data: any) => {
-                  // Preserve agent data when saving contact info
+                  // Only save mapLocation data, preserve everything else
                   const completeContactData = {
-                    ...adaptedConfig.contactInfo, // Keep all existing fields including agent
-                    ...data // Override with form data
+                    ...adaptedConfig.contactInfo, // Keep all existing fields including agent and social
+                    mapLocation: data.mapLocation // Only update mapLocation
                   };
-                  // Ensure footer-compatible key is set
-                  completeContactData.social = completeContactData.socialLinks || completeContactData.social || {};
-                  console.log('Saving contact info with preserved agent data:', completeContactData.agent);
                   saveConfig({ contactInfo: completeContactData }, 'Contact');
                 }}
                 loading={loading}
@@ -382,10 +429,25 @@ const AdminDashboard = () => {
               <BrandingForm
                 initialData={adaptedConfig.siteBranding}
                 initialMeta={adaptedConfig.siteMetadata}
-                saveData={(branding: any, meta: any) => saveConfig({ 
-                  siteBranding: branding,
-                  siteMetadata: meta
-                }, 'Branding')}
+                saveData={(branding: any, meta: any) => {
+                  // Mirror footerText to footer.copyrightText and accentColor to colors.primary
+                  const updatedSiteBranding = {
+                    ...branding,
+                    footer: {
+                      ...adaptedConfig.siteBranding?.footer,
+                      copyrightText: branding.footerText || adaptedConfig.siteBranding?.footer?.copyrightText || ''
+                    },
+                    colors: {
+                      ...adaptedConfig.siteBranding?.colors,
+                      primary: branding.accentColor || adaptedConfig.siteBranding?.colors?.primary || '#D9A566'
+                    }
+                  };
+
+                  return saveConfig({ 
+                    siteBranding: updatedSiteBranding,
+                    siteMetadata: meta
+                  }, 'Branding');
+                }}
                 loading={loading}
               />
             </TabsContent>

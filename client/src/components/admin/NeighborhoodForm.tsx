@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, X, School, Landmark, ShoppingBag, Coffee, Utensils, Bus, Train, Building, Map } from "lucide-react";
+import { Plus, X, School, Landmark, ShoppingBag, Coffee, Utensils, Bus, Train, Building, Map, MapPin } from "lucide-react";
+
+interface NeighborhoodBasics {
+  name: string;
+  city: string;
+  description: string;
+  highlights: string[];
+}
 
 interface NeighborhoodStat {
   id: number;
@@ -24,20 +32,32 @@ interface Amenity {
 }
 
 interface NeighborhoodFormProps {
+  initialBasics: NeighborhoodBasics;
   initialStats: NeighborhoodStat[];
   initialAmenities: Amenity[];
-  saveData: (stats: NeighborhoodStat[], amenities: Amenity[]) => void;
+  saveData: (basics: NeighborhoodBasics, stats: NeighborhoodStat[], amenities: Amenity[]) => void;
   loading: boolean;
 }
 
 const NeighborhoodForm: React.FC<NeighborhoodFormProps> = ({ 
+  initialBasics,
   initialStats, 
   initialAmenities, 
   saveData, 
   loading 
 }) => {
+  const [basics, setBasics] = useState<NeighborhoodBasics>(initialBasics || {
+    name: '',
+    city: '',
+    description: '',
+    highlights: []
+  });
+  
   const [stats, setStats] = useState<NeighborhoodStat[]>(initialStats || []);
   const [amenities, setAmenities] = useState<Amenity[]>(initialAmenities || []);
+  
+  // New highlight form
+  const [newHighlight, setNewHighlight] = useState('');
   
   // New stat form
   const [newStat, setNewStat] = useState<Omit<NeighborhoodStat, 'id'>>({
@@ -64,6 +84,37 @@ const NeighborhoodForm: React.FC<NeighborhoodFormProps> = ({
     { value: 'cafes', label: 'Cafés', icon: <Coffee className="h-4 w-4" /> },
     { value: 'transit', label: 'Transit', icon: <Bus className="h-4 w-4" /> }
   ];
+  
+  const handleBasicsChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setBasics({
+      ...basics,
+      [name]: value
+    });
+  };
+  
+  const handleAddHighlight = () => {
+    if (!newHighlight.trim()) return;
+    
+    setBasics({
+      ...basics,
+      highlights: [...basics.highlights, newHighlight.trim()]
+    });
+    
+    setNewHighlight('');
+  };
+  
+  const handleRemoveHighlight = (index: number) => {
+    const updatedHighlights = [...basics.highlights];
+    updatedHighlights.splice(index, 1);
+    
+    setBasics({
+      ...basics,
+      highlights: updatedHighlights
+    });
+  };
   
   const handleAddStat = () => {
     if (!newStat.title || !newStat.value) return;
@@ -146,12 +197,104 @@ const NeighborhoodForm: React.FC<NeighborhoodFormProps> = ({
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    saveData(stats, amenities);
+    saveData(basics, stats, amenities);
   };
   
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-8">
+        {/* Neighborhood Basics Section */}
+        <div>
+          <h3 className="text-xl font-['Poppins'] text-white mb-4">Neighborhood Information</h3>
+          <p className="text-white/60 mb-6">
+            Set up the basic information about the neighborhood where your property is located.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-[#D9A566]" />
+                <Label htmlFor="name" className="text-white">Neighborhood Name</Label>
+              </div>
+              <Input
+                id="name"
+                name="name"
+                value={basics.name}
+                onChange={handleBasicsChange}
+                placeholder="e.g. Entertainment District"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-[#D9A566]" />
+                <Label htmlFor="city" className="text-white">City</Label>
+              </div>
+              <Input
+                id="city"
+                name="city"
+                value={basics.city}
+                onChange={handleBasicsChange}
+                placeholder="e.g. Toronto"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2 mb-6">
+            <Label htmlFor="description" className="text-white">Neighborhood Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              value={basics.description}
+              onChange={handleBasicsChange}
+              placeholder="Describe the neighborhood's character, amenities, and appeal..."
+              className="bg-black/50 border-white/10 text-white min-h-[120px]"
+            />
+          </div>
+          
+          <div className="space-y-4 mb-6">
+            <Label className="text-white">Neighborhood Highlights</Label>
+            <div className="space-y-2">
+              {basics.highlights.map((highlight, index) => (
+                <div 
+                  key={index}
+                  className="flex items-center bg-black/30 border border-white/10 rounded-lg px-3 py-2"
+                >
+                  <span className="text-white text-sm flex-grow">{highlight}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveHighlight(index)}
+                    className="ml-2 text-white/60 hover:text-red-500"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <Input
+                value={newHighlight}
+                onChange={(e) => setNewHighlight(e.target.value)}
+                placeholder="Add a neighborhood highlight (e.g. Steps to theaters and dining)"
+                className="bg-black/50 border-white/10 text-white"
+              />
+              <Button 
+                type="button" 
+                onClick={handleAddHighlight}
+                variant="outline"
+                className="text-[#D9A566] hover:text-[#D9A566] border-[#D9A566]/30 hover:border-[#D9A566]/60 hover:bg-[#D9A566]/5 whitespace-nowrap"
+              >
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        <Separator className="bg-white/10 my-6" />
+        
         {/* Neighborhood Stats Section */}
         <div>
           <h3 className="text-xl font-['Poppins'] text-white mb-4">Neighborhood Statistics</h3>

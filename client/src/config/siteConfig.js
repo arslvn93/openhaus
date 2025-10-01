@@ -20,7 +20,11 @@ export const contactInfo = {
       facebook: "https://facebook.com/executivehomesrealtyinc",
       twitter: "https://twitter.com/executivehomesrealtyinc",
       linkedin: "https://linkedin.com/company/executivehomesrealtyinc"
-    }
+    },
+    mapLocation: {
+      lat: 43.7,
+      lng: -79.4
+    },
   };
 
 // galleryImages configuration

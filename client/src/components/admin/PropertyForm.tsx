@@ -4,7 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus, Home } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { X, Plus, Home, ChevronDown, ChevronRight, Settings } from "lucide-react";
 
 interface AddressData {
   street: string;
@@ -31,18 +32,33 @@ interface PropertyData {
   heroCaption: string;
   shortDescription?: string;
   longDescription?: string;
+  mapLocation?: {
+    lat: number;
+    lng: number;
+  };
   // Allow any additional fields
   [key: string]: any;
 }
 
+interface HeroVideoData {
+  url: string;
+  type: string;
+  autoplay: boolean;
+  loop: boolean;
+  muted: boolean;
+  playsInline: boolean;
+}
+
 interface PropertyFormProps {
   initialData: PropertyData;
-  saveData: (data: PropertyData) => void;
+  initialHeroVideo: HeroVideoData;
+  saveData: (data: PropertyData, heroVideo: HeroVideoData) => void;
   loading: boolean;
 }
 
 const PropertyForm: React.FC<PropertyFormProps> = ({ 
   initialData, 
+  initialHeroVideo,
   saveData, 
   loading 
 }) => {
@@ -50,8 +66,13 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     ...initialData,
     mainFeatures: initialData.mainFeatures || []
   });
+
+  const [heroVideoData, setHeroVideoData] = useState<HeroVideoData>({
+    ...initialHeroVideo
+  });
   
   const [newFeature, setNewFeature] = useState('');
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -118,6 +139,17 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     });
   };
   
+  const handleHeroVideoChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value, type, checked } = e.target;
+    
+    setHeroVideoData({
+      ...heroVideoData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -133,7 +165,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     };
     
     console.log("Submitting complete property data:", completePropertyData);
-    saveData(completePropertyData);
+    console.log("Submitting hero video data:", heroVideoData);
+    saveData(completePropertyData, heroVideoData);
   };
   
   return (
@@ -209,6 +242,46 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   />
                 </div>
               </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-white">Property Name</Label>
+              <Input
+                id="name"
+                name="name"
+                value={propertyData.name || ''}
+                onChange={handleInputChange}
+                placeholder="e.g. Modern Family Home"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="status" className="text-white">Listing Status</Label>
+              <Input
+                id="status"
+                name="status"
+                value={propertyData.status || ''}
+                onChange={handleInputChange}
+                placeholder="e.g. For Sale, Sold, Pending"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="space-y-2">
+              <Label htmlFor="lotSize" className="text-white">Lot Size</Label>
+              <Input
+                id="lotSize"
+                name="lotSize"
+                value={propertyData.lotSize}
+                onChange={handleInputChange}
+                placeholder="e.g. 0.25 acres"
+                className="bg-black/50 border-white/10 text-white"
+              />
             </div>
           </div>
           
@@ -294,15 +367,27 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="space-y-2">
-              <Label htmlFor="lotSize" className="text-white">Lot Size</Label>
-              <Input
-                id="lotSize"
-                name="lotSize"
-                value={propertyData.lotSize}
+              <Label htmlFor="shortDescription" className="text-white">Short Description</Label>
+              <Textarea
+                id="shortDescription"
+                name="shortDescription"
+                value={propertyData.shortDescription || ''}
                 onChange={handleInputChange}
-                placeholder="e.g. 0.25 acres"
+                placeholder="Brief description for cards and previews..."
+                className="bg-black/50 border-white/10 text-white min-h-[80px]"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="heroCaption" className="text-white">Hero Caption</Label>
+              <Input
+                id="heroCaption"
+                name="heroCaption"
+                value={propertyData.heroCaption}
+                onChange={handleInputChange}
+                placeholder="A captivating caption for the hero image"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -319,44 +404,74 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               className="bg-black/50 border-white/10 text-white min-h-[150px]"
             />
           </div>
-          
+
           <div className="space-y-2 mb-6">
-            <Label className="text-white">Main Features</Label>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {propertyData.mainFeatures.map((feature, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center bg-black/50 border border-white/10 rounded-full px-3 py-1"
-                >
-                  <span className="text-white text-sm">{feature}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveFeature(index)}
-                    className="ml-2 text-white/60 hover:text-red-500"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
+            <Label htmlFor="longDescription" className="text-white">Long Description</Label>
+            <Textarea
+              id="longDescription"
+              name="longDescription"
+              value={propertyData.longDescription || ''}
+              onChange={handleInputChange}
+              placeholder="Extended property description for detailed pages..."
+              className="bg-black/50 border-white/10 text-white min-h-[120px]"
+            />
+          </div>
+          
+          <div className="space-y-3 mb-6">
+            <Label className="text-white">Map Location (Coordinates)</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="mapLat" className="text-white/60 text-sm">Latitude</Label>
+                <Input
+                  id="mapLat"
+                  name="mapLat"
+                  type="number"
+                  step="0.0000001"
+                  value={propertyData.mapLocation?.lat || ''}
+                  onChange={(e) => {
+                    const lat = Number(e.target.value) || 0;
+                    setPropertyData({
+                      ...propertyData,
+                      mapLocation: {
+                        ...propertyData.mapLocation,
+                        lat: lat
+                      }
+                    });
+                  }}
+                  placeholder="43.6532"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="mapLng" className="text-white/60 text-sm">Longitude</Label>
+                <Input
+                  id="mapLng"
+                  name="mapLng"
+                  type="number"
+                  step="0.0000001"
+                  value={propertyData.mapLocation?.lng || ''}
+                  onChange={(e) => {
+                    const lng = Number(e.target.value) || 0;
+                    setPropertyData({
+                      ...propertyData,
+                      mapLocation: {
+                        ...propertyData.mapLocation,
+                        lng: lng
+                      }
+                    });
+                  }}
+                  placeholder="-79.3832"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
             </div>
             
-            <div className="flex gap-2">
-              <Input
-                value={newFeature}
-                onChange={(e) => setNewFeature(e.target.value)}
-                placeholder="Add a feature (e.g. Newly renovated kitchen)"
-                className="bg-black/50 border-white/10 text-white"
-              />
-              <Button 
-                type="button" 
-                onClick={handleAddFeature}
-                variant="outline"
-                className="text-[#D9A566] hover:text-[#D9A566] border-[#D9A566]/30 hover:border-[#D9A566]/60 hover:bg-[#D9A566]/5 whitespace-nowrap"
-              >
-                <Plus className="h-4 w-4 mr-1" /> Add
-              </Button>
-            </div>
+            <p className="text-white/40 text-xs">
+              Tip: You can get coordinates by right-clicking on Google Maps and selecting "What's here?"
+            </p>
           </div>
+          
         </div>
         
         <div>
@@ -371,18 +486,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 value={propertyData.heroImage}
                 onChange={handleInputChange}
                 placeholder="https://example.com/image.jpg"
-                className="bg-black/50 border-white/10 text-white"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="heroCaption" className="text-white">Hero Caption</Label>
-              <Input
-                id="heroCaption"
-                name="heroCaption"
-                value={propertyData.heroCaption}
-                onChange={handleInputChange}
-                placeholder="A captivating caption for the hero image"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -403,6 +506,184 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             </div>
           )}
         </div>
+        
+        <div>
+          <h4 className="text-lg font-['Poppins'] text-white mb-4">Hero Video Settings</h4>
+          <p className="text-white/60 mb-6 text-sm">
+            Configure the hero video that plays in the background of your property showcase
+          </p>
+          
+          <div className="space-y-4 mb-6">
+            <div className="space-y-2">
+              <Label htmlFor="heroVideo.url" className="text-white">Video URL</Label>
+              <Input
+                id="heroVideo.url"
+                name="url"
+                value={heroVideoData.url}
+                onChange={handleHeroVideoChange}
+                placeholder="https://example.com/video.mp4 or https://player.vimeo.com/video/123456"
+                className="bg-black/50 border-white/10 text-white"
+              />
+              <p className="text-white/40 text-xs">
+                Supports MP4 files and Vimeo embed URLs
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="heroVideo.type" className="text-white">Video Type</Label>
+              <Input
+                id="heroVideo.type"
+                name="type"
+                value={heroVideoData.type}
+                onChange={handleHeroVideoChange}
+                placeholder="video/mp4"
+                className="bg-black/50 border-white/10 text-white"
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="heroVideo.autoplay"
+                  name="autoplay"
+                  checked={heroVideoData.autoplay}
+                  onChange={handleHeroVideoChange}
+                  className="rounded border-white/10 bg-black/50 text-[#D9A566] focus:ring-[#D9A566]"
+                />
+                <Label htmlFor="heroVideo.autoplay" className="text-white text-sm">Autoplay</Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="heroVideo.loop"
+                  name="loop"
+                  checked={heroVideoData.loop}
+                  onChange={handleHeroVideoChange}
+                  className="rounded border-white/10 bg-black/50 text-[#D9A566] focus:ring-[#D9A566]"
+                />
+                <Label htmlFor="heroVideo.loop" className="text-white text-sm">Loop</Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="heroVideo.muted"
+                  name="muted"
+                  checked={heroVideoData.muted}
+                  onChange={handleHeroVideoChange}
+                  className="rounded border-white/10 bg-black/50 text-[#D9A566] focus:ring-[#D9A566]"
+                />
+                <Label htmlFor="heroVideo.muted" className="text-white text-sm">Muted</Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="heroVideo.playsInline"
+                  name="playsInline"
+                  checked={heroVideoData.playsInline}
+                  onChange={handleHeroVideoChange}
+                  className="rounded border-white/10 bg-black/50 text-[#D9A566] focus:ring-[#D9A566]"
+                />
+                <Label htmlFor="heroVideo.playsInline" className="text-white text-sm">Plays Inline</Label>
+              </div>
+            </div>
+          </div>
+          
+          {heroVideoData.url && (
+            <div className="bg-black/30 border border-white/10 rounded-md overflow-hidden mb-6">
+              <div className="aspect-video relative">
+                {heroVideoData.url.includes('vimeo.com') ? (
+                  <iframe
+                    src={`${heroVideoData.url}?autoplay=0&muted=1&loop=1&background=1&controls=0&playsinline=1`}
+                    className="absolute inset-0 w-full h-full"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={heroVideoData.url}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    controls
+                    muted={heroVideoData.muted}
+                    loop={heroVideoData.loop}
+                    playsInline={heroVideoData.playsInline}
+                  />
+                )}
+              </div>
+              <div className="p-3">
+                <p className="text-white/80 text-sm">
+                  Video Preview - {heroVideoData.type}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
+          <CollapsibleTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full justify-between text-white border-white/10 hover:bg-white/5 mb-6"
+            >
+              <div className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                <span>Advanced Settings</span>
+              </div>
+              {isAdvancedOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </Button>
+          </CollapsibleTrigger>
+          
+          <CollapsibleContent className="space-y-6">
+            <div>
+              <h4 className="text-lg font-['Poppins'] text-white mb-4">Advanced Property Details</h4>
+              <p className="text-white/60 mb-6 text-sm">
+                Additional property information that may not be displayed prominently on the site
+              </p>
+              
+              <div className="space-y-4">
+                <Label className="text-white">Main Features</Label>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {propertyData.mainFeatures.map((feature, index) => (
+                    <div 
+                      key={index}
+                      className="flex items-center bg-black/50 border border-white/10 rounded-full px-3 py-1"
+                    >
+                      <span className="text-white text-sm">{feature}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFeature(index)}
+                        className="ml-2 text-white/60 hover:text-red-500"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="flex gap-2">
+                  <Input
+                    value={newFeature}
+                    onChange={(e) => setNewFeature(e.target.value)}
+                    placeholder="Add a feature (e.g. Newly renovated kitchen)"
+                    className="bg-black/50 border-white/10 text-white"
+                  />
+                  <Button 
+                    type="button" 
+                    onClick={handleAddFeature}
+                    variant="outline"
+                    className="text-[#D9A566] hover:text-[#D9A566] border-[#D9A566]/30 hover:border-[#D9A566]/60 hover:bg-[#D9A566]/5 whitespace-nowrap"
+                  >
+                    <Plus className="h-4 w-4 mr-1" /> Add
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
         
         <div className="flex justify-end pt-6">
           <Button 

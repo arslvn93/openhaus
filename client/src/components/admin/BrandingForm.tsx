@@ -7,17 +7,16 @@ import { Separator } from "@/components/ui/separator";
 import { Paintbrush, Image, FileText, Hash, Twitter } from "lucide-react";
 
 interface SiteBranding {
-  companyName: string;
-  companyLogo: string;
   accentColor: string;
-  heroImage: string;
   footerText: string;
 }
 
 interface SiteMetadata {
   title: string;
   description: string;
+  keywords: string;
   ogImage: string;
+  twitterCard: string;
   twitterHandle: string;
 }
 
@@ -70,86 +69,28 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
   return (
     <form onSubmit={handleSubmit}>
       <div className="space-y-6">
-        <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Site Branding</h3>
-          <p className="text-white/60 mb-6">
-            Customize the branding elements of your website including logos, colors, and appearance.
-          </p>
+          <div>
+            <h3 className="text-xl font-['Poppins'] text-white mb-4">Site Branding</h3>
+            <p className="text-white/60 mb-6">
+              Customize the branding elements of your website including colors and appearance.
+            </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="space-y-2">
-              <Label htmlFor="companyName" className="text-white">Company Name</Label>
+          <div className="space-y-2 mb-6">
+            <Label htmlFor="accentColor" className="text-white">Accent Color</Label>
+            <div className="flex gap-2">
               <Input
-                id="companyName"
-                name="companyName"
-                value={brandingData.companyName}
+                id="accentColor"
+                name="accentColor"
+                value={brandingData.accentColor}
                 onChange={handleBrandingChange}
-                placeholder="Your Real Estate Company"
-                className="bg-black/50 border-white/10 text-white"
+                placeholder="#D9A566"
+                className="bg-black/50 border-white/10 text-white flex-grow"
+              />
+              <div 
+                className="w-10 h-10 rounded border border-white/10 flex-none"
+                style={{ backgroundColor: brandingData.accentColor || '#D9A566' }}
               />
             </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="accentColor" className="text-white">Accent Color</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="accentColor"
-                  name="accentColor"
-                  value={brandingData.accentColor}
-                  onChange={handleBrandingChange}
-                  placeholder="#D9A566"
-                  className="bg-black/50 border-white/10 text-white flex-grow"
-                />
-                <div 
-                  className="w-10 h-10 rounded border border-white/10 flex-none"
-                  style={{ backgroundColor: brandingData.accentColor || '#D9A566' }}
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-2 mb-6">
-            <Label htmlFor="companyLogo" className="text-white">Company Logo URL</Label>
-            <Input
-              id="companyLogo"
-              name="companyLogo"
-              value={brandingData.companyLogo}
-              onChange={handleBrandingChange}
-              placeholder="https://example.com/logo.png"
-              className="bg-black/50 border-white/10 text-white"
-            />
-            {brandingData.companyLogo && (
-              <div className="mt-2 p-3 bg-black/20 border border-white/10 rounded-md inline-block">
-                <img 
-                  src={brandingData.companyLogo} 
-                  alt="Company Logo" 
-                  className="max-h-20 max-w-full"
-                />
-              </div>
-            )}
-          </div>
-          
-          <div className="space-y-2 mb-6">
-            <Label htmlFor="heroImage" className="text-white">Hero Image URL</Label>
-            <Input
-              id="heroImage"
-              name="heroImage"
-              value={brandingData.heroImage}
-              onChange={handleBrandingChange}
-              placeholder="https://example.com/hero.jpg"
-              className="bg-black/50 border-white/10 text-white"
-            />
-            {brandingData.heroImage && (
-              <div className="mt-2 bg-black/30 border border-white/10 rounded-md overflow-hidden">
-                <div className="aspect-video relative">
-                  <img 
-                    src={brandingData.heroImage} 
-                    alt="Hero preview"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            )}
           </div>
           
           <div className="space-y-2 mb-6">
@@ -216,6 +157,36 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
               />
               <p className="text-white/40 text-xs">
                 Aim for 150-160 characters for optimal SEO performance
+              </p>
+            </div>
+            
+            <div className="space-y-2 mb-6">
+              <Label htmlFor="keywords" className="text-white">Keywords</Label>
+              <Textarea
+                id="keywords"
+                name="keywords"
+                value={metaData.keywords}
+                onChange={handleMetaChange}
+                placeholder="condo apartment, Toronto real estate, luxury condo, floor-to-ceiling windows..."
+                className="bg-black/50 border-white/10 text-white min-h-[80px]"
+              />
+              <p className="text-white/40 text-xs">
+                Comma-separated keywords for SEO
+              </p>
+            </div>
+            
+            <div className="space-y-2 mb-6">
+              <Label htmlFor="twitterCard" className="text-white">Twitter Card Type</Label>
+              <Input
+                id="twitterCard"
+                name="twitterCard"
+                value={metaData.twitterCard}
+                onChange={handleMetaChange}
+                placeholder="summary_large_image"
+                className="bg-black/50 border-white/10 text-white"
+              />
+              <p className="text-white/40 text-xs">
+                Options: summary, summary_large_image, app, player
               </p>
             </div>
             
