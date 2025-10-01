@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, User, Mail, Phone, MapPin, FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard } from 'lucide-react';
-import { siteBranding, property, openHouseDetails, packageItems } from '../config/siteConfig';
+// @ts-ignore - JS config module without types
+import { siteBranding, property, openHouseDetails, packageItems, contactInfo } from '../config/siteConfig';
+import { apiRequest } from '@/lib/queryClient';
 
 // Map of icon names to their respective components (same as ExclusivePackage)
 const iconMap: Record<string, React.ReactNode> = {
@@ -24,10 +26,26 @@ const OpenHouseSignIn = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Open House Sign In:', formData);
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        moveTimeline: '',
+        message: formData.message,
+        source: 'Open House',
+        repo: contactInfo.agent?.repo || '',
+        agentEmail: contactInfo.agent?.email || '',
+        propertyAddress: property?.address || undefined
+      };
+      await apiRequest('POST', '/api/leads', payload);
+      alert('Thanks! We\'ll be in touch shortly.');
+      setFormData({ name: '', email: '', phone: '', guests: '1', message: '' });
+    } catch (err) {
+      alert('Submission failed. Please try again.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -265,7 +283,7 @@ const OpenHouseSignIn = () => {
                 What You'll Receive
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                {packageItems.map((item, index) => (
+                {packageItems.map((item: any, index: number) => (
                   <motion.div 
                     key={item.id} 
                     initial={{ 
@@ -494,7 +512,7 @@ const OpenHouseSignIn = () => {
               What You'll Receive
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {packageItems.map((item, index) => (
+              {packageItems.map((item: any, index: number) => (
                 <motion.div 
                   key={item.id} 
                   initial={{ 

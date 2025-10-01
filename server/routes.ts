@@ -151,6 +151,89 @@ async function parseConfigToJson(configContent: string): Promise<Record<string, 
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Website leads endpoint → forwards to n8n webhook
+  app.post("/api/leads", async (req: Request, res: Response) => {
+    try {
+      const body = req.body || {};
+
+      // Accept either split names or a single name
+      const rawName = (body.name || '').toString().trim();
+      const firstName = rawName ? rawName.split(' ')[0] : (body.firstName || '').toString().trim();
+      const lastName = rawName ? rawName.split(' ').slice(1).join(' ') : (body.lastName || '').toString().trim();
+      const email = (body.email || '').toString().trim();
+      const phone = (body.phone || '').toString().trim();
+      const moveTimeline = (body.moveTimeline || body.timeframe || '').toString().trim();
+      const message = (body.message || '').toString().trim();
+      const source = (body.source || '').toString().trim();
+
+      // Validation: allow single name OR split names; always require email and phone
+      if ((!rawName && !firstName) || !email || !phone) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      let repoFromConfig = '';
+      let addressFromConfig: any = undefined;
+      try {
+        const configFilePath = path.resolve('./client/src/config/siteConfig.js');
+        const currentConfigContent = fs.readFileSync(configFilePath, 'utf8');
+        const cfg = await parseConfigToJson(currentConfigContent);
+        repoFromConfig = cfg?.contactInfo?.agent?.repo || '';
+        addressFromConfig = cfg?.property?.address || undefined;
+      } catch {}
+
+      const payload = {
+        name: rawName || `${firstName} ${lastName}`.trim(),
+        email,
+        phone,
+        moveTimeline,
+        message,
+        source,
+        repo: body.repo || repoFromConfig,
+        agentEmail: body.agentEmail || '',
+        propertyAddress: body.propertyAddress || addressFromConfig
+      };
+
+      const webhookUrl = 'https://n8n.salesgenius.co/webhook/listingleads';
+      const url = new URL(webhookUrl);
+      const isHttps = url.protocol === 'https:';
+      const httpModule = isHttps ? https : http;
+
+      const postData = JSON.stringify(payload);
+      const options = {
+        hostname: url.hostname,
+        port: url.port || (isHttps ? 443 : 80),
+        path: url.pathname + url.search,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(postData),
+          'User-Agent': 'OpenHaus-Leads-Forwarder/1.0'
+        }
+      };
+
+      await new Promise<void>((resolve, reject) => {
+        const reqOut = httpModule.request(options, (resp) => {
+          let responseData = '';
+          resp.on('data', (chunk) => { responseData += chunk; });
+          resp.on('end', () => {
+            if (resp.statusCode && resp.statusCode >= 200 && resp.statusCode < 300) {
+              resolve();
+            } else {
+              reject(new Error(`Webhook error: ${resp.statusCode} ${responseData}`));
+            }
+          });
+        });
+        reqOut.on('error', reject);
+        reqOut.write(postData);
+        reqOut.end();
+      });
+
+      return res.status(200).json({ message: 'Lead submitted successfully' });
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      return res.status(500).json({ message: 'Failed to submit lead' });
+    }
+  });
   // API endpoint for RSVP form submission
   app.post("/api/rsvp", async (req: Request, res: Response) => {
     try {

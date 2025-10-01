@@ -12,6 +12,12 @@
   to = "/.netlify/functions/config-update"
   status = 200
 
+# Website leads endpoint for production
+[[redirects]]
+  from = "/api/leads"
+  to = "/.netlify/functions/lead-submit"
+  status = 200
+
 # The following redirect rule ensures that all routes are handled by the React app
 [[redirects]]
   from = "/*"

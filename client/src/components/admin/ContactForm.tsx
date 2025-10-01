@@ -24,6 +24,10 @@ interface ContactInfo {
     lng: number;
   };
   socialLinks: SocialLinks;
+  agent?: {
+    photo?: string;
+    license?: string;
+  };
 }
 
 interface ContactFormProps {
@@ -40,7 +44,8 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [contactData, setContactData] = useState<ContactInfo>({
     ...initialData,
     mapLocation: initialData.mapLocation || { lat: 0, lng: 0 },
-    socialLinks: initialData.socialLinks || {}
+    socialLinks: initialData.socialLinks || {},
+    agent: initialData.agent || {}
   });
   
   const handleInputChange = (
@@ -56,6 +61,14 @@ const ContactForm: React.FC<ContactFormProps> = ({
           ...contactData,
           socialLinks: {
             ...contactData.socialLinks,
+            [child]: value
+          }
+        });
+      } else if (parent === 'agent') {
+        setContactData({
+          ...contactData,
+          agent: {
+            ...contactData.agent,
             [child]: value
           }
         });
@@ -158,6 +171,40 @@ const ContactForm: React.FC<ContactFormProps> = ({
               placeholder="Monday - Friday: 9AM - 5PM, Weekends: By appointment only"
               className="bg-black/50 border-white/10 text-white min-h-[80px]"
             />
+          </div>
+
+          {/* Agent details */}
+          <Separator className="bg-white/10 my-8" />
+          <div>
+            <h4 className="text-md font-['Poppins'] text-white mb-4">Agent Details</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="agent.photo" className="text-white">Agent Photo URL</Label>
+                </div>
+                <Input
+                  id="agent.photo"
+                  name="agent.photo"
+                  value={contactData.agent?.photo || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://..."
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="agent.license" className="text-white">Agent License</Label>
+                </div>
+                <Input
+                  id="agent.license"
+                  name="agent.license"
+                  value={contactData.agent?.license || ''}
+                  onChange={handleInputChange}
+                  placeholder="RECO #12345678"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+            </div>
           </div>
           
           <div className="space-y-3 mb-6">

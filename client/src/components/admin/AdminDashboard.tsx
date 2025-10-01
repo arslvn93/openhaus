@@ -369,6 +369,8 @@ const AdminDashboard = () => {
                     ...adaptedConfig.contactInfo, // Keep all existing fields including agent
                     ...data // Override with form data
                   };
+                  // Ensure footer-compatible key is set
+                  completeContactData.social = completeContactData.socialLinks || completeContactData.social || {};
                   console.log('Saving contact info with preserved agent data:', completeContactData.agent);
                   saveConfig({ contactInfo: completeContactData }, 'Contact');
                 }}

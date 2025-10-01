@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
-import PropertyShowcase from './PropertyShowcase';
 import PropertyDetails from './PropertyDetails';
 import HomeHighlights from './HomeHighlights';
 import PhotoGallery from './PhotoGallery';
@@ -126,7 +125,6 @@ const OpenHousePage = () => {
   return (
     <>
       <Navigation />
-      <PropertyShowcase showOnlyHero={true} />
       <OpenHouseSignIn />
       <Footer />
       <Preloader />

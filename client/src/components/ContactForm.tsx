@@ -7,12 +7,12 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Phone, Mail, Award, Clock } from 'lucide-react';
-import { openHouseDetails, contactInfo, siteBranding, property } from '../config/siteConfig';
+// @ts-ignore - JS config module without types
+import { openHouseDetails, contactInfo, siteBranding, property } from '../config/siteConfig.js';
 
 // Define schema for form validation
 const formSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
+  name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(10, 'Valid phone number is required'),
   timeframe: z.string().optional(),
@@ -32,15 +32,7 @@ const ContactForm = () => {
   };
   
   const handleFirstNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.style.borderColor = errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)';
-  };
-  
-  const handleLastNameFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.style.borderColor = siteBranding.colors.primary;
-  };
-  
-  const handleLastNameBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.style.borderColor = errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)';
+    e.target.style.borderColor = errors.name ? 'red' : 'rgba(255, 255, 255, 0.1)';
   };
   
   const handleEmailFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -78,8 +70,7 @@ const ContactForm = () => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      name: '',
       email: '',
       phone: '',
       timeframe: '',
@@ -90,13 +81,24 @@ const ContactForm = () => {
   
   const mutation = useMutation({
     mutationFn: (data: FormValues) => {
-      return apiRequest('POST', '/api/rsvp', data);
+      const leadPayload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        moveTimeline: data.timeframe,
+        message: data.message,
+        source: 'Home',
+        repo: contactInfo.agent?.repo || '',
+        agentEmail: contactInfo.agent?.email || '',
+        propertyAddress: property?.address || undefined
+      };
+      return apiRequest('POST', '/api/leads', leadPayload);
     },
     onSuccess: () => {
       setFormSubmitted(true);
       toast({
         title: "Success!",
-        description: "Thank you for your RSVP! We look forward to seeing you at the open house.",
+        description: "Thanks! We'll be in touch shortly.",
         variant: "default",
       });
       reset();
@@ -123,64 +125,47 @@ const ContactForm = () => {
               className="font-['Titillium_Web'] tracking-widest inline-block mb-2"
               style={{ color: siteBranding.colors.primary }}
             >
-              YOUR EXCLUSIVE OFFER
+              {property.name}
             </span>
-            <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">
-              {openHouseDetails.ctaText}
-            </h2>
+            <h2 className="text-4xl font-['Poppins'] uppercase tracking-wider">Get Listing Package Now</h2>
             <p className="font-['Titillium_Web'] text-lg mt-4">
               Get the complete details about {property.name}, including floor plans, neighborhood analysis, 
               and everything you need to make an informed decision.
             </p>
           </div>
           
-          <div className="bg-secondary/50 p-8 rounded-lg shadow-lg border border-gray-800 fade-in">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 fade-in">
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 gap-5 mb-6">
                 <div>
-                  <label htmlFor="firstName" className="block font-['Titillium_Web'] mb-2">First Name*</label>
+                  <label htmlFor="name" className="block font-['Titillium_Web'] mb-2">Name*</label>
                   <input 
                     type="text" 
-                    id="firstName" 
-                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    id="name" 
+                    className={`w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors`}
                     style={{ 
-                      borderColor: errors.firstName ? 'red' : 'rgba(255, 255, 255, 0.1)',
+                      borderColor: errors.name ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
                     onFocus={handleFirstNameFocus}
-                    onBlur={handleFirstNameBlur}
-                    {...register('firstName')}
+                    placeholder="Your full name"
+                    {...register('name')}
                   />
-                  {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
+                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                 </div>
-                <div>
-                  <label htmlFor="lastName" className="block font-['Titillium_Web'] mb-2">Last Name*</label>
-                  <input 
-                    type="text" 
-                    id="lastName" 
-                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
-                    style={{ 
-                      borderColor: errors.lastName ? 'red' : 'rgba(255, 255, 255, 0.1)',
-                      borderWidth: '1px'
-                    }}
-                    onFocus={handleLastNameFocus}
-                    onBlur={handleLastNameBlur}
-                    {...register('lastName')}
-                  />
-                  {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
-                </div>
+                
                 <div>
                   <label htmlFor="email" className="block font-['Titillium_Web'] mb-2">Email Address*</label>
                   <input 
                     type="email" 
                     id="email" 
-                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors`}
                     style={{ 
                       borderColor: errors.email ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
                     onFocus={handleEmailFocus}
-                    onBlur={handleEmailBlur}
+                    placeholder="you@example.com"
                     {...register('email')}
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
@@ -190,13 +175,13 @@ const ContactForm = () => {
                   <input 
                     type="tel" 
                     id="phone" 
-                    className={`w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200`}
+                    className={`w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors`}
                     style={{ 
                       borderColor: errors.phone ? 'red' : 'rgba(255, 255, 255, 0.1)',
                       borderWidth: '1px'
                     }}
                     onFocus={handlePhoneFocus}
-                    onBlur={handlePhoneBlur}
+                    placeholder="(123) 456-7890"
                     {...register('phone')}
                   />
                   {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
@@ -207,13 +192,12 @@ const ContactForm = () => {
                 <label htmlFor="timeframe" className="block font-['Titillium_Web'] mb-2">When are you looking to move?</label>
                 <select 
                   id="timeframe" 
-                  className="w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#D9A566] transition-colors"
                   style={{ 
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: '1px'
                   }}
                   onFocus={handleSelectFocus}
-                  onBlur={handleSelectBlur}
                   {...register('timeframe')}
                 >
                   <option value="">Please select...</option>
@@ -230,13 +214,12 @@ const ContactForm = () => {
                 <textarea 
                   id="message" 
                   rows={4} 
-                  className="w-full bg-primary border rounded-lg p-3 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors"
                   style={{ 
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                     borderWidth: '1px'
                   }}
                   onFocus={handleTextareaFocus}
-                  onBlur={handleTextareaBlur}
                   {...register('message')}
                   placeholder="Any specific information you're interested in about the property?"
                 ></textarea>
@@ -246,7 +229,7 @@ const ContactForm = () => {
                 <label className="flex items-center">
                   <input 
                     type="checkbox" 
-                    className="w-5 h-5 bg-primary border border-white/10 rounded mr-3 accent-[#c8a456] cursor-pointer" 
+                    className="w-5 h-5 bg-black/40 border border-white/10 rounded mr-3 accent-[#c8a456] cursor-pointer" 
                     {...register('subscribe')}
                   />
                   <span className="font-['Titillium_Web']">
@@ -255,19 +238,18 @@ const ContactForm = () => {
                 </label>
               </div>
               
-              <button 
-                type="submit" 
-                className="w-full text-white font-['Poppins'] p-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg font-bold tracking-wider"
-                style={{ 
-                  backgroundColor: siteBranding.colors.primary,
-                  ':hover': {
-                    backgroundColor: `${siteBranding.colors.primary}dd`
-                  }
-                } as React.CSSProperties}
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? 'SUBMITTING...' : 'GET MY HOME PACKAGE NOW'}
-              </button>
+              <div className="pt-2">
+                <div className="inline-block relative group w-full">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[#D9A566] to-[#D9A566]/60 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <button 
+                    type="submit"
+                    className="relative w-full px-8 py-4 bg-gradient-to-br from-[#D9A566] to-[#D9A566]/90 text-black font-['Poppins'] text-lg tracking-wider uppercase shadow-xl backdrop-blur-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,165,102,0.6)] disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={mutation.isPending}
+                  >
+                    {mutation.isPending ? 'SUBMITTING...' : 'GET MY HOME PACKAGE NOW'}
+                  </button>
+                </div>
+              </div>
               
               <p className="text-center text-sm text-gray-400 mt-4 font-['Titillium_Web']">
                 Your privacy is important to us. We'll never share your information with third parties.
