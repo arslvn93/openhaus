@@ -55,6 +55,26 @@ const NeighborhoodOverview = () => {
     icon: iconMap[stat.iconName] ? iconMap[stat.iconName]({ className: "h-8 w-8" }) : <Navigation className="h-8 w-8" />,
     color: stat.color.startsWith('#') ? stat.color : `#${stat.color.replace('bg-', '')}`
   }));
+
+  // Only show the three desired stats in this exact order with robust matching
+  const normalizeTitle = (t: string) => t.toLowerCase().replace(/\s+/g, '').trim();
+  const desiredOrder = ["walkscore", "transitscore", "bikescore"];
+
+  const displayStats: NeighborhoodStat[] = desiredOrder.map((desired) => {
+    const found = neighborhoodStats.find((s) => normalizeTitle(s.title) === desired);
+    if (found) return found;
+    if (desired === "bikescore") {
+      return {
+        id: 999,
+        title: "Bike Score",
+        value: "N/A",
+        caption: undefined,
+        icon: <Navigation className="h-8 w-8" />,
+        color: siteBranding.colors.primary
+      };
+    }
+    return undefined as unknown as NeighborhoodStat;
+  }).filter(Boolean) as NeighborhoodStat[];
   
   // Transform the config amenities to include React components
   const nearbyAmenities: Amenity[] = configAmenities.map(amenity => ({
@@ -103,13 +123,13 @@ const NeighborhoodOverview = () => {
         
         {/* Stats section with radial gradient cards */}
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {neighborhoodStats.map((stat) => (
+          {displayStats.map((stat) => (
             <motion.div 
               key={stat.id} 
               variants={itemVariants}
