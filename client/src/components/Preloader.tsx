@@ -34,7 +34,7 @@ const Preloader = () => {
     <div id="preloader">
       <div className="text-wrapper">
         <h1 id="first-text" className="font-['Poppins'] text-2xl">{property.address.street.toUpperCase()}</h1>
-        <h3 id="second-text" className="font-['Titillium_Web'] text-xl">OPEN HOUSE EVENT</h3>
+        <h3 id="second-text" className="font-['Titillium_Web'] text-xl">NEW LISTING</h3>
       </div>
     </div>
   );
