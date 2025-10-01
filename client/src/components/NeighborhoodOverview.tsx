@@ -60,7 +60,7 @@ const NeighborhoodOverview = () => {
   const normalizeTitle = (t: string) => t.toLowerCase().replace(/\s+/g, '').trim();
   const desiredOrder = ["walkscore", "transitscore", "bikescore"];
 
-  const displayStats: NeighborhoodStat[] = desiredOrder.map((desired) => {
+  let displayStats: NeighborhoodStat[] = desiredOrder.map((desired) => {
     const found = neighborhoodStats.find((s) => normalizeTitle(s.title) === desired);
     if (found) return found;
     if (desired === "bikescore") {
@@ -75,6 +75,15 @@ const NeighborhoodOverview = () => {
     }
     return undefined as unknown as NeighborhoodStat;
   }).filter(Boolean) as NeighborhoodStat[];
+
+  // If Transit score is N/A or empty, hide it and use 2 columns; otherwise use 3
+  const transitStat = displayStats.find((s) => normalizeTitle(s.title) === "transitscore");
+  const transitValue = (transitStat?.value ?? "").toString().trim();
+  const isTransitUnavailable = !transitValue || /^(n\/?a|na)$/i.test(transitValue);
+  const effectiveStats: NeighborhoodStat[] = isTransitUnavailable
+    ? displayStats.filter((s) => normalizeTitle(s.title) !== "transitscore")
+    : displayStats;
+  const lgCols = effectiveStats.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3";
   
   // Transform the config amenities to include React components
   const nearbyAmenities: Amenity[] = configAmenities.map(amenity => ({
@@ -123,13 +132,13 @@ const NeighborhoodOverview = () => {
         
         {/* Stats section with radial gradient cards */}
         <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+          className={`grid grid-cols-1 sm:grid-cols-2 ${lgCols} gap-6 mb-16`}
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {displayStats.map((stat) => (
+          {effectiveStats.map((stat) => (
             <motion.div 
               key={stat.id} 
               variants={itemVariants}
