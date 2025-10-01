@@ -57,7 +57,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       const preloadPromises = [];
       
               // Preload video or image
-        if (heroVideo && heroVideo.url) {
+        if (heroVideo && heroVideo.url && !(heroVideoUrl || '').includes('vimeo.com')) {
           const videoPromise = new Promise((resolve) => {
             const video = document.createElement('video');
             video.onloadeddata = () => resolve(true);
@@ -304,18 +304,29 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
           <div className="image" id="loaderVideo" ref={loaderVideoRef}>
 
             {heroVideo && heroVideo.url ? (
-              <video 
-                autoPlay={heroVideo.autoplay}
-                loop={heroVideo.loop}
-                muted={heroVideo.muted}
-                playsInline={heroVideo.playsInline}
-                preload="auto"
-                className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-
-              >
-                <source src={heroVideo.url} type={heroVideo.type} />
-                Your browser does not support the video tag.
-              </video>
+              (heroVideo.url.includes('vimeo.com') ? (
+                <iframe
+                  src={`${heroVideo.url}${heroVideo.url.includes('?') ? '&' : '?'}background=1&autoplay=1&muted=1&loop=1&autopause=0&controls=0&title=0&byline=0&portrait=0&playsinline=1`}
+                  className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  style={{ border: 0, position: 'absolute' }}
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  title="Hero Video"
+                />
+              ) : (
+                <video 
+                  autoPlay={heroVideo.autoplay}
+                  loop={heroVideo.loop}
+                  muted={heroVideo.muted}
+                  playsInline={heroVideo.playsInline}
+                  preload="auto"
+                  className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  <source src={heroVideo.url} type={heroVideo.type} />
+                  Your browser does not support the video tag.
+                </video>
+              ))
             ) : (
               <img 
                 src={`${property.heroImage}?v=${Math.floor(Date.now() / 60000)}`}
