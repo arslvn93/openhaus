@@ -381,7 +381,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (val === undefined) return 'undefined';
         
         if (typeof val === 'string') {
-          return `"${val.replace(/"/g, '\\"')}"`;
+          // Properly escape all problematic characters for JavaScript string literals
+          const escaped = val
+            .replace(/\\/g, '\\\\')  // Escape backslashes first
+            .replace(/"/g, '\\"')    // Escape double quotes
+            .replace(/\n/g, '\\n')   // Escape newlines
+            .replace(/\r/g, '\\r')   // Escape carriage returns
+            .replace(/\t/g, '\\t')   // Escape tabs
+            .replace(/\f/g, '\\f')   // Escape form feeds
+            .replace(/\v/g, '\\v');  // Escape vertical tabs
+          return `"${escaped}"`;
         }
         
         if (typeof val === 'number' || typeof val === 'boolean') {

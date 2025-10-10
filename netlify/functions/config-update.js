@@ -3,7 +3,18 @@ const WEBHOOK_URL = process.env.N8N_WEBHOOK_URL || 'https://n8n.salesgenius.co/w
 function formatValue(val, indent = 2) {
   if (val === null) return 'null';
   if (val === undefined) return 'undefined';
-  if (typeof val === 'string') return `"${val.replace(/"/g, '\\"')}` + '"';
+  if (typeof val === 'string') {
+    // Properly escape all problematic characters for JavaScript string literals
+    const escaped = val
+      .replace(/\\/g, '\\\\')  // Escape backslashes first
+      .replace(/"/g, '\\"')    // Escape double quotes
+      .replace(/\n/g, '\\n')   // Escape newlines
+      .replace(/\r/g, '\\r')   // Escape carriage returns
+      .replace(/\t/g, '\\t')   // Escape tabs
+      .replace(/\f/g, '\\f')   // Escape form feeds
+      .replace(/\v/g, '\\v');  // Escape vertical tabs
+    return `"${escaped}"`;
+  }
   if (typeof val === 'number' || typeof val === 'boolean') return String(val);
   if (Array.isArray(val)) {
     if (val.length === 0) return '[]';
