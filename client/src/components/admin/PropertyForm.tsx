@@ -7,6 +7,30 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { X, Plus, Home, ChevronDown, ChevronRight, Settings } from "lucide-react";
 
+// Helper function to convert YouTube URLs to embed format
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  
+  // Handle youtu.be format
+  const youtuBeMatch = url.match(/youtu\.be\/([^?&]+)/);
+  if (youtuBeMatch) {
+    return `https://www.youtube.com/embed/${youtuBeMatch[1]}`;
+  }
+  
+  // Handle youtube.com/watch?v= format
+  const youtubeMatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+  }
+  
+  // Handle youtube.com/embed/ format (already embedded)
+  if (url.includes('youtube.com/embed/')) {
+    return url;
+  }
+  
+  return null;
+};
+
 interface AddressData {
   street: string;
   city: string;
@@ -265,7 +289,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 name="status"
                 value={propertyData.status || ''}
                 onChange={handleInputChange}
-                placeholder="e.g. For Sale, Sold, Pending"
+                placeholder="e.g. For Rent, Sold, Pending"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>
@@ -521,11 +545,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 name="url"
                 value={heroVideoData.url}
                 onChange={handleHeroVideoChange}
-                placeholder="https://example.com/video.mp4 or https://player.vimeo.com/video/123456"
+                placeholder="https://youtu.be/VIDEO_ID or https://player.vimeo.com/video/123456"
                 className="bg-black/50 border-white/10 text-white"
               />
               <p className="text-white/40 text-xs">
-                Supports MP4 files and Vimeo embed URLs
+                Supports YouTube (youtu.be or youtube.com/watch), Vimeo embed URLs, and direct MP4 files
               </p>
             </div>
             
@@ -595,23 +619,45 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           {heroVideoData.url && (
             <div className="bg-black/30 border border-white/10 rounded-md overflow-hidden mb-6">
               <div className="aspect-video relative">
-                {heroVideoData.url.includes('vimeo.com') ? (
-                  <iframe
-                    src={`${heroVideoData.url}?autoplay=0&muted=1&loop=1&background=1&controls=0&playsinline=1`}
-                    className="absolute inset-0 w-full h-full"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video
-                    src={heroVideoData.url}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    controls
-                    muted={heroVideoData.muted}
-                    loop={heroVideoData.loop}
-                    playsInline={heroVideoData.playsInline}
-                  />
-                )}
+                {(() => {
+                  const youtubeEmbedUrl = getYouTubeEmbedUrl(heroVideoData.url);
+                  
+                  // YouTube video
+                  if (youtubeEmbedUrl) {
+                    return (
+                      <iframe
+                        src={`${youtubeEmbedUrl}?autoplay=0&mute=0&controls=1`}
+                        className="absolute inset-0 w-full h-full"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                    );
+                  }
+                  
+                  // Vimeo video
+                  if (heroVideoData.url.includes('vimeo.com')) {
+                    return (
+                      <iframe
+                        src={`${heroVideoData.url}?autoplay=0&muted=1&loop=1&background=1&controls=0&playsinline=1`}
+                        className="absolute inset-0 w-full h-full"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                      />
+                    );
+                  }
+                  
+                  // Direct video file
+                  return (
+                    <video
+                      src={heroVideoData.url}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      controls
+                      muted={heroVideoData.muted}
+                      loop={heroVideoData.loop}
+                      playsInline={heroVideoData.playsInline}
+                    />
+                  );
+                })()}
               </div>
               <div className="p-3">
                 <p className="text-white/80 text-sm">
