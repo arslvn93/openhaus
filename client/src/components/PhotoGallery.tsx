@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ChevronLeft, ChevronRight, X, Camera, ZoomIn } from 'lucide-react';
 import { galleryImages as configImages, property, siteBranding } from '../config/siteConfig';
 
@@ -15,8 +15,10 @@ interface GalleryImage {
 const PhotoGallery = () => {
   const [activeImage, setActiveImage] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [direction, setDirection] = useState<'next' | 'prev'>('next');
   const containerRef = useRef<HTMLDivElement>(null);
+  const hideControlsTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // Use gallery images from the config file
   const galleryImages: GalleryImage[] = configImages;
@@ -24,22 +26,38 @@ const PhotoGallery = () => {
   const openLightbox = (id: number) => {
     setActiveImage(id);
     setIsOpen(true);
-    setImgLoaded(false);
+    setShowControls(true);
   };
   
   const closeLightbox = () => {
     setIsOpen(false);
+    setActiveImage(null);
+    setShowControls(true);
   };
   
-  const navigateImage = (direction: 'next' | 'prev') => {
+  const handleMouseMove = () => {
+    setShowControls(true);
+    
+    // Clear existing timeout
+    if (hideControlsTimeout.current) {
+      clearTimeout(hideControlsTimeout.current);
+    }
+    
+    // Hide controls after 3 seconds of no movement
+    hideControlsTimeout.current = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+  };
+  
+  const navigateImage = (nav: 'next' | 'prev') => {
     if (activeImage === null) return;
     
-    setImgLoaded(false);
+    setDirection(nav);
     
     const currentIndex = galleryImages.findIndex(img => img.id === activeImage);
     const totalImages = galleryImages.length;
     
-    if (direction === 'next') {
+    if (nav === 'next') {
       const nextIndex = (currentIndex + 1) % totalImages;
       setActiveImage(galleryImages[nextIndex].id);
     } else {
@@ -66,6 +84,14 @@ const PhotoGallery = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, activeImage]);
+  
+  useEffect(() => {
+    return () => {
+      if (hideControlsTimeout.current) {
+        clearTimeout(hideControlsTimeout.current);
+      }
+    };
+  }, []);
 
   // Animation for the staggered image appearance
   const containerVariants = {
@@ -92,6 +118,14 @@ const PhotoGallery = () => {
       }
     }
   };
+
+  // Get current image info
+  const currentImage = activeImage !== null 
+    ? galleryImages.find(img => img.id === activeImage) 
+    : null;
+  const currentIndex = activeImage !== null
+    ? galleryImages.findIndex(img => img.id === activeImage)
+    : -1;
   
   return (
     <section id="gallery" className="py-20 bg-primary from-bottom">
@@ -168,57 +202,132 @@ const PhotoGallery = () => {
         </div>
       </div>
       
-      {/* Lightbox modal using shadcn Dialog */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center">
-          <button 
-            className="absolute top-6 right-6 text-white/80 hover:text-white transition-colors"
-            onClick={closeLightbox}
-          >
-            <X className="w-8 h-8" />
-          </button>
+      {/* Lightbox using Radix UI Dialog */}
+      <DialogPrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+        <DialogPrimitive.Portal>
+          {/* Overlay */}
+          <DialogPrimitive.Overlay className="fixed inset-0 z-[100] bg-black/98 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
           
-          <button
-            className="absolute left-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-black/30 hover:bg-black/50 p-2 rounded-full transition-all duration-300"
-            onClick={() => navigateImage('prev')}
+          {/* Content */}
+          <DialogPrimitive.Content 
+            className="fixed left-0 top-0 z-[101] w-screen h-screen flex items-center justify-center focus:outline-none"
+            onEscapeKeyDown={closeLightbox}
+            onMouseMove={handleMouseMove}
+            style={{ cursor: showControls ? 'default' : 'none' }}
           >
-            <ChevronLeft className="w-8 h-8" />
-          </button>
-          
-          <button
-            className="absolute right-5 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-black/30 hover:bg-black/50 p-2 rounded-full transition-all duration-300"
-            onClick={() => navigateImage('next')}
-          >
-            <ChevronRight className="w-8 h-8" />
-          </button>
-          
-          <AnimatePresence mode="wait">
-            {activeImage !== null && (
-              <motion.div
-                key={activeImage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: imgLoaded ? 1 : 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="max-w-[90vw] max-h-[85vh] relative"
-              >
-                <img 
-                  src={galleryImages.find(img => img.id === activeImage)?.src}
-                  alt={galleryImages.find(img => img.id === activeImage)?.alt || "Gallery image"}
-                  className="max-w-full max-h-[85vh] object-contain rounded-md"
-                  onLoad={() => setImgLoaded(true)}
-                />
-                
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-                  <div className="bg-black/70 text-white py-2 px-4 rounded-full text-sm backdrop-blur-sm">
-                    {galleryImages.find(img => img.id === activeImage)?.alt} • {activeImage && galleryImages.findIndex(img => img.id === activeImage) + 1} of {galleryImages.length}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+            {/* Close button - top right */}
+            <motion.button 
+              onClick={closeLightbox}
+              className="absolute top-4 right-4 z-50 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 hover:rotate-90 group"
+              aria-label="Close gallery"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showControls ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="relative p-2 rounded-full bg-black/50 backdrop-blur-md group-hover:bg-black/70 border border-white/10">
+                <X className="w-6 h-6" strokeWidth={2.5} />
+              </div>
+            </motion.button>
+            
+            {/* Navigation buttons */}
+            <motion.button
+              onClick={() => navigateImage('prev')}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 group"
+              aria-label="Previous image"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showControls ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="relative p-3 rounded-full bg-black/50 backdrop-blur-md group-hover:bg-black/70 border border-white/10">
+                <ChevronLeft className="w-8 h-8" strokeWidth={2.5} />
+              </div>
+            </motion.button>
+            
+            <motion.button
+              onClick={() => navigateImage('next')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white/70 hover:text-white transition-all duration-300 hover:scale-110 group"
+              aria-label="Next image"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showControls ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="relative p-3 rounded-full bg-black/50 backdrop-blur-md group-hover:bg-black/70 border border-white/10">
+                <ChevronRight className="w-8 h-8" strokeWidth={2.5} />
+              </div>
+            </motion.button>
+            
+            {/* Image container - maximized */}
+            <div className="relative w-full h-full flex items-center justify-center p-0 overflow-hidden">
+              <AnimatePresence initial={false} custom={direction}>
+                {currentImage && (
+                  <motion.div
+                    key={activeImage}
+                    custom={direction}
+                    initial={{ 
+                      x: direction === 'next' ? '100%' : '-100%'
+                    }}
+                    animate={{ 
+                      x: 0
+                    }}
+                    exit={{ 
+                      x: direction === 'next' ? '-100%' : '100%'
+                    }}
+                    transition={{ 
+                      x: { 
+                        type: 'tween',
+                        duration: 0.4,
+                        ease: [0.32, 0.72, 0, 1]
+                      }
+                    }}
+                    className="absolute w-full h-full flex items-center justify-center"
+                  >
+                    <img
+                      src={currentImage.src}
+                      alt={currentImage.alt}
+                      className="max-w-full max-h-full w-auto h-auto object-contain"
+                      style={{ maxHeight: '100vh', maxWidth: '100vw' }}
+                    />
+                    
+                    {/* Image info - overlaid at bottom */}
+                    <motion.div 
+                      className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: showControls ? 1 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div 
+                        className="bg-black/70 text-white py-2.5 px-6 rounded-full text-sm backdrop-blur-md font-['Poppins'] shadow-2xl border border-white/20"
+                      >
+                        <span className="font-medium">{currentImage.alt}</span>
+                        <span className="mx-2 text-white/40">•</span>
+                        <span className="text-white/70">{currentIndex + 1} / {galleryImages.length}</span>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            {/* Keyboard hints - bottom left */}
+            <motion.div 
+              className="absolute bottom-6 left-6 z-50 hidden md:flex gap-3 text-white/50 text-xs font-['Titillium_Web']"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: showControls ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-2 rounded-full border border-white/10">
+                <span className="font-mono bg-white/10 px-2 py-0.5 rounded">←</span>
+                <span className="font-mono bg-white/10 px-2 py-0.5 rounded">→</span>
+                <span>Navigate</span>
+              </div>
+              <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-2 rounded-full border border-white/10">
+                <span className="font-mono bg-white/10 px-2 py-0.5 rounded">ESC</span>
+                <span>Close</span>
+              </div>
+            </motion.div>
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
+      </DialogPrimitive.Root>
     </section>
   );
 };

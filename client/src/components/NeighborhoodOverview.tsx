@@ -251,7 +251,7 @@ const NeighborhoodOverview = () => {
                 // Create a dynamic map URL based on the property address
                 const address = `${property.address.street}, ${property.address.city}, ${property.address.state} ${property.address.zip}, ${property.address.country}`;
                 const encodedAddress = encodeURIComponent(address);
-                const dynamicMapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}`;
+                const dynamicMapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}&maptype=satellite&zoom=19`;
                 
                 return (
                   <iframe 
@@ -263,7 +263,7 @@ const NeighborhoodOverview = () => {
                     loading="lazy" 
                     referrerPolicy="no-referrer-when-downgrade"
                     title="Property Location Map"
-                    className="grayscale contrast-125 opacity-90"
+                    className=""
                   />
                 );
               } catch (error) {
