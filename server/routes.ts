@@ -190,7 +190,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         source,
         repo: body.repo || repoFromConfig,
         agentEmail: body.agentEmail || '',
-        propertyAddress: body.propertyAddress || addressFromConfig
+        propertyAddress: body.propertyAddress || addressFromConfig,
+        questions: body.questions || []
       };
 
       const webhookUrl = 'https://n8n.salesgenius.co/webhook/listingleads';

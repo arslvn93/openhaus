@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
@@ -6,7 +7,11 @@ import LandingPage from "@/components/LandingPage";
 import OpenHousePage from "@/components/OpenHousePage";
 import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/components/admin/AdminDashboard";
+import PageLoader from "@/components/PageLoader";
 import { siteMetadata } from "./config/siteConfig";
+import { preloadImages } from "./lib/preload";
+// @ts-ignore - JS config module without types
+import { galleryImages } from "./config/siteConfig.js";
 
 // Component to handle document head metadata
 const DocumentHead = () => {
@@ -74,8 +79,65 @@ function Router() {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Lock body scroll while loading
+    if (isLoading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isLoading]);
+
+  useEffect(() => {
+    const minLoadTime = 800; // keep snappy
+    const start = Date.now();
+
+    const urls: string[] = (galleryImages || []).map((g: any) => g.src).filter(Boolean);
+
+    const controller = new AbortController();
+
+    const run = async () => {
+      try {
+        // If connection is very slow, we still attempt full preload but will time out overall
+        const timeoutMs = 20000; // 20s hard cap
+        let timedOut = false;
+        const timeout = setTimeout(() => { timedOut = true; }, timeoutMs);
+
+        await preloadImages(urls, {
+          concurrency: 8,
+          retries: 2,
+          timeoutMsPerImage: 15000,
+          onProgress: (done, total) => {
+            const pct = total ? Math.round((done / total) * 100) : 100;
+            setProgress(pct);
+          }
+        });
+        clearTimeout(timeout);
+
+        const elapsed = Date.now() - start;
+        const remaining = Math.max(0, minLoadTime - elapsed);
+        setTimeout(() => setIsLoading(false), remaining);
+      } catch {
+        // On unexpected failure, still proceed after minimum time
+        const elapsed = Date.now() - start;
+        const remaining = Math.max(0, minLoadTime - elapsed);
+        setTimeout(() => setIsLoading(false), remaining);
+      }
+    };
+
+    run();
+    return () => controller.abort();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
+      <PageLoader isLoading={isLoading} />
       <DocumentHead />
       <Router />
       <Toaster />

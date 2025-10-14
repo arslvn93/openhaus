@@ -1,6 +1,7 @@
 import React from 'react';
 import { testimonials as configTestimonials, property, siteBranding, contactInfo } from '../config/siteConfig';
 import { QuoteIcon, Star } from 'lucide-react';
+import LazyImage from './LazyImage';
 
 const Testimonials = () => {
   // Temporarily hide the Testimonials section
@@ -31,7 +32,7 @@ const Testimonials = () => {
               style={{ borderTop: `3px solid ${siteBranding.colors.primary}` }}
             >
               <div className="flex items-center mb-6">
-                <img 
+                <LazyImage 
                   src={testimonial.avatar} 
                   alt={testimonial.name} 
                   className="w-14 h-14 rounded-full object-cover mr-4"

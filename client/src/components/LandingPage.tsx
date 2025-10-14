@@ -7,7 +7,6 @@ import HomeHighlights from './HomeHighlights';
 import PhotoGallery from './PhotoGallery';
 import NeighborhoodOverview from './NeighborhoodOverview';
 import ExclusivePackage from './ExclusivePackage';
-import ContactForm from './ContactForm';
 import Testimonials from './Testimonials';
 import Footer from './Footer';
 import PropertyFeatures from './PropertyFeatures';
@@ -134,7 +133,6 @@ const LandingPage = () => {
       <NeighborhoodOverview />
       <ExclusivePackage />
       <Testimonials />
-      <ContactForm />
       <Footer />
       <Preloader />
 

@@ -1,10 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
 import { siteBranding, property, homeShowcaseSections, openHouseDetails } from '../config/siteConfig';
+import LazyImage from './LazyImage';
 
 interface PropertyShowcaseProps {
   showForSale?: boolean;
   showOnlyHero?: boolean;
 }
+
+// Helper function to convert YouTube URLs to embed format
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+  
+  // Handle youtu.be format
+  const youtuBeMatch = url.match(/youtu\.be\/([^?&]+)/);
+  if (youtuBeMatch) {
+    return `https://www.youtube.com/embed/${youtuBeMatch[1]}`;
+  }
+  
+  // Handle youtube.com/watch?v= format
+  const youtubeMatch = url.match(/youtube\.com\/watch\?v=([^&]+)/);
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+  }
+  
+  // Handle youtube.com/embed/ format (already embedded)
+  if (url.includes('youtube.com/embed/')) {
+    return url;
+  }
+  
+  return null;
+};
 
 const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: PropertyShowcaseProps) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -12,6 +37,13 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
   const scrollBtnRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<any>(null);
   const loaderVideoRef = useRef<HTMLDivElement>(null);
+
+  // Safari detection helper
+  const isSafari = () => {
+    if (typeof window === 'undefined') return false;
+    const ua = navigator.userAgent.toLowerCase();
+    return ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1 && ua.indexOf('android') === -1;
+  };
 
   // Load heroVideo dynamically (it might not exist if commented out)
   useEffect(() => {
@@ -115,23 +147,28 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
     // Initialize ScrollMagic once it's loaded - with optimized performance
     const initScrollMagic = () => {
       if (typeof window !== 'undefined' && window.ScrollMagic) {
+        const safari = isSafari();
+        
         // Create controller with reduced logging and optimized scrolling
         controllerRef.current = new window.ScrollMagic.Controller({
           loglevel: 0,  // Disable logging
-          refreshInterval: 200, // Less frequent checks (default is 100)
+          refreshInterval: 200, // Keep consistent for smooth performance
         });
+        
+        // Safari-specific: slightly earlier trigger to compensate for rendering delay
+        const triggerHook = safari ? 0.95 : "onEnter"; // Safari triggers slightly earlier (5% instead of 15%)
         
         // Add performance options to all scenes
         const sceneOptions = {
-          refreshInterval: 20, // Reduced refresh rate for better performance
-          reverse: true,
+          refreshInterval: 0, // Disable for smooth performance
+          reverse: true, // CRITICAL: Enable reverse for scroll up
           offset: 0
         };
         
         // Scene for the first section - optimized
         new window.ScrollMagic.Scene({
           triggerElement: "#section2",
-          triggerHook: "onEnter",
+          triggerHook: triggerHook,
           duration: "100%",
           ...sceneOptions
         }).setPin("#section1 .pinWrapper", {
@@ -141,7 +178,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
         // Scene for the second section - optimized
         new window.ScrollMagic.Scene({
           triggerElement: "#section2",
-          triggerHook: "onEnter",
+          triggerHook: triggerHook,
           duration: "200%",
           ...sceneOptions
         }).setPin("#section2 .pinWrapper", {
@@ -151,22 +188,31 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
         // Scene for the third section - optimized
         new window.ScrollMagic.Scene({
           triggerElement: "#section3",
-          triggerHook: "onEnter",
+          triggerHook: triggerHook,
           duration: "200%",
           ...sceneOptions
         }).setPin("#section3 .pinWrapper", {
           pushFollowers: false
         }).addTo(controllerRef.current);
         
-        // Scene for the fourth section - optimized
+        // Scene for the fourth section - optimized (needs earlier trigger for last section)
         new window.ScrollMagic.Scene({
           triggerElement: "#section4",
-          triggerHook: "onEnter",
+          triggerHook: safari ? 0.8 : triggerHook, // Safari needs even earlier trigger for last section
           duration: "100%",
           ...sceneOptions
         }).setPin("#section4 .pinWrapper", {
           pushFollowers: false
         }).addTo(controllerRef.current);
+        
+        // Safari-specific: Single refresh after a brief delay for initial layout
+        if (safari) {
+          setTimeout(() => {
+            if (controllerRef.current) {
+              controllerRef.current.update(true);
+            }
+          }, 300);
+        }
       }
     };
     
@@ -177,41 +223,47 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       if (loaderVideo) {
         // Skip video positioning on mobile devices since video is hidden
         const applyResponsiveStyles = () => {
+          // If using YouTube, sizing is handled by the inner 16:9 wrapper; skip
+          if (heroVideo && heroVideo.url && (heroVideo.url.includes('youtube.com') || heroVideo.url.includes('youtu.be'))) {
+            loaderVideo.style.width = '';
+            loaderVideo.style.height = '';
+            loaderVideo.style.left = '';
+            loaderVideo.style.right = '';
+            loaderVideo.style.top = '';
+            loaderVideo.style.position = '';
+            loaderVideo.style.transform = '';
+            return;
+          }
+          const setSize = (w: number) => {
+            loaderVideo.style.width = `${w}px`;
+            loaderVideo.style.height = `${Math.round((w * 9) / 16)}px`;
+            loaderVideo.style.top = "50%";
+            loaderVideo.style.position = "absolute";
+            loaderVideo.style.transform = "translate(0%, -50%)";
+          };
           if (window.matchMedia('(max-width: 640px)').matches) {
             // Mobile - video is hidden, no positioning needed
             return;
           } else if (window.matchMedia('(max-width: 767px)').matches) {
-            loaderVideo.style.width = "220px";
-            loaderVideo.style.height = "220px";
+            setSize(220);
             loaderVideo.style.left = "auto";
             loaderVideo.style.right = "40px";
-            loaderVideo.style.transform = "translate(0%, -50%)";
           } else if (window.matchMedia('(max-width: 991px)').matches) {
-            loaderVideo.style.width = "310px";
-            loaderVideo.style.height = "310px";
+            setSize(310);
             loaderVideo.style.left = "auto";
             loaderVideo.style.right = "40px";
-            loaderVideo.style.transform = "translate(0%, -50%)";
           } else if (window.matchMedia('(max-width: 1199px)').matches) {
-            loaderVideo.style.width = "400px";
-            loaderVideo.style.height = "400px";
+            setSize(400);
             loaderVideo.style.left = "auto";
             loaderVideo.style.right = "60px";
-            loaderVideo.style.transform = "translate(0%, -50%)";
           } else if (window.matchMedia('(max-width: 1399px)').matches) {
-            loaderVideo.style.width = "450px";
-            loaderVideo.style.height = "450px";
+            setSize(450);
             loaderVideo.style.left = "auto";
             loaderVideo.style.right = "80px";
-            loaderVideo.style.transform = "translate(0%, -50%)";
           } else {
-            loaderVideo.style.width = "500px";
-            loaderVideo.style.height = "500px";
-            loaderVideo.style.top = "50%";
+            setSize(500);
             loaderVideo.style.left = "auto";
             loaderVideo.style.right = "100px";
-            loaderVideo.style.transform = "translate(0%, -50%)";
-            loaderVideo.style.position = "absolute";
           }
         };
         
@@ -250,7 +302,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       <div id="section1" className="event">
         <div className="pinWrapper">
           <div className="text">
-            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale ? 'FOR SALE' : 'OPEN HOUSE'}</span>
+            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale ? 'FOR RENT' : 'OPEN HOUSE'}</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight mb-6">
               {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>
@@ -301,37 +353,70 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
             </button>
           </div>
           
-          <div className="image" id="loaderVideo" ref={loaderVideoRef}>
+          <div className="image" id="loaderVideo" ref={loaderVideoRef} style={{ overflow: 'visible' }}>
 
             {heroVideo && heroVideo.url ? (
-              (heroVideo.url.includes('vimeo.com') ? (
-                <iframe
-                  src={`${heroVideo.url}${heroVideo.url.includes('?') ? '&' : '?'}background=1&autoplay=1&muted=1&loop=1&autopause=0&controls=0&title=0&byline=0&portrait=0&playsinline=1`}
-                  className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-                  style={{ border: 0, position: 'absolute' }}
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  allowFullScreen
-                  loading="lazy"
-                  title="Hero Video"
-                />
-              ) : (
-                <video 
-                  autoPlay={heroVideo.autoplay}
-                  loop={heroVideo.loop}
-                  muted={heroVideo.muted}
-                  playsInline={heroVideo.playsInline}
-                  preload="auto"
-                  className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
-                >
-                  <source src={heroVideo.url} type={heroVideo.type} />
-                  Your browser does not support the video tag.
-                </video>
-              ))
+              (() => {
+                const youtubeEmbedUrl = getYouTubeEmbedUrl(heroVideo.url);
+                
+                // YouTube video
+                if (youtubeEmbedUrl) {
+                  return (
+                    <div style={{ position: 'absolute', top: '50%', right: '6vw', transform: 'translateY(-50%)' }} className={`transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
+                      <div style={{ position: 'relative', width: 'min(40vw, 560px)', minWidth: '260px', aspectRatio: '16 / 9', maxHeight: '60vh' }}>
+                        <iframe
+                          src={`${youtubeEmbedUrl}?autoplay=1&mute=1&loop=1&playlist=${youtubeEmbedUrl.split('/').pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&start=12`}
+                          style={{ border: 0, position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                          width="100%"
+                          height="100%"
+                          allow="autoplay; fullscreen; picture-in-picture; accelerometer; encrypted-media; gyroscope"
+                          allowFullScreen
+                          loading="lazy"
+                          title="Hero Video"
+                        />
+                      </div>
+                    </div>
+                  );
+                }
+                
+                // Vimeo video
+                if (heroVideo.url.includes('vimeo.com')) {
+                  return (
+                    <iframe
+                      src={`${heroVideo.url}${heroVideo.url.includes('?') ? '&' : '?'}background=1&autoplay=1&muted=1&loop=1&autopause=0&controls=0&title=0&byline=0&portrait=0&playsinline=1#t=10s`}
+                      className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                      style={{ border: 0, position: 'absolute' }}
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      title="Hero Video"
+                    />
+                  );
+                }
+                
+                // Direct video file (MP4, etc.)
+                return (
+                  <video 
+                    autoPlay={heroVideo.autoplay}
+                    loop={heroVideo.loop}
+                    muted={heroVideo.muted}
+                    playsInline={heroVideo.playsInline}
+                    preload="auto"
+                    onLoadedMetadata={(e) => { try { (e.currentTarget as HTMLVideoElement).currentTime = 10; } catch {} }}
+                    className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    <source src={heroVideo.url} type={heroVideo.type} />
+                    Your browser does not support the video tag.
+                  </video>
+                );
+              })()
             ) : (
-              <img 
+              <LazyImage 
                 src={`${property.heroImage}?v=${Math.floor(Date.now() / 60000)}`}
                 alt={property.heroCaption || property.name}
                 className={`h-full w-full object-cover object-center absolute top-0 left-0 transition-opacity duration-1000 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}
+                priority={true}
+                onLoad={() => setImagesLoaded(true)}
               />
             )}
           </div>
