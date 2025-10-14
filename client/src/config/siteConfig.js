@@ -8,12 +8,14 @@
 export const contactInfo = {
     agent: {
       name: "Arslan Ahmed",
-      photo: "https://app.salesgenius.co/api/user-images/6e5f208c-ba60-4fa0-8e9a-abaabd25ded0?v=49b5bb0651a74a8f76b17f07911294534cc1945bf9f041389da6a5f3660dda8d",
+      photo: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757711141211-Headshot%20Arslan%20Andrew.jpg",
       phone: "(416) 655-4850",
       email: "arslan@salesgenius.co",
       company: "Executive Homes Realty Inc",
-      license: "RECO #84397152",
-      repo: "new-listing-795"
+      license: "REALTOR®",
+      repo: "New-Listing-886",
+      companyAddress: "290 Traders Blvd E unit 1, Mississauaga, L4Z, 1W7, Canada",
+      companyLogo: "https://www.executivehomesrealty.ca/files/themeManager/9607/theme28/EHRB%20Transparent.png"
     },
     social: {
       instagram: "https://instagram.com/executivehomesrealtyinc",
