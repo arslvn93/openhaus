@@ -302,7 +302,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       <div id="section1" className="event">
         <div className="pinWrapper">
           <div className="text">
-            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale ? 'FOR RENT' : 'OPEN HOUSE'}</span>
+            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale ? 'FOR SALE' : 'OPEN HOUSE'}</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight mb-6">
               {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>

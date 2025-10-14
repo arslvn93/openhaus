@@ -289,7 +289,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 name="status"
                 value={propertyData.status || ''}
                 onChange={handleInputChange}
-                placeholder="e.g. For Rent, Sold, Pending"
+                placeholder="e.g. For Sale, Sold, Pending"
                 className="bg-black/50 border-white/10 text-white"
               />
             </div>

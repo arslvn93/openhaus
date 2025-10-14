@@ -329,7 +329,7 @@ export const property = {
     lotSize: "30 x 120 ft",
     yearBuilt: 2010,
     type: "Condo Apartment",
-    status: "For Rent",
+    status: "For Sale",
     description: "Sophisticated condo apartment offering turnkey urban luxury, dramatic floor-to-ceiling glazing without bulkheads, cohesive 2021 renovations, and walk-to-everything convenience in Toronto's Entertainment District.",
     shortDescription: "Turnkey luxury condo in Toronto’s Entertainment District with parking",
     longDescription: "Elevated downtown living in a rare Loren-style 2+Den, 2-bath suite (1,249 sf) with true floor-to-ceiling windows—no bulkheads—delivering uninterrupted light and views. A cohesive $90K 2021 renovation reimagines the kitchen and bathrooms with designer finishes, an enlarged island with power, and consistent materiality. Enjoy southeast exposure, a usable 143 sf balcony, parking, and an owned locker. Steps to theatres, dining, PATH, TTC, and the financial core.",

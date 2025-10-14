@@ -21,7 +21,7 @@ export const property = {
     lotSize: "50 x 125 ft",
     yearBuilt: 2023,
     type: "Single Family Home",
-    status: "For Rent",
+    status: "For Sale",
     description: "An exceptional modern residence offering luxurious living spaces, premium finishes, and state-of-the-art amenities in a coveted neighborhood.",
     shortDescription: "Luxury modern residence in prime location",
     longDescription: "This stunning modern residence exemplifies contemporary luxury living with its meticulous design, premium finishes, and thoughtful amenities. Featuring open concept living spaces, designer kitchen, primary suite retreat, and curated outdoor spaces, this exceptional property offers the perfect balance of sophistication and comfort.",
