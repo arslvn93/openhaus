@@ -9,8 +9,7 @@ const navItems = [
   { id: 'highlights', label: 'Highlights' },
   { id: 'gallery', label: 'Gallery' },
   { id: 'neighborhood', label: 'Neighborhood' },
-  { id: 'package', label: 'Package' },
-  { id: 'contact', label: 'Contact' }
+  { id: 'package', label: 'Package' }
 ];
 
 interface NavigationProps {
@@ -46,7 +45,7 @@ const Navigation = ({ showForSale = false }: NavigationProps) => {
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-primary/90 backdrop-blur-sm' : ''}`}>
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-white font-['Poppins'] text-xl tracking-wider">
-            <span className="text-white hidden sm:inline">{showForSale ? 'FOR SALE:' : 'OPEN HOUSE:'}</span> <span style={{ color: colors.primary }}>{property.address.street}</span>
+            <span className="text-white hidden sm:inline">{showForSale ? 'FOR SALE:' : 'NEW LISTING:'}</span> <span style={{ color: colors.primary }}>{property.address.street}</span>
           </Link>
           
           <nav className="hidden md:block">
