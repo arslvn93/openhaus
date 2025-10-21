@@ -226,17 +226,18 @@ const PropertyDetails = () => {
           })}
         </div>
 
-        {/* Open House Section - Clean Event Details */}
-        <div
-          ref={openHouseRef}
-          className="relative opacity-0"
-          style={{
-            transform: 'translateY(30px) scale(0.95)',
-            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
-          }}
-        >
-          {/* Main Container */}
-          <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+        {/* Open House Section - Clean Event Details - Only show if date and time are provided */}
+        {openHouseDetails?.nextDate && openHouseDetails?.time && (
+          <div
+            ref={openHouseRef}
+            className="relative opacity-0"
+            style={{
+              transform: 'translateY(30px) scale(0.95)',
+              transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
+            }}
+          >
+            {/* Main Container */}
+            <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
             
             {/* Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 min-h-[600px]">
@@ -323,6 +324,7 @@ const PropertyDetails = () => {
             </div>
           </div>
         </div>
+        )}
       </div>
     </section>
   );

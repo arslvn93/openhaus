@@ -264,8 +264,8 @@ export const openHouseBenefits = [
 
 // openHouseDetails configuration
 export const openHouseDetails = {
-    nextDate: "Saturday, September 6, 2025",
-    time: "1:00 PM - 4:00 PM",
+    nextDate: "",
+    time: "",
     host: "Arslan Ahmed",
     phone: "(416) 655-4850",
     email: "info@80john.com",
