@@ -151,9 +151,26 @@ const AdminDashboard = () => {
     );
   }
   
+  // Default package items fallback
+  const defaultPackageItems = [
+    { id: 1, title: 'Detailed Floor Plans', description: 'Complete architectural layouts', iconName: 'FileText' },
+    { id: 2, title: 'Market Analysis', description: 'Recent sales and pricing trends', iconName: 'BarChart2' },
+    { id: 3, title: 'School Information', description: 'Local schools and ratings', iconName: 'GraduationCap' },
+    { id: 4, title: 'Property Features', description: 'Detailed feature list', iconName: 'CheckSquare' },
+    { id: 5, title: 'Utility Cost Estimates', description: 'Monthly expenses', iconName: 'DollarSign' },
+    { id: 6, title: 'Area Amenities', description: 'Nearby shops and services', iconName: 'Map' },
+    { id: 7, title: 'Home Inspection Tips', description: 'What to look for', iconName: 'Search' },
+    { id: 8, title: 'Financing Resources', description: 'Mortgage and payment info', iconName: 'CreditCard' }
+  ];
+
   // Helper function to adapt config data to match component interfaces
   const adaptConfigForComponents = () => {
     const adaptedConfig = { ...currentConfig };
+    
+    // Add default packageItems if missing
+    if (!adaptedConfig.packageItems || !Array.isArray(adaptedConfig.packageItems) || adaptedConfig.packageItems.length === 0) {
+      adaptedConfig.packageItems = defaultPackageItems;
+    }
     
     // Fix property data structure
     if (adaptedConfig.property) {

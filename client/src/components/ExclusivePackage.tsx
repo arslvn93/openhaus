@@ -1,11 +1,63 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 // @ts-ignore - JS config module without types
-import { packageItems, property, siteBranding, contactInfo } from '../config/siteConfig';
+import { property, siteBranding, contactInfo } from '../config/siteConfig';
 import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard, ArrowRight, Check, Clock, Users, Sparkles } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+
+// Default package items fallback
+const defaultPackageItems = [
+  {
+    id: 1,
+    title: 'Detailed Floor Plans',
+    description: 'Complete architectural layouts showing room dimensions and optimal flow',
+    iconName: 'FileText'
+  },
+  {
+    id: 2,
+    title: 'Market Analysis',
+    description: 'Recent sales data and pricing trends in the area',
+    iconName: 'BarChart2'
+  },
+  {
+    id: 3,
+    title: 'School Information',
+    description: 'Local schools, ratings, and enrollment details',
+    iconName: 'GraduationCap'
+  },
+  {
+    id: 4,
+    title: 'Property Features',
+    description: 'Detailed list of all property features and amenities',
+    iconName: 'CheckSquare'
+  },
+  {
+    id: 5,
+    title: 'Utility Cost Estimates',
+    description: 'Estimated monthly utility and maintenance expenses',
+    iconName: 'DollarSign'
+  },
+  {
+    id: 6,
+    title: 'Area Amenities',
+    description: 'Nearby shops, restaurants, and services',
+    iconName: 'Map'
+  },
+  {
+    id: 7,
+    title: 'Home Inspection Tips',
+    description: 'What to look for during property viewing',
+    iconName: 'Search'
+  },
+  {
+    id: 8,
+    title: 'Financing Resources',
+    description: 'Mortgage options and payment calculators',
+    iconName: 'CreditCard'
+  }
+];
 
 // Map of icon names to their respective components
 const iconMap: Record<string, React.ReactNode> = {
@@ -32,6 +84,22 @@ const ExclusivePackage = () => {
   const [showSticky, setShowSticky] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+  const [packageItems, setPackageItems] = useState(defaultPackageItems);
+  
+  // Load packageItems from config or use defaults
+  useEffect(() => {
+    const loadPackageItems = async () => {
+      try {
+        const config = await import('../config/siteConfig');
+        if (config.packageItems && Array.isArray(config.packageItems)) {
+          setPackageItems(config.packageItems);
+        }
+      } catch (error) {
+        console.log('Using default package items');
+      }
+    };
+    loadPackageItems();
+  }, []);
   
   // Parallax scroll effect
   const { scrollYProgress } = useScroll({
