@@ -27,9 +27,10 @@ interface SocialLinks {
 interface AgentFormProps {
   initialData: {
     agent: AgentInfo;
+    agent2?: AgentInfo | null;
     social: SocialLinks;
   };
-  saveData: (data: { agent: AgentInfo; social: SocialLinks }) => void;
+  saveData: (data: { agent: AgentInfo; agent2?: AgentInfo | null; social: SocialLinks }) => void;
   loading: boolean;
 }
 
@@ -50,6 +51,20 @@ const AgentForm: React.FC<AgentFormProps> = ({
     companyLogo: initialData.agent?.companyLogo || ''
   });
 
+  // Agent2 state
+  const [agent2Enabled, setAgent2Enabled] = useState<boolean>(
+    !!(initialData.agent2?.name && initialData.agent2.name.trim() !== '')
+  );
+  
+  const [agent2Data, setAgent2Data] = useState<AgentInfo>({
+    name: initialData.agent2?.name || '',
+    photo: initialData.agent2?.photo || '',
+    email: initialData.agent2?.email || '',
+    phone: initialData.agent2?.phone || '',
+    company: initialData.agent2?.company || '',
+    license: initialData.agent2?.license || ''
+  });
+
   const [socialData, setSocialData] = useState<SocialLinks>({
     facebook: initialData.social?.facebook || '',
     instagram: initialData.social?.instagram || '',
@@ -59,6 +74,8 @@ const AgentForm: React.FC<AgentFormProps> = ({
   // Debug logging
   console.log('AgentForm initialData:', initialData);
   console.log('AgentForm agentData:', agentData);
+  console.log('AgentForm agent2Enabled:', agent2Enabled);
+  console.log('AgentForm agent2Data:', agent2Data);
   
   const handleAgentChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,6 +83,16 @@ const AgentForm: React.FC<AgentFormProps> = ({
     const { name, value } = e.target;
     setAgentData({
       ...agentData,
+      [name]: value
+    });
+  };
+
+  const handleAgent2Change = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setAgent2Data({
+      ...agent2Data,
       [name]: value
     });
   };
@@ -84,6 +111,7 @@ const AgentForm: React.FC<AgentFormProps> = ({
     e.preventDefault();
     saveData({
       agent: agentData,
+      agent2: agent2Enabled ? agent2Data : null,
       social: socialData
     });
   };
@@ -92,9 +120,9 @@ const AgentForm: React.FC<AgentFormProps> = ({
     <form onSubmit={handleSubmit}>
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-['Poppins'] text-white mb-4">Agent Information</h3>
+          <h3 className="text-xl font-['Poppins'] text-white mb-4">Primary Agent Information</h3>
           <p className="text-white/60 mb-6">
-            Manage your agent profile information that appears throughout the website, including the footer and contact sections.
+            Manage the primary agent profile information that appears throughout the website, including the footer and contact sections.
           </p>
           
           <div className="space-y-4">
@@ -232,10 +260,128 @@ const AgentForm: React.FC<AgentFormProps> = ({
         
         <Separator className="bg-white/10 my-8" />
         
+        {/* Agent 2 Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-['Poppins'] text-white">Secondary Agent (Optional)</h3>
+              <p className="text-white/60 text-sm mt-1">
+                Add a second agent to display alongside the primary agent in the footer
+              </p>
+            </div>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agent2Enabled}
+                onChange={(e) => setAgent2Enabled(e.target.checked)}
+                className="w-5 h-5 rounded border-white/20 bg-black text-[#D9A566] focus:ring-[#D9A566] focus:ring-offset-0"
+              />
+              <span className="text-white/80 text-sm">Enable Agent 2</span>
+            </label>
+          </div>
+          
+          {agent2Enabled && (
+            <div className="space-y-4 mt-6 p-6 bg-white/5 rounded-lg border border-white/10">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-name" className="text-white">Agent Name</Label>
+                </div>
+                <Input
+                  id="agent2-name"
+                  name="name"
+                  value={agent2Data.name}
+                  onChange={handleAgent2Change}
+                  placeholder="John Smith"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-photo" className="text-white">Agent Photo URL</Label>
+                </div>
+                <Input
+                  id="agent2-photo"
+                  name="photo"
+                  value={agent2Data.photo}
+                  onChange={handleAgent2Change}
+                  placeholder="https://example.com/agent-photo.jpg"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-email" className="text-white">Email Address</Label>
+                </div>
+                <Input
+                  id="agent2-email"
+                  name="email"
+                  type="email"
+                  value={agent2Data.email}
+                  onChange={handleAgent2Change}
+                  placeholder="agent@example.com"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-phone" className="text-white">Phone Number</Label>
+                </div>
+                <Input
+                  id="agent2-phone"
+                  name="phone"
+                  value={agent2Data.phone}
+                  onChange={handleAgent2Change}
+                  placeholder="(123) 456-7890"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Building className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-company" className="text-white">Company Name</Label>
+                </div>
+                <Input
+                  id="agent2-company"
+                  name="company"
+                  value={agent2Data.company}
+                  onChange={handleAgent2Change}
+                  placeholder="Real Estate Company"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-[#D9A566]" />
+                  <Label htmlFor="agent2-license" className="text-white">License Number</Label>
+                </div>
+                <Input
+                  id="agent2-license"
+                  name="license"
+                  value={agent2Data.license}
+                  onChange={handleAgent2Change}
+                  placeholder="RECO #12345678"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <Separator className="bg-white/10 my-8" />
+        
         <div>
           <h4 className="text-md font-['Poppins'] text-white mb-4">Social Media Links</h4>
           <p className="text-white/60 mb-4 text-sm">
-            Social media links that appear in the website footer
+            Social media links that appear in the website footer (shared by both agents)
           </p>
           
           <div className="space-y-4">
@@ -292,7 +438,7 @@ const AgentForm: React.FC<AgentFormProps> = ({
             disabled={loading}
             className="bg-[#D9A566] hover:bg-[#D9A566]/80 text-black"
           >
-            {loading ? "Saving..." : "Save Agent Information"}
+            {loading ? "Saving..." : `Save Agent${agent2Enabled ? 's' : ''} Information`}
           </Button>
         </div>
       </div>

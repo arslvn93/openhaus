@@ -382,6 +382,7 @@ const AdminDashboard = () => {
                     companyAddress: adaptedConfig.contactInfo?.address || '',
                     companyLogo: adaptedConfig.siteBranding?.companyLogo || adaptedConfig.siteBranding?.logoUrl || ''
                   },
+                  agent2: adaptedConfig.contactInfo?.agent2 || null,
                   social: adaptedConfig.contactInfo?.social || {}
                 }}
                 saveData={(data: any) => {
@@ -390,6 +391,7 @@ const AdminDashboard = () => {
                   const updatedContactInfo = {
                     ...adaptedConfig.contactInfo,
                     agent: data.agent,
+                    agent2: data.agent2, // Add agent2 to saved data
                     social: data.social,
                     // Map companyAddress to the main address field for backward compatibility
                     address: data.agent.companyAddress || adaptedConfig.contactInfo?.address || ''

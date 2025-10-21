@@ -17,6 +17,14 @@ export const contactInfo = {
       companyAddress: "290 Traders Blvd E unit 1, Mississauaga, L4Z, 1W7, Canada",
       companyLogo: "https://www.executivehomesrealty.ca/files/themeManager/9607/theme28/EHRB%20Transparent.png"
     },
+    agent2: {
+      name: "Rick Sandhu",
+      photo: "https://salesgenius.s3.ca-central-1.amazonaws.com/uploads/1757711141211-Headshot%20Arslan%20Andrew.jpg",
+      phone: "(416) 655-4850",
+      email: "rick@salesgenius.co",
+      company: "Sandhu Realty Inc",
+      license: "REALTOR®",
+    },
     social: {
       instagram: "https://instagram.com/executivehomesrealtyinc",
       facebook: "https://facebook.com/executivehomesrealtyinc",

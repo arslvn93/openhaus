@@ -6,12 +6,24 @@ const Footer = () => {
   const year = new Date().getFullYear();
   const primaryColor = siteBranding?.colors?.primary || '#D9A566';
 
+  // Check if agent2 exists and has a name
+  const hasAgent2 = contactInfo.agent2?.name && contactInfo.agent2.name.trim() !== '';
+
   return (
     <footer className="bg-black border-t border-white/10" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      {/* Disclaimer Bar */}
+      <div className="bg-gray-900/50 border-b border-white/5 py-3">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <p className="text-white/60 text-xs leading-relaxed text-left">
+            <span className="font-medium text-white/80">Disclaimer:</span> This material is provided for informational and educational purposes only and is not intended to solicit buyers or sellers currently under contract with another brokerage. All information, data, and property details are believed to be reliable but are not guaranteed and should be independently verified by prospective buyers or sellers. Always conduct your own due diligence before making any real estate or financial decisions.
+          </p>
+        </div>
+      </div>
+      
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-12 items-start md:items-center gap-x-4 md:gap-x-6 gap-y-6 md:gap-y-0 py-5 md:py-3">
-          {/* Agent strip */}
-          <div className="col-span-12 lg:col-span-4 flex items-center gap-3 md:gap-4">
+          {/* Agent 1 strip */}
+          <div className={`col-span-12 ${hasAgent2 ? 'lg:col-span-3' : 'lg:col-span-4'} flex items-center gap-3 md:gap-4`}>
             <img
               src={contactInfo.agent.photo}
               alt={contactInfo.agent.name}
@@ -45,9 +57,47 @@ const Footer = () => {
               </div>
             </div>
           </div>
+
+          {/* Agent 2 strip - Only show if agent2 exists and has a name */}
+          {hasAgent2 && (
+            <div className="col-span-12 lg:col-span-3 flex items-center gap-3 md:gap-4">
+              <img
+                src={contactInfo.agent2.photo}
+                alt={contactInfo.agent2.name}
+                decoding="async"
+                className="h-16 md:h-14 object-contain"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-medium text-sm md:text-base truncate">{contactInfo.agent2.name}</span>
+                  {contactInfo.agent2.license && (
+                    <span className="text-white/50 text-[11px] md:text-xs truncate">{contactInfo.agent2.license}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <a
+                    href={`tel:${contactInfo.agent2.phone}`}
+                    aria-label={`Call ${contactInfo.agent2.name}`}
+                    className="px-3 md:px-3 h-8 md:h-8 inline-flex items-center rounded-full text-xs md:text-xs text-white/90 border border-white/10 hover:border-white/20 hover:text-white transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 md:h-[14px] w-3.5 md:w-[14px] mr-1.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                    {contactInfo.agent2.phone}
+                  </a>
+                  <a
+                    href={`mailto:${contactInfo.agent2.email}`}
+                    aria-label={`Email ${contactInfo.agent2.name}`}
+                    className="px-3 md:px-3 h-8 md:h-8 inline-flex items-center rounded-full text-xs md:text-xs text-white/90 border border-white/10 hover:border-white/20 hover:text-white transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 md:h-[14px] w-3.5 md:w-[14px] mr-1.5 md:mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><polyline points="22,6 12,13 2,6" /></svg>
+                    {contactInfo.agent2.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
             
           {/* Company strip */}
-          <div className="col-span-12 lg:col-span-6 flex items-center justify-start lg:justify-center gap-3 md:gap-4">
+          <div className={`col-span-12 ${hasAgent2 ? 'lg:col-span-4' : 'lg:col-span-6'} flex items-center justify-start lg:justify-center gap-3 md:gap-4`}>
             <img
               src={contactInfo.agent.companyLogo || siteBranding?.logo || '/logo.svg'}
               alt={contactInfo.agent.company}
@@ -71,7 +121,7 @@ const Footer = () => {
           </div>
           
           {/* Social strip - Mobile optimized */}
-          <div className="col-span-12 lg:col-span-2 flex flex-col items-center lg:items-end justify-center order-3 lg:order-none gap-1">
+          <div className={`col-span-12 ${hasAgent2 ? 'lg:col-span-2' : 'lg:col-span-2'} flex flex-col items-center lg:items-end justify-center order-3 lg:order-none gap-1`}>
             <div className="flex items-center justify-center lg:justify-end gap-6 md:gap-6">
               {contactInfo.social?.instagram && (
                 <a href={contactInfo.social.instagram} aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="group relative transition-all duration-300">
