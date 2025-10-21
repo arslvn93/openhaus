@@ -31,10 +31,10 @@ const Footer = () => {
               className="h-16 md:h-14 object-contain"
             />
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-medium text-sm md:text-base truncate">{contactInfo.agent.name}</span>
+              <div className="flex items-start gap-2">
+                <span className="text-white font-medium text-sm md:text-base leading-tight">{contactInfo.agent.name}</span>
                 {contactInfo.agent.license && (
-                  <span className="text-white/50 text-[11px] md:text-xs truncate">{contactInfo.agent.license}</span>
+                  <span className="text-white/50 text-[11px] md:text-xs leading-tight">{contactInfo.agent.license}</span>
                 )}
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -68,10 +68,10 @@ const Footer = () => {
                 className="h-16 md:h-14 object-contain"
               />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-white font-medium text-sm md:text-base truncate">{contactInfo.agent2.name}</span>
+                <div className="flex items-start gap-2">
+                  <span className="text-white font-medium text-sm md:text-base leading-tight">{contactInfo.agent2.name}</span>
                   {contactInfo.agent2.license && (
-                    <span className="text-white/50 text-[11px] md:text-xs truncate">{contactInfo.agent2.license}</span>
+                    <span className="text-white/50 text-[11px] md:text-xs leading-tight">{contactInfo.agent2.license}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
