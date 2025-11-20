@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'wouter';
 import { property, openHouseDetails, contactInfo, siteBranding } from '../config/siteConfig';
 import { Building, Home, MapPin, Calendar, User, DollarSign, Bed, Bath, Square, Car, Award, Clock } from 'lucide-react';
 import LazyImage from './LazyImage';
@@ -310,15 +311,15 @@ const PropertyDetails = () => {
                 
                 {/* RSVP Button - Centered on Image */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <a 
-                    href="#contact" 
+                  <Link 
+                    href="/openhouse" 
                     className="bg-white/95 backdrop-blur-sm text-black font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl text-lg"
                   >
                     <span className="flex items-center">
                       <Calendar className="w-6 h-6 mr-3" />
                       {openHouseDetails.ctaText}
                     </span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
