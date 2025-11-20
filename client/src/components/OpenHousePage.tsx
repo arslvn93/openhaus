@@ -18,6 +18,15 @@ import { siteBranding } from '../config/siteConfig';
 const OpenHousePage = () => {
   const { createScrollScene } = useScrollAnimation();
   const [showExitPopup, setShowExitPopup] = useState(false);
+  const primaryColor = siteBranding?.colors?.primary || '#D9A566';
+  
+  // Helper function to convert hex to RGB
+  const hexToRgb = (hex: string): string => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result 
+      ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+      : '217, 165, 102'; // fallback to default color
+  };
 
   useEffect(() => {
 
@@ -149,11 +158,11 @@ const OpenHousePage = () => {
                    }}>
               </div>
             </div>
-            <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-[#D9A566]/10 blur-3xl rounded-full"></div>
-            <div className="absolute bottom-[-30px] left-[-30px] w-48 h-48 bg-[#D9A566]/10 blur-3xl rounded-full"></div>
+            <div className="absolute top-[-50px] right-[-50px] w-64 h-64 blur-3xl rounded-full" style={{ backgroundColor: `${primaryColor}1A` }}></div>
+            <div className="absolute bottom-[-30px] left-[-30px] w-48 h-48 blur-3xl rounded-full" style={{ backgroundColor: `${primaryColor}1A` }}></div>
             
             {/* Gold accent bar at top */}
-            <div className="w-full h-2 bg-[#D9A566]"></div>
+            <div className="w-full h-2" style={{ backgroundColor: primaryColor }}></div>
             
             {/* Content area */}
             <div className="p-8 relative z-10">
@@ -174,14 +183,14 @@ const OpenHousePage = () => {
                 transition={{ duration: 0.4, delay: 0.1 }}
                 className="text-center mb-8"
               >
-                <div className="inline-block mb-4 p-2 rounded-full bg-[#D9A566]/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D9A566" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="inline-block mb-4 p-2 rounded-full" style={{ backgroundColor: `${primaryColor}1A` }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={primaryColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="m22 2-7 20-4-9-9-4Z"></path>
                     <path d="M22 2 11 13"></path>
                   </svg>
                 </div>
                 <h3 className="text-3xl font-['Poppins'] uppercase tracking-wider mb-3 text-white">Exclusive Offer</h3>
-                <div className="h-1 w-16 bg-gradient-to-r from-[#D9A566] to-transparent mx-auto mb-3"></div>
+                <div className="h-1 w-16 mx-auto mb-3" style={{ background: `linear-gradient(to right, ${primaryColor}, transparent)` }}></div>
                 <p className="text-white/70 font-['Titillium_Web'] text-lg max-w-md mx-auto">
                   Get your premium home package with detailed information about {property.address.street} before it's gone!
                 </p>
@@ -197,9 +206,12 @@ const OpenHousePage = () => {
                   <input 
                     type="text" 
                     placeholder="Your Name" 
-                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none focus:border-[#D9A566] transition-all duration-200"
+                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                    onFocus={(e) => e.target.style.borderColor = primaryColor}
+                    onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                   />
-                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2 text-[#D9A566]/70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: `${primaryColor}B3` }}>
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
@@ -209,9 +221,12 @@ const OpenHousePage = () => {
                   <input 
                     type="email" 
                     placeholder="Your Email" 
-                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none focus:border-[#D9A566] transition-all duration-200"
+                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                    onFocus={(e) => e.target.style.borderColor = primaryColor}
+                    onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                   />
-                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2 text-[#D9A566]/70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: `${primaryColor}B3` }}>
                     <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                   </svg>
@@ -221,18 +236,32 @@ const OpenHousePage = () => {
                   <input 
                     type="tel" 
                     placeholder="Your Phone" 
-                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none focus:border-[#D9A566] transition-all duration-200"
+                    className="w-full bg-black border border-white/10 rounded-lg p-4 pl-12 text-white font-['Titillium_Web'] focus:outline-none transition-all duration-200"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                    onFocus={(e) => e.target.style.borderColor = primaryColor}
+                    onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                   />
-                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2 text-[#D9A566]/70" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="absolute top-1/2 left-4 transform -translate-y-1/2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: `${primaryColor}B3` }}>
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                   </svg>
                 </div>
                 
                 <div className="relative group mt-6">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[#D9A566] to-[#D9A566]/60 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="absolute -inset-0.5 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" style={{ background: `linear-gradient(to right, ${primaryColor}, ${primaryColor}99)` }}></div>
                   <button 
                     type="button" 
-                    className="relative w-full bg-gradient-to-br from-[#D9A566] to-[#D9A566]/90 text-black font-['Poppins'] p-4 rounded-lg font-bold text-lg tracking-wider uppercase shadow-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(217,165,102,0.5)]"
+                    className="relative w-full text-black font-['Poppins'] p-4 rounded-lg font-bold text-lg tracking-wider uppercase shadow-xl transition-all duration-300"
+                    style={{ 
+                      background: `linear-gradient(to bottom right, ${primaryColor}, ${primaryColor}E6)`,
+                      boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      const rgb = hexToRgb(primaryColor);
+                      e.currentTarget.style.boxShadow = `0 0 20px rgba(${rgb}, 0.5)`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.3)';
+                    }}
                     onClick={closeExitPopup}
                   >
                     GET MY PREMIUM PACKAGE

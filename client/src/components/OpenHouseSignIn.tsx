@@ -71,6 +71,15 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const OpenHouseSignIn = () => {
   const [packageItems, setPackageItems] = useState(defaultPackageItems);
+  const primaryColor = siteBranding?.colors?.primary || '#D9A566';
+  
+  // Helper function to convert hex to RGB
+  const hexToRgb = (hex: string): string => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result 
+      ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+      : '217, 165, 102'; // fallback to default color
+  };
   
   // Load packageItems from config or use defaults
   useEffect(() => {
@@ -190,10 +199,11 @@ const OpenHouseSignIn = () => {
                 }
               }}
               viewport={{ once: true }}
-              className="inline-block mx-4 text-[#D9A566] font-bold"
+              className="inline-block mx-4 font-bold"
               style={{ 
-                textShadow: '0 0 20px rgba(217, 165, 102, 0.5)',
-                filter: 'drop-shadow(0 0 10px rgba(217, 165, 102, 0.3))'
+                color: primaryColor,
+                textShadow: `0 0 20px ${primaryColor}80`,
+                filter: `drop-shadow(0 0 10px ${primaryColor}4D)`
               }}
             >
               SIGN IN
@@ -211,8 +221,11 @@ const OpenHouseSignIn = () => {
                 }
               }}
               viewport={{ once: true }}
-              className="h-1 bg-gradient-to-r from-transparent via-[#D9A566] to-transparent mt-4 mx-auto"
-              style={{ maxWidth: '300px' }}
+              className="h-1 mt-4 mx-auto"
+              style={{ 
+                maxWidth: '300px',
+                background: `linear-gradient(to right, transparent, ${primaryColor}, transparent)`
+              }}
             />
           </motion.h2>
           
@@ -245,17 +258,17 @@ const OpenHouseSignIn = () => {
             viewport={{ once: true }}
             className="w-full lg:w-2/5 flex justify-center hidden lg:flex"
           >
-            <div className="relative">
+              <div className="relative">
               {/* Main folder */}
-              <div className="w-[280px] h-[360px] bg-gradient-to-br from-[#D9A566] to-[#8B6839] rounded-lg shadow-2xl relative overflow-hidden transform rotate-[-5deg]">
+              <div className="w-[280px] h-[360px] rounded-lg shadow-2xl relative overflow-hidden transform rotate-[-5deg]" style={{ background: `linear-gradient(to bottom right, ${primaryColor}, #8B6839)` }}>
                 {/* Folder tab */}
-                <div className="absolute top-0 right-10 w-32 h-10 bg-[#D9A566] rounded-b-lg transform translate-y-[-35%]"></div>
+                <div className="absolute top-0 right-10 w-32 h-10 rounded-b-lg transform translate-y-[-35%]" style={{ backgroundColor: primaryColor }}></div>
                 
                 {/* Folder interior */}
                 <div className="absolute top-4 left-4 right-4 bottom-4 bg-[#111111] rounded-md flex items-center justify-center overflow-hidden">
                   <div className="absolute top-4 left-4 w-40 h-1.5 bg-white/10 rounded-full"></div>
                   <div className="absolute top-10 left-4 w-24 h-1.5 bg-white/10 rounded-full"></div>
-                  <div className="text-[#D9A566] text-4xl font-bold opacity-20">OPEN HOUSE</div>
+                  <div className="text-4xl font-bold opacity-20" style={{ color: primaryColor }}>OPEN HOUSE</div>
                 </div>
                 
                 {/* 3D papers sticking out */}
@@ -271,7 +284,7 @@ const OpenHouseSignIn = () => {
                 >
                   {/* Property info document */}
                   <div className="absolute top-0 right-0 w-[250px] h-[120px] bg-white rounded-l-md shadow-md transform rotate-[-5deg] overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/10"></div>
+                    <div className="absolute top-0 left-0 right-0 h-8" style={{ backgroundColor: `${primaryColor}1A` }}></div>
                     <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">PROPERTY INFO</div>
                     <div className="absolute top-2 right-3 text-xs text-gray-600">{property.address.street}</div>
                     <div className="grid grid-cols-3 gap-1 px-3 pt-10">
@@ -289,19 +302,19 @@ const OpenHouseSignIn = () => {
                   
                   {/* Floor plan document */}
                   <div className="absolute top-8 right-3 w-[240px] h-[120px] bg-[#f8f8f8] rounded-l-md shadow-md transform rotate-[-3deg] overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                    <div className="absolute top-0 left-0 right-0 h-8" style={{ backgroundColor: `${primaryColor}0D` }}></div>
                     <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">FLOOR PLAN</div>
                     <div className="flex flex-col gap-2 px-3 pt-10">
                       <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                        <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: primaryColor }}></div>
                         <div className="h-2 w-24 bg-gray-300 rounded"></div>
                       </div>
                       <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                        <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: primaryColor }}></div>
                         <div className="h-2 w-20 bg-gray-300 rounded"></div>
                       </div>
                       <div className="flex items-center">
-                        <div className="w-2 h-2 bg-[#D9A566] rounded-full mr-2"></div>
+                        <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: primaryColor }}></div>
                         <div className="h-2 w-28 bg-gray-300 rounded"></div>
                       </div>
                     </div>
@@ -309,7 +322,7 @@ const OpenHouseSignIn = () => {
                   
                   {/* Neighborhood data document */}
                   <div className="absolute top-16 right-5 w-[230px] h-[120px] bg-[#f0f0f0] rounded-l-md shadow-md overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-[#D9A566]/5"></div>
+                    <div className="absolute top-0 left-0 right-0 h-8" style={{ backgroundColor: `${primaryColor}0D` }}></div>
                     <div className="absolute top-2 left-3 text-xs font-bold text-gray-800">NEIGHBORHOOD</div>
                     <div className="px-3 pt-10">
                       <div className="flex justify-between mb-2">
@@ -323,7 +336,7 @@ const OpenHouseSignIn = () => {
                 
                 {/* "SIGN IN" stamp */}
                 <div className="absolute top-8 right-12 w-24 h-24 rounded-full overflow-hidden">
-                  <div className="w-full h-full bg-[#D9A566]/80 flex items-center justify-center transform rotate-[-20deg] border-[3px] border-[#D9A566] text-black font-['Poppins'] font-bold text-sm tracking-wider">
+                  <div className="w-full h-full flex items-center justify-center transform rotate-[-20deg] text-black font-['Poppins'] font-bold text-sm tracking-wider" style={{ backgroundColor: `${primaryColor}CC`, border: `3px solid ${primaryColor}` }}>
                     SIGN IN
                   </div>
                 </div>
@@ -333,8 +346,8 @@ const OpenHouseSignIn = () => {
               <div className="absolute bottom-[-20px] left-5 w-[90%] h-[20px] bg-black/20 blur-md rounded-full"></div>
               
               {/* Decorative elements */}
-              <div className="absolute -top-10 -left-10 w-24 h-24 bg-[#D9A566]/20 blur-xl rounded-full"></div>
-              <div className="absolute -bottom-5 right-0 w-32 h-32 bg-[#D9A566]/10 blur-xl rounded-full"></div>
+              <div className="absolute -top-10 -left-10 w-24 h-24 blur-xl rounded-full" style={{ backgroundColor: `${primaryColor}33` }}></div>
+              <div className="absolute -bottom-5 right-0 w-32 h-32 blur-xl rounded-full" style={{ backgroundColor: `${primaryColor}1A` }}></div>
             </div>
           </motion.div>
           
@@ -384,7 +397,18 @@ const OpenHouseSignIn = () => {
                     className="group relative"
                   >
                     {/* Sleek Card Container */}
-                    <div className="bg-gradient-to-r from-white/3 to-white/1 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:border-[#D9A566]/20 transition-all duration-300 hover:shadow-lg hover:shadow-[#D9A566]/5 relative overflow-hidden">
+                    <div 
+                      className="bg-gradient-to-r from-white/3 to-white/1 backdrop-blur-sm border border-white/5 rounded-lg p-3 transition-all duration-300 hover:shadow-lg relative overflow-hidden"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.05)' }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = `${primaryColor}33`;
+                        e.currentTarget.style.boxShadow = `0 10px 15px -3px ${primaryColor}0D`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
                       {/* Content */}
                       <div className="relative z-10 flex items-center gap-3">
                         <motion.div 
@@ -407,10 +431,15 @@ const OpenHouseSignIn = () => {
                             }
                           }}
                           viewport={{ once: true, margin: "-50px" }}
-                          className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-[#D9A566]/15 to-[#D9A566]/5 rounded-lg border border-[#D9A566]/10 flex items-center justify-center relative overflow-hidden"
+                          className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden"
+                          style={{ 
+                            background: `linear-gradient(to bottom right, ${primaryColor}26, ${primaryColor}0D)`,
+                            border: `1px solid ${primaryColor}1A`
+                          }}
                         >
                           <motion.span 
-                            className="text-[#D9A566] relative z-10 group-hover:scale-110 transition-transform duration-300"
+                            className="relative z-10 group-hover:scale-110 transition-transform duration-300"
+                            style={{ color: primaryColor }}
                             whileHover={{ 
                               scale: 1.1,
                               rotate: 3,
@@ -447,7 +476,8 @@ const OpenHouseSignIn = () => {
                               }
                             }}
                             viewport={{ once: true, margin: "-50px" }}
-                            className="h-0.5 bg-gradient-to-r from-[#D9A566] to-transparent rounded-full mt-1"
+                            className="h-0.5 rounded-full mt-1"
+                            style={{ background: `linear-gradient(to right, ${primaryColor}, transparent)` }}
                           />
                         </motion.div>
                       </div>
@@ -478,7 +508,10 @@ const OpenHouseSignIn = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors"
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none transition-colors"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                      onFocus={(e) => e.target.style.borderColor = primaryColor}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -494,7 +527,10 @@ const OpenHouseSignIn = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors"
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none transition-colors"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                      onFocus={(e) => e.target.style.borderColor = primaryColor}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                       placeholder="Enter your email"
                     />
                   </div>
@@ -510,7 +546,10 @@ const OpenHouseSignIn = () => {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors"
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none transition-colors"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                      onFocus={(e) => e.target.style.borderColor = primaryColor}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                       placeholder="Enter your phone number"
                     />
                   </div>
@@ -523,7 +562,10 @@ const OpenHouseSignIn = () => {
                       name="guests"
                       value={formData.guests}
                       onChange={handleChange}
-                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#D9A566] transition-colors"
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none transition-colors"
+                      style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                      onFocus={(e) => e.target.style.borderColor = primaryColor}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                     >
                       <option value="1">1 Guest</option>
                       <option value="2">2 Guests</option>
@@ -543,17 +585,31 @@ const OpenHouseSignIn = () => {
                     value={formData.message}
                     onChange={handleChange}
                     rows={3}
-                    className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#D9A566] transition-colors resize-none"
+                    className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none transition-colors resize-none"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                    onFocus={(e) => e.target.style.borderColor = primaryColor}
+                    onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
                     placeholder="Any questions or special requests?"
                   />
                 </div>
 
                 <div className="pt-4">
                   <div className="inline-block relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#D9A566] to-[#D9A566]/60 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="absolute -inset-0.5 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" style={{ background: `linear-gradient(to right, ${primaryColor}, ${primaryColor}99)` }}></div>
                     <button 
                       type="submit"
-                      className="relative w-full px-8 py-4 bg-gradient-to-br from-[#D9A566] to-[#D9A566]/90 text-black font-['Poppins'] text-lg tracking-wider uppercase shadow-xl backdrop-blur-sm rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,165,102,0.6)]"
+                      className="relative w-full px-8 py-4 text-black font-['Poppins'] text-lg tracking-wider uppercase shadow-xl backdrop-blur-sm rounded-lg transition-all duration-300"
+                      style={{ 
+                        background: `linear-gradient(to bottom right, ${primaryColor}, ${primaryColor}E6)`,
+                        boxShadow: '0 0 30px rgba(0, 0, 0, 0.3)'
+                      }}
+                      onMouseEnter={(e) => {
+                        const rgb = hexToRgb(primaryColor);
+                        e.currentTarget.style.boxShadow = `0 0 30px rgba(${rgb}, 0.6)`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = '0 0 30px rgba(0, 0, 0, 0.3)';
+                      }}
                     >
                       Sign In & Get Property Info
                     </button>
@@ -613,7 +669,18 @@ const OpenHouseSignIn = () => {
                   className="group relative"
                 >
                   {/* Sleek Card Container */}
-                  <div className="bg-gradient-to-r from-white/3 to-white/1 backdrop-blur-sm border border-white/5 rounded-lg p-3 hover:border-[#D9A566]/20 transition-all duration-300 hover:shadow-lg hover:shadow-[#D9A566]/5 relative overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-white/3 to-white/1 backdrop-blur-sm border border-white/5 rounded-lg p-3 transition-all duration-300 relative overflow-hidden"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.05)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = `${primaryColor}33`;
+                      e.currentTarget.style.boxShadow = `0 10px 15px -3px ${primaryColor}0D`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
                     {/* Content */}
                     <div className="relative z-10 flex items-center gap-3">
                       <motion.div 
@@ -636,10 +703,15 @@ const OpenHouseSignIn = () => {
                           }
                         }}
                         viewport={{ once: true, margin: "-50px" }}
-                        className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-[#D9A566]/15 to-[#D9A566]/5 rounded-lg border border-[#D9A566]/10 flex items-center justify-center relative overflow-hidden"
+                        className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center relative overflow-hidden"
+                        style={{ 
+                          background: `linear-gradient(to bottom right, ${primaryColor}26, ${primaryColor}0D)`,
+                          border: `1px solid ${primaryColor}1A`
+                        }}
                       >
                         <motion.span 
-                          className="text-[#D9A566] relative z-10 group-hover:scale-110 transition-transform duration-300"
+                          className="relative z-10 group-hover:scale-110 transition-transform duration-300"
+                          style={{ color: primaryColor }}
                           whileHover={{ 
                             scale: 1.1,
                             rotate: 3,
@@ -676,7 +748,8 @@ const OpenHouseSignIn = () => {
                             }
                           }}
                           viewport={{ once: true, margin: "-50px" }}
-                          className="h-0.5 bg-gradient-to-r from-[#D9A566] to-transparent rounded-full mt-1"
+                          className="h-0.5 rounded-full mt-1"
+                          style={{ background: `linear-gradient(to right, ${primaryColor}, transparent)` }}
                         />
                       </motion.div>
                     </div>
@@ -689,7 +762,7 @@ const OpenHouseSignIn = () => {
       </div>
       
       {/* Decorative elements */}
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-[#D9A566]/20 to-transparent blur-3xl opacity-20 rounded-full"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 blur-3xl opacity-20 rounded-full" style={{ background: `linear-gradient(to top left, ${primaryColor}33, transparent)` }}></div>
       <div className="absolute top-1/3 left-20 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent blur-2xl opacity-20 rounded-full"></div>
     </section>
   );
