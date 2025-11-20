@@ -379,8 +379,8 @@ const AdminDashboard = () => {
                 initialData={{
                   agent: {
                     ...adaptedConfig.contactInfo?.agent,
-                    companyAddress: adaptedConfig.contactInfo?.address || '',
-                    companyLogo: adaptedConfig.siteBranding?.companyLogo || adaptedConfig.siteBranding?.logoUrl || ''
+                    companyAddress: adaptedConfig.contactInfo?.agent?.companyAddress || '',
+                    companyLogo: adaptedConfig.contactInfo?.agent?.companyLogo || ''
                   },
                   agent2: adaptedConfig.contactInfo?.agent2 || null,
                   social: adaptedConfig.contactInfo?.social || {}
@@ -390,22 +390,13 @@ const AdminDashboard = () => {
                   console.log('Current siteBranding:', adaptedConfig.siteBranding);
                   const updatedContactInfo = {
                     ...adaptedConfig.contactInfo,
-                    agent: data.agent,
+                    agent: data.agent, // This already contains companyAddress and companyLogo
                     agent2: data.agent2, // Add agent2 to saved data
-                    social: data.social,
-                    // Map companyAddress to the main address field for backward compatibility
-                    address: data.agent.companyAddress || adaptedConfig.contactInfo?.address || ''
-                  };
-
-                  const updatedSiteBranding = {
-                    ...adaptedConfig.siteBranding,
-                    logoUrl: data.agent.companyLogo || adaptedConfig.siteBranding?.logoUrl || '',
-                    companyLogo: data.agent.companyLogo || adaptedConfig.siteBranding?.companyLogo || ''
+                    social: data.social
                   };
 
                   saveConfig({ 
-                    contactInfo: updatedContactInfo,
-                    siteBranding: updatedSiteBranding
+                    contactInfo: updatedContactInfo
                   }, 'Agent');
                 }}
                 loading={loading}
