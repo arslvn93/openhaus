@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 // @ts-ignore - JS config module without types
-import { property, siteBranding, contactInfo } from '../config/siteConfig';
-import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard, ArrowRight, Check, Clock, Users, Sparkles } from 'lucide-react';
+import { property, siteBranding, contactInfo, openHouseDetails } from '../config/siteConfig';
+import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard, ArrowRight, Check } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -127,6 +127,36 @@ const ExclusivePackage = () => {
     consent: false
   });
   
+  // Format date for success message: "Sunday, November 16, 2025" -> "Sunday Nov 16th"
+  const formatOpenHouseDate = (dateStr: string) => {
+    const monthMap: { [key: string]: string } = {
+      'January': 'Jan', 'February': 'Feb', 'March': 'Mar', 'April': 'Apr',
+      'May': 'May', 'June': 'Jun', 'July': 'Jul', 'August': 'Aug',
+      'September': 'Sep', 'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
+    };
+    const parts = dateStr.split(', ');
+    const dayOfWeek = parts[0];
+    const monthDay = parts[1].split(' ');
+    const month = monthMap[monthDay[0]] || monthDay[0];
+    const day = monthDay[1];
+    const dayWithSuffix = day === '1' || day === '21' || day === '31' ? `${day}st` :
+                         day === '2' || day === '22' ? `${day}nd` :
+                         day === '3' || day === '23' ? `${day}rd` : `${day}th`;
+    return `${dayOfWeek} ${month} ${dayWithSuffix}`;
+  };
+  
+  // Format time for success message: "3:00 PM - 6:00 PM" -> "3-6pm"
+  const formatOpenHouseTime = (timeStr: string) => {
+    const times = timeStr.match(/(\d+):\d+\s*(AM|PM)/g);
+    if (times && times.length === 2) {
+      const startHour = parseInt(times[0].split(':')[0]);
+      const endHour = parseInt(times[1].split(':')[0]);
+      const period = times[0].includes('PM') ? 'pm' : 'am';
+      return `${startHour}-${endHour}${period}`;
+    }
+    return timeStr.replace(' PM', 'pm').replace(' - ', '-').replace(':00', '');
+  };
+
   // Validate fields in real-time
   useEffect(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -206,7 +236,7 @@ const ExclusivePackage = () => {
         email: data.email,
         phone: data.phone,
         questions: questions,
-        source: 'Exclusive Package',
+        source: 'Open House Registration',
         repo: contactInfo.agent?.repo || '',
         agentEmail: contactInfo.agent?.email || '',
         propertyAddress: property?.address || undefined
@@ -246,22 +276,29 @@ const ExclusivePackage = () => {
   
   // Handle question selection with auto-advance
   const handleQuestionSelect = (questionKey: 'buyingTimeline' | 'propertyType', value: string) => {
-    setFormData(prev => {
-      const updatedData = { ...prev, [questionKey]: value };
-      
-      // Auto-advance after selection with smooth delay
-      setTimeout(() => {
-        if (questionKey === 'buyingTimeline') {
-          setFormStep(4); // Go to Question 2
-        } else if (questionKey === 'propertyType') {
-          // Submit form after Question 2 with updated data
-          mutation.mutate(updatedData);
-        }
-      }, 400); // Slight delay for visual feedback
-      
-      return updatedData;
-    });
+    setFormData(prev => ({ ...prev, [questionKey]: value }));
+    
+    // Auto-advance after selection with smooth delay
+    setTimeout(() => {
+      if (questionKey === 'buyingTimeline') {
+        setFormStep(4); // Go to Question 2
+      }
+      // Note: Form submission is handled by useEffect when both questions are answered
+    }, 400); // Slight delay for visual feedback
   };
+  
+  // Auto-submit when both questions are answered
+  useEffect(() => {
+    if (formStep === 4 && formData.buyingTimeline && formData.propertyType && !mutation.isPending) {
+      // Small delay to ensure state is fully updated
+      const submitTimer = setTimeout(() => {
+        // Use the latest formData to ensure both question values are included
+        mutation.mutate(formData);
+      }, 100);
+      
+      return () => clearTimeout(submitTimer);
+    }
+  }, [formStep, formData, mutation]);
   
   // Handle phone input with auto-formatting
   const handlePhoneChange = (value: string) => {
@@ -296,7 +333,7 @@ const ExclusivePackage = () => {
             {/* Center: Simple Text */}
             <div className="hidden md:block">
               <p className="text-white text-sm font-medium">
-                Get Complete Property Package
+                Register for Open House
               </p>
             </div>
             
@@ -308,7 +345,7 @@ const ExclusivePackage = () => {
               className="px-6 py-2 rounded-lg text-black font-medium text-sm transition-all duration-200 flex items-center gap-2 shadow-lg"
               style={{ backgroundColor: primaryColor }}
             >
-              <span>Access Now</span>
+              <span>RSVP Now</span>
               <ArrowRight className="w-4 h-4" />
             </motion.button>
           </div>
@@ -358,10 +395,10 @@ const ExclusivePackage = () => {
                   <span className="text-white/60 text-xs uppercase tracking-wider">{property?.address?.street || 'Premium Package'}</span>
                   </motion.div>
                 <h2 className="text-3xl md:text-5xl font-light text-white mb-4 tracking-tight">
-                  Everything You Need to Know
+                  Register for Our Open House
                 </h2>
                 <p className="text-white/60 text-base md:text-lg leading-relaxed max-w-2xl">
-                  Get instant access to comprehensive property details, market analysis, and exclusive insights—all in one premium package.
+                  Register to attend our upcoming open house and receive exclusive property information, market analysis, and detailed insights—all in one premium package.
                 </p>
               </div>
               
@@ -413,7 +450,7 @@ const ExclusivePackage = () => {
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-xl md:text-2xl font-medium text-white">
-                          Get Instant Access
+                          Register for Open House
                         </h3>
                         {formStep === 2 && (
                           <span className="text-white/40 text-xs">Step 2 of 4</span>
@@ -421,8 +458,8 @@ const ExclusivePackage = () => {
                       </div>
                       <p className="text-white/60 text-sm">
                         {formStep === 1 
-                          ? 'Enter your email to receive the complete package'
-                          : 'Just a few more details to send your package'}
+                          ? 'Enter your email to register for the open house'
+                          : 'Just a few more details to complete your registration'}
                       </p>
                     </div>
                     
@@ -530,7 +567,7 @@ const ExclusivePackage = () => {
                               </div>
                               <span className="text-white/60 text-xs md:text-sm leading-relaxed group-hover:text-white/80 transition-colors">
                                 I consent to receive property information and agree to the{' '}
-                                <a href="/privacy-policy" className="underline hover:text-white" style={{ color: primaryColor }}>
+                                <a href="https://blog.remax.ca/privacy-notice/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: primaryColor }}>
                                   Privacy Policy
                                 </a>
                               </span>
@@ -561,7 +598,7 @@ const ExclusivePackage = () => {
                           </>
                         ) : (
                           <>
-                            Get Instant Access
+                            Register for Open House
                             <ArrowRight className="w-5 h-5" />
                           </>
                         )}
@@ -754,45 +791,11 @@ const ExclusivePackage = () => {
                     
                     {/* Success Message */}
                     <h3 className="text-2xl font-medium text-white mb-2">
-                      Package Sent!
+                      Registration Confirmed!
                     </h3>
                     <p className="text-white/60 text-sm mb-6">
-                      Check your inbox for the complete property details
+                      You're registered for the Open House, see you on {openHouseDetails?.nextDate ? formatOpenHouseDate(openHouseDetails.nextDate) : 'Sunday Nov 16th'}, {openHouseDetails?.time ? formatOpenHouseTime(openHouseDetails.time) : '3-6pm'}
                     </p>
-                    
-                    {/* What's Included List */}
-                    <div className="text-left space-y-2 mb-6 bg-white/5 rounded-lg p-4">
-                      <p className="text-white/80 text-xs font-medium mb-3">You'll receive:</p>
-                      <div className="flex items-center gap-2 text-white/70 text-xs">
-                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Floor plans & specifications</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-white/70 text-xs">
-                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Market analysis report</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-white/70 text-xs">
-                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Virtual tour access</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-white/70 text-xs">
-                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
-                        <span>Neighborhood insights</span>
-                      </div>
-                    </div>
-                    
-                    {/* Agent Follow-up */}
-                    <div className="pt-4 border-t border-white/5">
-                      <p className="text-white/50 text-xs mb-3">
-                        {contactInfo.agent.name} will follow up within 2 hours
-                      </p>
-                      <button
-                        onClick={() => setFormStep(1)}
-                        className="text-white/60 hover:text-white text-xs transition-colors"
-                      >
-                        Submit another request →
-                      </button>
-                    </div>
               </motion.div>
                 )}
               </div>
