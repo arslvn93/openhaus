@@ -603,7 +603,7 @@ const ExclusivePackage = () => {
                               </div>
                               <span className="text-white/60 text-xs md:text-sm leading-relaxed group-hover:text-white/80 transition-colors">
                                 I consent to receive property information and agree to the{' '}
-                                <a href="https://blog.remax.ca/privacy-notice/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: primaryColor }}>
+                                <a href={siteBranding?.footer?.privacyPolicyUrl || '#privacy'} target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: primaryColor }}>
                                   Privacy Policy
                                 </a>
                               </span>
