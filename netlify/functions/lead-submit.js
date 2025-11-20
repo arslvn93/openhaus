@@ -24,19 +24,33 @@ exports.handler = async (event) => {
     const lastName = rawName ? rawName.split(' ').slice(1).join(' ') : (body.lastName || '').toString().trim();
     const email = (body.email || '').toString().trim();
     const phone = (body.phone || '').toString().trim();
-    const moveTimeline = (body.moveTimeline || body.timeframe || '').toString().trim();
     const message = (body.message || '').toString().trim();
     const source = (body.source || '').toString().trim();
     const repo = (body.repo || '').toString().trim();
     const agentEmail = (body.agentEmail || '').toString().trim();
     const propertyAddress = body.propertyAddress || undefined;
+    const questions = body.questions || [];
+    const crmLeadParsingEmail = (body.crmLeadParsingEmail || '').toString().trim();
+    const sgApiKey = (body.sgApiKey || '').toString().trim();
 
     // Validation: allow single name OR split names; always require email and phone
     if ((!rawName && !firstName) || !email || !phone) {
       return { statusCode: 400, headers: baseHeaders, body: JSON.stringify({ message: 'Missing required fields' }) };
     }
 
-    const payload = { name: rawName || `${firstName} ${lastName}`.trim(), email, phone, moveTimeline, message, source, repo, agentEmail, propertyAddress };
+    const payload = { 
+      name: rawName || `${firstName} ${lastName}`.trim(), 
+      email, 
+      phone, 
+      message, 
+      source, 
+      repo, 
+      agentEmail, 
+      propertyAddress,
+      questions,
+      crmLeadParsingEmail,
+      sgApiKey
+    };
 
     const resp = await fetch(WEBHOOK_URL, {
       method: 'POST',

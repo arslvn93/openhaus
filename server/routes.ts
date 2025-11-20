@@ -162,7 +162,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const lastName = rawName ? rawName.split(' ').slice(1).join(' ') : (body.lastName || '').toString().trim();
       const email = (body.email || '').toString().trim();
       const phone = (body.phone || '').toString().trim();
-      const moveTimeline = (body.moveTimeline || body.timeframe || '').toString().trim();
       const message = (body.message || '').toString().trim();
       const source = (body.source || '').toString().trim();
 
@@ -185,7 +184,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: rawName || `${firstName} ${lastName}`.trim(),
         email,
         phone,
-        moveTimeline,
         message,
         source,
         repo: body.repo || repoFromConfig,

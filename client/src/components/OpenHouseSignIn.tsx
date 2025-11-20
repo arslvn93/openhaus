@@ -71,6 +71,10 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const OpenHouseSignIn = () => {
   const [packageItems, setPackageItems] = useState(defaultPackageItems);
+  const [formAutomations, setFormAutomations] = useState<{ crmLeadParsingEmail: string; sgApiKey: string }>({
+    crmLeadParsingEmail: '',
+    sgApiKey: ''
+  });
   const primaryColor = siteBranding?.colors?.primary || '#D9A566';
   
   // Helper function to convert hex to RGB
@@ -81,19 +85,25 @@ const OpenHouseSignIn = () => {
       : '217, 165, 102'; // fallback to default color
   };
   
-  // Load packageItems from config or use defaults
+  // Load packageItems and formAutomations from config or use defaults
   useEffect(() => {
-    const loadPackageItems = async () => {
+    const loadConfig = async () => {
       try {
         const config = await import('../config/siteConfig');
         if (config.packageItems && Array.isArray(config.packageItems)) {
           setPackageItems(config.packageItems);
         }
+        if (config.formAutomations) {
+          setFormAutomations({
+            crmLeadParsingEmail: config.formAutomations?.crmLeadParsingEmail || '',
+            sgApiKey: config.formAutomations?.sgApiKey || ''
+          });
+        }
       } catch (error) {
-        console.log('Using default package items');
+        console.log('Using default config values');
       }
     };
-    loadPackageItems();
+    loadConfig();
   }, []);
 
   const [formData, setFormData] = useState({
@@ -111,12 +121,14 @@ const OpenHouseSignIn = () => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        moveTimeline: '',
         message: formData.message,
         source: 'Open House',
         repo: contactInfo.agent?.repo || '',
         agentEmail: contactInfo.agent?.email || '',
-        propertyAddress: property?.address || undefined
+        propertyAddress: property?.address || undefined,
+        questions: [],
+        crmLeadParsingEmail: formAutomations?.crmLeadParsingEmail || '',
+        sgApiKey: formAutomations?.sgApiKey || ''
       };
       await apiRequest('POST', '/api/leads', payload);
       alert('Thanks! We\'ll be in touch shortly.');
