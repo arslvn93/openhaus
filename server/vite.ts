@@ -82,7 +82,36 @@ export function serveStatic(app: Express) {
   app.use(express.static(distPath));
 
   // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
+  // but exclude static file extensions to prevent MIME type errors
+  app.use("*", (req, res) => {
+    const url = req.originalUrl;
+    
+    // Remove query string and hash to check the actual path
+    const pathWithoutQuery = url.split('?')[0].split('#')[0];
+    
+    // List of static file extensions that should not be served as HTML
+    const staticExtensions = [
+      '.js', '.mjs', '.cjs', '.jsx', '.ts', '.tsx',
+      '.css', '.scss', '.sass', '.less',
+      '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico',
+      '.woff', '.woff2', '.ttf', '.eot', '.otf',
+      '.json', '.xml', '.txt', '.pdf',
+      '.mp4', '.webm', '.mp3', '.wav',
+      '.zip', '.tar', '.gz'
+    ];
+    
+    // Check if the URL path ends with a static file extension
+    const hasStaticExtension = staticExtensions.some(ext => 
+      pathWithoutQuery.toLowerCase().endsWith(ext.toLowerCase())
+    );
+    
+    // If it's a static file request, return 404 instead of serving HTML
+    if (hasStaticExtension) {
+      res.status(404).send('File not found');
+      return;
+    }
+    
+    // Otherwise, serve index.html for SPA routing
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
