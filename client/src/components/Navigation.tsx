@@ -6,7 +6,6 @@ import { Menu } from 'lucide-react';
 // Navigation sections
 const navItems = [
   { id: 'property', label: 'Home' },
-  { id: 'highlights', label: 'Highlights' },
   { id: 'gallery', label: 'Gallery' },
   { id: 'neighborhood', label: 'Neighborhood' },
   { id: 'package', label: 'Package' }
