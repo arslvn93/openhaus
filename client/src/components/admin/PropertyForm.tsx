@@ -48,7 +48,6 @@ interface PropertyData {
   lotSize: string;
   yearBuilt: number;
   propertyType: string;
-  type: string; // Used by the app for display, we'll sync this with propertyType
   status?: string;
   description: string;
   mainFeatures: string[];
@@ -60,6 +59,8 @@ interface PropertyData {
     lat: number;
     lng: number;
   };
+  virtualTourAvailable?: boolean;
+  virtualTourUrl?: string;
   // Allow any additional fields
   [key: string]: any;
 }
@@ -126,14 +127,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         [name]: Number(value) || 0
       });
     } 
-    // Special handling for propertyType to update both fields
-    else if (name === 'propertyType') {
-      setPropertyData({
-        ...propertyData,
-        propertyType: value,
-        type: value // Also update the type field when propertyType changes
-      });
-    }
     else {
       setPropertyData({
         ...propertyData,
@@ -176,11 +169,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Make sure we use the actual property type field since we removed the duplicate
-    if (propertyData.propertyType && !propertyData.type) {
-      propertyData.type = propertyData.propertyType;
-    }
     
     // Preserve all existing fields from initialData that aren't in the form
     const completePropertyData = {
@@ -666,6 +654,44 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               </div>
             </div>
           )}
+        </div>
+        
+        <div>
+          <h4 className="text-lg font-['Poppins'] text-white mb-4">Virtual Tour Settings</h4>
+          <p className="text-white/60 mb-6 text-sm">
+            Configure virtual tour settings for the property. These settings allow visitors to view a virtual tour of the property.
+          </p>
+          
+          <div className="space-y-4 mb-6">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="virtualTourAvailable"
+                name="virtualTourAvailable"
+                checked={propertyData.virtualTourAvailable || false}
+                onChange={(e) => setPropertyData({...propertyData, virtualTourAvailable: e.target.checked})}
+                className="rounded border-white/10 bg-black/50 text-[#D9A566] focus:ring-[#D9A566]"
+              />
+              <Label htmlFor="virtualTourAvailable" className="text-white">Virtual Tour Available</Label>
+            </div>
+            
+            {propertyData.virtualTourAvailable && (
+              <div className="space-y-2">
+                <Label htmlFor="virtualTourUrl" className="text-white">Virtual Tour URL</Label>
+                <Input
+                  id="virtualTourUrl"
+                  name="virtualTourUrl"
+                  value={propertyData.virtualTourUrl || ''}
+                  onChange={handleInputChange}
+                  placeholder="https://tours.example.com/virtual-tour"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+                <p className="text-white/40 text-xs">
+                  URL to the virtual tour (e.g., Matterport, 3D tour, etc.)
+                </p>
+              </div>
+            )}
+          </div>
         </div>
         
         <Collapsible open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>

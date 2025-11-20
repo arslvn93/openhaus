@@ -11,49 +11,49 @@ const defaultPackageItems = [
     id: 1,
     title: 'Detailed Floor Plans',
     description: 'Complete architectural layouts showing room dimensions and optimal flow',
-    iconName: 'FileText'
+    icon: 'FileText'
   },
   {
     id: 2,
     title: 'Market Analysis',
     description: 'Recent sales data and pricing trends in the area',
-    iconName: 'BarChart2'
+    icon: 'BarChart2'
   },
   {
     id: 3,
     title: 'School Information',
     description: 'Local schools, ratings, and enrollment details',
-    iconName: 'GraduationCap'
+    icon: 'GraduationCap'
   },
   {
     id: 4,
     title: 'Property Features',
     description: 'Detailed list of all property features and amenities',
-    iconName: 'CheckSquare'
+    icon: 'CheckSquare'
   },
   {
     id: 5,
     title: 'Utility Cost Estimates',
     description: 'Estimated monthly utility and maintenance expenses',
-    iconName: 'DollarSign'
+    icon: 'DollarSign'
   },
   {
     id: 6,
     title: 'Area Amenities',
     description: 'Nearby shops, restaurants, and services',
-    iconName: 'Map'
+    icon: 'Map'
   },
   {
     id: 7,
     title: 'Home Inspection Tips',
     description: 'What to look for during property viewing',
-    iconName: 'Search'
+    icon: 'Search'
   },
   {
     id: 8,
     title: 'Financing Resources',
     description: 'Mortgage options and payment calculators',
-    iconName: 'CreditCard'
+    icon: 'CreditCard'
   }
 ];
 
@@ -131,7 +131,7 @@ const OpenHouseSignIn = () => {
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-full h-full" 
              style={{ 
-               backgroundImage: `url('${siteBranding.heroImage}')`,
+               backgroundImage: `url('${property.heroImage}')`,
                backgroundSize: 'cover',
                backgroundPosition: 'center',
                mixBlendMode: 'overlay'
@@ -417,7 +417,7 @@ const OpenHouseSignIn = () => {
                               transition: { duration: 0.2 }
                             }}
                           >
-                            {iconMap[item.iconName]}
+                            {iconMap[item.icon]}
                           </motion.span>
                         </motion.div>
                         
@@ -646,7 +646,7 @@ const OpenHouseSignIn = () => {
                             transition: { duration: 0.2 }
                           }}
                         >
-                          {iconMap[item.iconName]}
+                          {iconMap[item.icon]}
                         </motion.span>
                       </motion.div>
                       

@@ -16,7 +16,7 @@ const PropertyDetails = () => {
       icon: Building,
       title: 'Property Overview',
       details: [
-        { label: 'Type', value: property.type, icon: Home },
+        { label: 'Type', value: property.propertyType, icon: Home },
         { label: 'Year Built', value: property.yearBuilt.toString(), icon: Award },
         { label: 'Square Footage', value: `${property.sqft.toLocaleString()} sq ft`, icon: Square },
         { label: 'Status', value: property.status, icon: DollarSign },
@@ -228,7 +228,7 @@ const PropertyDetails = () => {
         </div>
 
         {/* Open House Section - Clean Event Details - Only show if date and time are provided */}
-        {openHouseDetails?.nextDate && openHouseDetails?.time && (
+        {openHouseDetails?.date && openHouseDetails?.startTime && (
           <div
             ref={openHouseRef}
             className="relative opacity-0"
@@ -274,8 +274,8 @@ const PropertyDetails = () => {
                   <div className="flex items-center text-white/80">
                     <Calendar className="w-6 h-6 mr-4" />
                     <div>
-                      <p className="font-medium text-lg">{openHouseDetails.nextDate}</p>
-                      <p className="text-white/60">{openHouseDetails.time}</p>
+                      <p className="font-medium text-lg">{openHouseDetails.date}</p>
+                      <p className="text-white/60">{openHouseDetails.startTime}{openHouseDetails.endTime ? ` - ${openHouseDetails.endTime}` : ''}</p>
                     </div>
                   </div>
                   
@@ -311,15 +311,38 @@ const PropertyDetails = () => {
                 
                 {/* RSVP Button - Centered on Image */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Link 
-                    href="/openhouse" 
-                    className="bg-white/95 backdrop-blur-sm text-black font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl text-lg"
-                  >
-                    <span className="flex items-center">
-                      <Calendar className="w-6 h-6 mr-3" />
-                      {openHouseDetails.ctaText}
-                    </span>
-                  </Link>
+                  {(() => {
+                    const registerLink = openHouseDetails.registerLink || '/openhouse';
+                    const isExternalUrl = registerLink.startsWith('http://') || registerLink.startsWith('https://');
+                    
+                    if (isExternalUrl) {
+                      return (
+                        <a 
+                          href={registerLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-white/95 backdrop-blur-sm text-black font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl text-lg"
+                        >
+                          <span className="flex items-center">
+                            <Calendar className="w-6 h-6 mr-3" />
+                            {openHouseDetails.ctaText}
+                          </span>
+                        </a>
+                      );
+                    }
+                    
+                    return (
+                      <Link 
+                        href={registerLink}
+                        className="bg-white/95 backdrop-blur-sm text-black font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl text-lg"
+                      >
+                        <span className="flex items-center">
+                          <Calendar className="w-6 h-6 mr-3" />
+                          {openHouseDetails.ctaText}
+                        </span>
+                      </Link>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

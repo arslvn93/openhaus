@@ -11,7 +11,8 @@ import FeaturesForm from './FeaturesForm';
 import GalleryForm from './GalleryForm';
 import NeighborhoodForm from './NeighborhoodForm';
 import PackageForm from './PackageForm';
-import ContactForm from './ContactForm';
+import OpenHouseForm from './OpenHouseForm';
+import QuestionsForm from './QuestionsForm';
 import BrandingForm from './BrandingForm';
 import AgentForm from './AgentForm';
 
@@ -153,14 +154,14 @@ const AdminDashboard = () => {
   
   // Default package items fallback
   const defaultPackageItems = [
-    { id: 1, title: 'Detailed Floor Plans', description: 'Complete architectural layouts', iconName: 'FileText' },
-    { id: 2, title: 'Market Analysis', description: 'Recent sales and pricing trends', iconName: 'BarChart2' },
-    { id: 3, title: 'School Information', description: 'Local schools and ratings', iconName: 'GraduationCap' },
-    { id: 4, title: 'Property Features', description: 'Detailed feature list', iconName: 'CheckSquare' },
-    { id: 5, title: 'Utility Cost Estimates', description: 'Monthly expenses', iconName: 'DollarSign' },
-    { id: 6, title: 'Area Amenities', description: 'Nearby shops and services', iconName: 'Map' },
-    { id: 7, title: 'Home Inspection Tips', description: 'What to look for', iconName: 'Search' },
-    { id: 8, title: 'Financing Resources', description: 'Mortgage and payment info', iconName: 'CreditCard' }
+    { id: 1, title: 'Detailed Floor Plans', description: 'Complete architectural layouts', icon: 'FileText' },
+    { id: 2, title: 'Market Analysis', description: 'Recent sales and pricing trends', icon: 'BarChart2' },
+    { id: 3, title: 'School Information', description: 'Local schools and ratings', icon: 'GraduationCap' },
+    { id: 4, title: 'Property Features', description: 'Detailed feature list', icon: 'CheckSquare' },
+    { id: 5, title: 'Utility Cost Estimates', description: 'Monthly expenses', icon: 'DollarSign' },
+    { id: 6, title: 'Area Amenities', description: 'Nearby shops and services', icon: 'Map' },
+    { id: 7, title: 'Home Inspection Tips', description: 'What to look for', icon: 'Search' },
+    { id: 8, title: 'Financing Resources', description: 'Mortgage and payment info', icon: 'CreditCard' }
   ];
 
   // Helper function to adapt config data to match component interfaces
@@ -172,68 +173,36 @@ const AdminDashboard = () => {
       adaptedConfig.packageItems = defaultPackageItems;
     }
     
+    // Add default formAutomations if missing
+    if (!adaptedConfig.formAutomations) {
+      adaptedConfig.formAutomations = { crmLeadParsingEmail: '', sgApiKey: '' };
+    }
+    
     // Fix property data structure
     if (adaptedConfig.property) {
       // Add any missing properties required by the PropertyData interface
       adaptedConfig.property = {
         ...adaptedConfig.property,
-        propertyType: adaptedConfig.property.type || 'Single Family Home',
-        heroImage: adaptedConfig.property.heroImage || adaptedConfig.siteBranding?.heroImage || '',
+        propertyType: adaptedConfig.property.propertyType || 'Single Family Home',
         heroCaption: adaptedConfig.property.heroCaption || adaptedConfig.property.shortDescription || '',
-        mainFeatures: adaptedConfig.property.mainFeatures || [],
-        mapLocation: adaptedConfig.property.mapLocation || adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 }
+        mapLocation: adaptedConfig.property.mapLocation || { lat: 0, lng: 0 }
       };
     }
     
-    // Adapt property features if they're simple strings
-    if (Array.isArray(adaptedConfig.propertyFeatures) && 
-        adaptedConfig.propertyFeatures.length > 0 && 
-        typeof adaptedConfig.propertyFeatures[0] === 'string') {
-      adaptedConfig.propertyFeatures = adaptedConfig.propertyFeatures.map((feature: string, id: number) => ({
-        id: id + 1,
-        title: feature,
-        description: feature,
-        icon: 'CheckSquare'
-      }));
-    }
+    // Property features are now objects, no adaptation needed
     
     // Adapt home showcase sections
     if (Array.isArray(adaptedConfig.homeShowcaseSections)) {
       adaptedConfig.homeShowcaseSections = adaptedConfig.homeShowcaseSections.map((section: any) => ({
         ...section,
-        image: section.imageUrl || section.image || '',
         id: section.id || `section${Math.random().toString(36).substr(2, 9)}`
       }));
     }
     
     
-    // Adapt neighborhood stats
-    if (Array.isArray(adaptedConfig.neighborhoodStats)) {
-      adaptedConfig.neighborhoodStats = adaptedConfig.neighborhoodStats.map((stat: any) => ({
-        ...stat,
-        icon: stat.icon || stat.iconName || 'Info'
-      }));
-    }
+    // Neighborhood stats and amenities are now standardized, no adaptation needed
     
-    // Adapt neighborhood amenities
-    if (Array.isArray(adaptedConfig.neighborhoodAmenities)) {
-      adaptedConfig.neighborhoodAmenities = adaptedConfig.neighborhoodAmenities.map((amenity: any) => ({
-        ...amenity,
-        icon: amenity.icon || amenity.iconName || 'MapPin'
-      }));
-    }
-    
-    // Adapt open house details
-    if (adaptedConfig.openHouseDetails) {
-      adaptedConfig.openHouseDetails = {
-        ...adaptedConfig.openHouseDetails,
-        date: adaptedConfig.openHouseDetails.nextDate || adaptedConfig.openHouseDetails.date || '',
-        startTime: adaptedConfig.openHouseDetails.time?.split(' - ')[0] || adaptedConfig.openHouseDetails.startTime || '',
-        endTime: adaptedConfig.openHouseDetails.time?.split(' - ')[1] || adaptedConfig.openHouseDetails.endTime || '',
-        location: adaptedConfig.openHouseDetails.location || adaptedConfig.property?.address?.street || '',
-        registerLink: adaptedConfig.openHouseDetails.registerLink || '#'
-      };
-    }
+    // Open house details are now standardized, no adaptation needed
     
     // Adapt contact info
     if (adaptedConfig.contactInfo) {
@@ -242,8 +211,6 @@ const AdminDashboard = () => {
         email: adaptedConfig.contactInfo.email || adaptedConfig.contactInfo.agent?.email || '',
         phone: adaptedConfig.contactInfo.phone || adaptedConfig.contactInfo.agent?.phone || '',
         address: adaptedConfig.contactInfo.address || adaptedConfig.property?.address?.street || '',
-        hours: adaptedConfig.contactInfo.hours || 'Mon-Fri: 9am-5pm',
-        mapLocation: adaptedConfig.contactInfo.mapLocation || { lat: 43.7, lng: -79.4 },
         socialLinks: adaptedConfig.contactInfo.socialLinks || adaptedConfig.contactInfo.social || {}
       };
     }
@@ -255,7 +222,8 @@ const AdminDashboard = () => {
         companyName: adaptedConfig.siteBranding.companyName || adaptedConfig.contactInfo?.agent?.company || '',
         companyLogo: adaptedConfig.siteBranding.companyLogo || adaptedConfig.siteBranding.logoUrl || '',
         accentColor: adaptedConfig.siteBranding.accentColor || adaptedConfig.siteBranding.colors?.primary || '#D9A566',
-        footerText: adaptedConfig.siteBranding.footerText || adaptedConfig.siteBranding.footer?.copyrightText || ''
+        footerText: adaptedConfig.siteBranding.footerText || adaptedConfig.siteBranding.footer?.copyrightText || '',
+        privacyPolicyUrl: adaptedConfig.siteBranding.privacyPolicyUrl || adaptedConfig.siteBranding.footer?.privacyPolicyUrl || ''
       };
     }
     
@@ -263,7 +231,9 @@ const AdminDashboard = () => {
     if (adaptedConfig.siteMetadata) {
       adaptedConfig.siteMetadata = {
         ...adaptedConfig.siteMetadata,
-        twitterHandle: adaptedConfig.siteMetadata.twitterHandle || adaptedConfig.siteMetadata.twitterCard || '@kylemount'
+        ogType: adaptedConfig.siteMetadata.ogType || 'website',
+        canonical: adaptedConfig.siteMetadata.canonical || '',
+        twitterHandle: adaptedConfig.siteMetadata.twitterHandle || ''
       };
     }
     
@@ -310,14 +280,15 @@ const AdminDashboard = () => {
         </div>
         
         <Tabs defaultValue="property" className="w-full">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 bg-black/50 border border-white/10 rounded-lg p-1 mb-6">
+          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 bg-black/50 border border-white/10 rounded-lg p-1 mb-6">
             <TabsTrigger value="property" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Property</TabsTrigger>
             <TabsTrigger value="features" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Features</TabsTrigger>
             <TabsTrigger value="gallery" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Gallery</TabsTrigger>
             <TabsTrigger value="neighborhood" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Neighborhood</TabsTrigger>
             <TabsTrigger value="package" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Package</TabsTrigger>
+            <TabsTrigger value="questions" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Form</TabsTrigger>
+            <TabsTrigger value="openhouse" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Open House</TabsTrigger>
             <TabsTrigger value="agent" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Agent</TabsTrigger>
-            <TabsTrigger value="contact" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Contact</TabsTrigger>
             <TabsTrigger value="branding" className="data-[state=active]:bg-[#D9A566] data-[state=active]:text-black">Branding</TabsTrigger>
           </TabsList>
           
@@ -327,18 +298,10 @@ const AdminDashboard = () => {
                 initialData={adaptedConfig.property}
                 initialHeroVideo={adaptedConfig.heroVideo}
                 saveData={(data: any, heroVideo: any) => {
-                  // Extract mapLocation from property data and save it to contactInfo
-                  const { mapLocation, ...propertyData } = data;
-                  
-                  const updatedContactInfo = {
-                    ...adaptedConfig.contactInfo,
-                    mapLocation: mapLocation || adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 }
-                  };
-                  
+                  // Save property data including mapLocation
                   saveConfig({ 
-                    property: propertyData,
-                    heroVideo: heroVideo,
-                    contactInfo: updatedContactInfo
+                    property: data,
+                    heroVideo: heroVideo
                   }, 'Property');
                 }}
                 loading={loading}
@@ -382,11 +345,31 @@ const AdminDashboard = () => {
             <TabsContent value="package">
               <PackageForm
                 initialData={adaptedConfig.packageItems}
-                initialDetails={adaptedConfig.openHouseDetails}
-                saveData={(data: any, details: any) => saveConfig({ 
-                  packageItems: data,
-                  openHouseDetails: details
+                saveData={(data: any) => saveConfig({ 
+                  packageItems: data
                 }, 'Package')}
+                loading={loading}
+              />
+            </TabsContent>
+            
+            <TabsContent value="questions">
+              <QuestionsForm
+                initialData={adaptedConfig.formQuestions || []}
+                initialAutomations={adaptedConfig.formAutomations}
+                saveData={(questions: any, automations: any) => saveConfig({ 
+                  formQuestions: questions,
+                  formAutomations: automations
+                }, 'Form')}
+                loading={loading}
+              />
+            </TabsContent>
+            
+            <TabsContent value="openhouse">
+              <OpenHouseForm
+                initialData={adaptedConfig.openHouseDetails}
+                saveData={(details: any) => saveConfig({ 
+                  openHouseDetails: details
+                }, 'Open House')}
                 loading={loading}
               />
             </TabsContent>
@@ -429,32 +412,18 @@ const AdminDashboard = () => {
               />
             </TabsContent>
             
-            <TabsContent value="contact">
-              <ContactForm
-                initialData={{ mapLocation: adaptedConfig.contactInfo?.mapLocation || { lat: 0, lng: 0 } }}
-                saveData={(data: any) => {
-                  // Only save mapLocation data, preserve everything else
-                  const completeContactData = {
-                    ...adaptedConfig.contactInfo, // Keep all existing fields including agent and social
-                    mapLocation: data.mapLocation // Only update mapLocation
-                  };
-                  saveConfig({ contactInfo: completeContactData }, 'Contact');
-                }}
-                loading={loading}
-              />
-            </TabsContent>
-            
             <TabsContent value="branding">
               <BrandingForm
                 initialData={adaptedConfig.siteBranding}
                 initialMeta={adaptedConfig.siteMetadata}
                 saveData={(branding: any, meta: any) => {
-                  // Mirror footerText to footer.copyrightText and accentColor to colors.primary
+                  // Mirror footerText to footer.copyrightText, accentColor to colors.primary, and privacyPolicyUrl to footer.privacyPolicyUrl
                   const updatedSiteBranding = {
                     ...branding,
                     footer: {
                       ...adaptedConfig.siteBranding?.footer,
-                      copyrightText: branding.footerText || adaptedConfig.siteBranding?.footer?.copyrightText || ''
+                      copyrightText: branding.footerText || adaptedConfig.siteBranding?.footer?.copyrightText || '',
+                      privacyPolicyUrl: branding.privacyPolicyUrl || ''
                     },
                     colors: {
                       ...adaptedConfig.siteBranding?.colors,

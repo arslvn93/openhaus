@@ -9,6 +9,7 @@ import { Paintbrush, Image, FileText, Hash, Twitter } from "lucide-react";
 interface SiteBranding {
   accentColor: string;
   footerText: string;
+  privacyPolicyUrl?: string;
 }
 
 interface SiteMetadata {
@@ -16,8 +17,10 @@ interface SiteMetadata {
   description: string;
   keywords: string;
   ogImage: string;
+  ogType: string;
   twitterCard: string;
-  twitterHandle: string;
+  twitterHandle?: string;
+  canonical: string;
 }
 
 interface BrandingFormProps {
@@ -34,11 +37,15 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
   loading 
 }) => {
   const [brandingData, setBrandingData] = useState<SiteBranding>({
-    ...initialData
+    ...initialData,
+    privacyPolicyUrl: initialData.privacyPolicyUrl || ''
   });
   
   const [metaData, setMetaData] = useState<SiteMetadata>({
-    ...initialMeta
+    ...initialMeta,
+    ogType: initialMeta.ogType || 'website',
+    canonical: initialMeta.canonical || '',
+    twitterHandle: initialMeta.twitterHandle || ''
   });
   
   const handleBrandingChange = (
@@ -105,6 +112,22 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
             />
           </div>
           
+          <div className="space-y-2 mb-6">
+            <Label htmlFor="privacyPolicyUrl" className="text-white">Privacy Policy URL</Label>
+            <Input
+              id="privacyPolicyUrl"
+              name="privacyPolicyUrl"
+              type="url"
+              value={brandingData.privacyPolicyUrl || ''}
+              onChange={handleBrandingChange}
+              placeholder="https://example.com/privacy-policy or leave empty for #privacy"
+              className="bg-black/50 border-white/10 text-white"
+            />
+            <p className="text-white/40 text-xs">
+              URL for the privacy policy link in the footer. Leave empty to use the default anchor link (#privacy).
+            </p>
+          </div>
+          
           <Separator className="bg-white/10 my-8" />
           
           <div>
@@ -136,12 +159,44 @@ const BrandingForm: React.FC<BrandingFormProps> = ({
                   <Input
                     id="twitterHandle"
                     name="twitterHandle"
-                    value={metaData.twitterHandle}
+                    value={metaData.twitterHandle || ''}
                     onChange={handleMetaChange}
                     placeholder="@yourrealestatecompany"
                     className="bg-black/50 border-white/10 text-white"
                   />
                 </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-2">
+                <Label htmlFor="ogType" className="text-white">Open Graph Type</Label>
+                <Input
+                  id="ogType"
+                  name="ogType"
+                  value={metaData.ogType}
+                  onChange={handleMetaChange}
+                  placeholder="website"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+                <p className="text-white/40 text-xs">
+                  Usually "website" for most pages
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="canonical" className="text-white">Canonical URL</Label>
+                <Input
+                  id="canonical"
+                  name="canonical"
+                  value={metaData.canonical}
+                  onChange={handleMetaChange}
+                  placeholder="https://example.com"
+                  className="bg-black/50 border-white/10 text-white"
+                />
+                <p className="text-white/40 text-xs">
+                  The canonical URL for this page
+                </p>
               </div>
             </div>
             

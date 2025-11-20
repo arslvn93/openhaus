@@ -18,6 +18,7 @@ interface ShowcaseSection {
   title: string;
   description: string;
   image: string;
+  tags?: string;
 }
 
 interface FeaturesFormProps {
@@ -47,7 +48,8 @@ const FeaturesForm: React.FC<FeaturesFormProps> = ({
   const [newSection, setNewSection] = useState<Omit<ShowcaseSection, 'id'>>({
     title: '',
     description: '',
-    image: ''
+    image: '',
+    tags: ''
   });
   
   const handleAddFeature = () => {
@@ -90,7 +92,8 @@ const FeaturesForm: React.FC<FeaturesFormProps> = ({
     setNewSection({
       title: '',
       description: '',
-      image: ''
+      image: '',
+      tags: ''
     });
   };
   
@@ -304,6 +307,17 @@ const FeaturesForm: React.FC<FeaturesFormProps> = ({
                         rows={5}
                       />
                     </div>
+                    
+                    <div>
+                      <Label htmlFor={`section-tags-${section.id}`} className="text-white text-sm mb-2 block">Tags (comma-separated)</Label>
+                      <Input
+                        id={`section-tags-${section.id}`}
+                        value={section.tags || ''}
+                        onChange={(e) => handleSectionChange(section.id, 'tags', e.target.value)}
+                        placeholder="Custom Kitchen, Island Seating, Modern Fixtures"
+                        className="bg-black/50 border-white/10 text-white"
+                      />
+                    </div>
                   </div>
                 </div>
                 
@@ -366,6 +380,17 @@ const FeaturesForm: React.FC<FeaturesFormProps> = ({
                   placeholder="Describe this section..."
                   className="bg-black/50 border-white/10 text-white"
                   rows={4}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="new-section-tags" className="text-white text-sm mb-2 block">Tags (comma-separated)</Label>
+                <Input
+                  id="new-section-tags"
+                  value={newSection.tags || ''}
+                  onChange={(e) => setNewSection({...newSection, tags: e.target.value})}
+                  placeholder="Custom Kitchen, Island Seating, Modern Fixtures"
+                  className="bg-black/50 border-white/10 text-white"
                 />
               </div>
             </div>

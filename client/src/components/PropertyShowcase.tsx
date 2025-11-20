@@ -72,7 +72,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
     homeShowcaseSections.slice(0, 3).forEach((section, index) => {
       const sectionNumber = index + 2;
       const cssVarName = `--section${sectionNumber}-bg-image`;
-      const imageUrl = `url("${section.imageUrl}")`;
+      const imageUrl = `url("${section.image}")`;
       
       document.documentElement.style.setProperty(cssVarName, imageUrl);
     });
@@ -83,7 +83,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       // Preload hero images and video
       const preloadMedia = async () => {
         const heroVideoUrl = heroVideo?.url;
-        const heroImage = siteBranding.heroImage;
+        const heroImage = property.heroImage;
       
       // Create an array of promises for all the media we want to preload
       const preloadPromises = [];
@@ -103,7 +103,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
             const img = new Image();
             img.onload = () => resolve(true);
             img.onerror = () => resolve(false);
-            img.src = homeShowcaseSections[0].imageUrl;
+            img.src = homeShowcaseSections[0].image;
           });
           preloadPromises.push(imagePromise);
         }
@@ -302,7 +302,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
       <div id="section1" className="event">
         <div className="pinWrapper">
           <div className="text">
-            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale || !openHouseDetails?.nextDate || !openHouseDetails?.time ? 'FOR SALE' : 'OPEN HOUSE'}</span>
+            <span className="text-xs font-light tracking-widest text-white/80 mb-4 inline-block">{showForSale || !openHouseDetails?.date || !openHouseDetails?.startTime ? 'FOR SALE' : 'OPEN HOUSE'}</span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight mb-6">
               {property.address.street} <br/><span className="opacity-80">{property.address.city}</span>
             </h2>
@@ -335,7 +335,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
               </div>
             </div>
             
-            {openHouseDetails?.nextDate && openHouseDetails?.time && (
+            {openHouseDetails?.date && openHouseDetails?.startTime && (
               <div className="flex items-center mb-6 bg-black/40 backdrop-blur-md py-2 px-4 max-w-fit">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-green-400 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -343,7 +343,7 @@ const PropertyShowcase = ({ showForSale = false, showOnlyHero = false }: Propert
                   <line x1="8" y1="2" x2="8" y2="6"></line>
                   <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                <span className="text-green-400 font-light">OPEN HOUSE: {openHouseDetails.nextDate} • {openHouseDetails.time}</span>
+                <span className="text-green-400 font-light">OPEN HOUSE: {openHouseDetails.date} • {openHouseDetails.startTime}{openHouseDetails.endTime ? ` - ${openHouseDetails.endTime}` : ''}</span>
               </div>
             )}
             

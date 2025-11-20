@@ -52,7 +52,7 @@ const NeighborhoodOverview = () => {
   // Transform the config stats to include React components
   const neighborhoodStats: NeighborhoodStat[] = configStats.map(stat => ({
     ...stat,
-    icon: iconMap[stat.iconName] ? iconMap[stat.iconName]({ className: "h-8 w-8" }) : <Navigation className="h-8 w-8" />,
+    icon: iconMap[stat.icon] ? iconMap[stat.icon]({ className: "h-8 w-8" }) : <Navigation className="h-8 w-8" />,
     color: stat.color.startsWith('#') ? stat.color : `#${stat.color.replace('bg-', '')}`
   }));
 
@@ -88,7 +88,7 @@ const NeighborhoodOverview = () => {
   // Transform the config amenities to include React components
   const nearbyAmenities: Amenity[] = configAmenities.map(amenity => ({
     ...amenity,
-    icon: iconMap[amenity.iconName] ? iconMap[amenity.iconName]({ className: "h-5 w-5" }) : <Building className="h-5 w-5" />,
+    icon: iconMap[amenity.icon] ? iconMap[amenity.icon]({ className: "h-5 w-5" }) : <Building className="h-5 w-5" />,
   }));
   
   // Animation variants

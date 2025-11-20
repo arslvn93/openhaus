@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 // @ts-ignore - JS config module without types
-import { property, siteBranding, contactInfo, openHouseDetails } from '../config/siteConfig';
-import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard, ArrowRight, Check } from 'lucide-react';
+import { property, siteBranding, contactInfo } from '../config/siteConfig';
+import { FileText, BarChart2, GraduationCap, CheckSquare, DollarSign, Map, Search, CreditCard, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -13,49 +13,49 @@ const defaultPackageItems = [
     id: 1,
     title: 'Detailed Floor Plans',
     description: 'Complete architectural layouts showing room dimensions and optimal flow',
-    iconName: 'FileText'
+    icon: 'FileText'
   },
   {
     id: 2,
     title: 'Market Analysis',
     description: 'Recent sales data and pricing trends in the area',
-    iconName: 'BarChart2'
+    icon: 'BarChart2'
   },
   {
     id: 3,
     title: 'School Information',
     description: 'Local schools, ratings, and enrollment details',
-    iconName: 'GraduationCap'
+    icon: 'GraduationCap'
   },
   {
     id: 4,
     title: 'Property Features',
     description: 'Detailed list of all property features and amenities',
-    iconName: 'CheckSquare'
+    icon: 'CheckSquare'
   },
   {
     id: 5,
     title: 'Utility Cost Estimates',
     description: 'Estimated monthly utility and maintenance expenses',
-    iconName: 'DollarSign'
+    icon: 'DollarSign'
   },
   {
     id: 6,
     title: 'Area Amenities',
     description: 'Nearby shops, restaurants, and services',
-    iconName: 'Map'
+    icon: 'Map'
   },
   {
     id: 7,
     title: 'Home Inspection Tips',
     description: 'What to look for during property viewing',
-    iconName: 'Search'
+    icon: 'Search'
   },
   {
     id: 8,
     title: 'Financing Resources',
     description: 'Mortgage options and payment calculators',
-    iconName: 'CreditCard'
+    icon: 'CreditCard'
   }
 ];
 
@@ -79,12 +79,25 @@ const formatPhoneNumber = (value: string) => {
   return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6, 10)}`;
 };
 
+interface FormQuestion {
+  id: number;
+  key: string;
+  question: string;
+  order: number;
+  options: Array<{ value: string; label: string; emoji: string }>;
+}
+
 const ExclusivePackage = () => {
   const { toast } = useToast();
   const [showSticky, setShowSticky] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const [packageItems, setPackageItems] = useState(defaultPackageItems);
+  const [formQuestions, setFormQuestions] = useState<FormQuestion[]>([]);
+  const [formAutomations, setFormAutomations] = useState<{ crmLeadParsingEmail: string; sgApiKey: string }>({
+    crmLeadParsingEmail: '',
+    sgApiKey: ''
+  });
   
   // Load packageItems from config or use defaults
   useEffect(() => {
@@ -101,6 +114,40 @@ const ExclusivePackage = () => {
     loadPackageItems();
   }, []);
   
+  // Load formQuestions from config
+  useEffect(() => {
+    const loadFormQuestions = async () => {
+      try {
+        const config = await import('../config/siteConfig');
+        if (config.formQuestions && Array.isArray(config.formQuestions)) {
+          const sortedQuestions = [...config.formQuestions].sort((a, b) => a.order - b.order);
+          setFormQuestions(sortedQuestions);
+        }
+      } catch (error) {
+        console.log('Using default form questions');
+      }
+    };
+    loadFormQuestions();
+  }, []);
+  
+  // Load formAutomations from config
+  useEffect(() => {
+    const loadFormAutomations = async () => {
+      try {
+        const config = await import('../config/siteConfig');
+        if (config.formAutomations) {
+          setFormAutomations({
+            crmLeadParsingEmail: config.formAutomations?.crmLeadParsingEmail || '',
+            sgApiKey: config.formAutomations?.sgApiKey || ''
+          });
+        }
+      } catch (error) {
+        console.log('Using default form automations');
+      }
+    };
+    loadFormAutomations();
+  }, []);
+  
   // Parallax scroll effect
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -109,16 +156,31 @@ const ExclusivePackage = () => {
   
   const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
   
+  // Build dynamic formData state based on formQuestions
+  const buildInitialFormData = (questions: FormQuestion[]) => {
+    const baseData: any = {
+      email: '',
+      name: '',
+      phone: '',
+      consent: false
+    };
+    // Add a field for each question key
+    questions.forEach(q => {
+      baseData[q.key] = '';
+    });
+    return baseData;
+  };
+  
   // Multi-step form state
-  const [formStep, setFormStep] = useState(1); // 1 = email, 2 = name+phone+consent, 3 = question1, 4 = question2, 5 = success
-  const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    phone: '',
-    consent: false,
-    buyingTimeline: '',
-    propertyType: ''
-  });
+  const [formStep, setFormStep] = useState(1); // 1 = email, 2 = name+phone+consent, 3+ = questions, last = success
+  const [formData, setFormData] = useState(buildInitialFormData([]));
+  
+  // Update formData when formQuestions change
+  useEffect(() => {
+    setFormData(buildInitialFormData(formQuestions));
+    // Reset form step if questions change
+    setFormStep(1);
+  }, [formQuestions]);
   const [phoneDisplay, setPhoneDisplay] = useState('');
   const [validFields, setValidFields] = useState({
     email: false,
@@ -127,36 +189,6 @@ const ExclusivePackage = () => {
     consent: false
   });
   
-  // Format date for success message: "Sunday, November 16, 2025" -> "Sunday Nov 16th"
-  const formatOpenHouseDate = (dateStr: string) => {
-    const monthMap: { [key: string]: string } = {
-      'January': 'Jan', 'February': 'Feb', 'March': 'Mar', 'April': 'Apr',
-      'May': 'May', 'June': 'Jun', 'July': 'Jul', 'August': 'Aug',
-      'September': 'Sep', 'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
-    };
-    const parts = dateStr.split(', ');
-    const dayOfWeek = parts[0];
-    const monthDay = parts[1].split(' ');
-    const month = monthMap[monthDay[0]] || monthDay[0];
-    const day = monthDay[1];
-    const dayWithSuffix = day === '1' || day === '21' || day === '31' ? `${day}st` :
-                         day === '2' || day === '22' ? `${day}nd` :
-                         day === '3' || day === '23' ? `${day}rd` : `${day}th`;
-    return `${dayOfWeek} ${month} ${dayWithSuffix}`;
-  };
-  
-  // Format time for success message: "3:00 PM - 6:00 PM" -> "3-6pm"
-  const formatOpenHouseTime = (timeStr: string) => {
-    const times = timeStr.match(/(\d+):\d+\s*(AM|PM)/g);
-    if (times && times.length === 2) {
-      const startHour = parseInt(times[0].split(':')[0]);
-      const endHour = parseInt(times[1].split(':')[0]);
-      const period = times[0].includes('PM') ? 'pm' : 'am';
-      return `${startHour}-${endHour}${period}`;
-    }
-    return timeStr.replace(' PM', 'pm').replace(' - ', '-').replace(':00', '');
-  };
-
   // Validate fields in real-time
   useEffect(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -203,48 +235,34 @@ const ExclusivePackage = () => {
   // API Mutation for form submission
   const mutation = useMutation({
     mutationFn: (data: typeof formData) => {
-      // Map question values to full answers
-      const buyingTimelineMap: { [key: string]: string } = {
-        'immediately': 'Immediately',
-        '1-3months': '1-3 months',
-        '3-6months': '3-6 months',
-        '6+months': '6+ months',
-        'just-exploring': 'Just exploring'
-      };
-      
-      const propertyTypeMap: { [key: string]: string } = {
-        'house': 'Single Family Home',
-        'condo': 'Condo/Apartment',
-        'townhouse': 'Townhouse',
-        'investment': 'Investment Property',
-        'any': 'Open to anything'
-      };
-
-      const questions = [
-        {
-          question: "When are you looking to buy?",
-          answer: buyingTimelineMap[data.buyingTimeline] || data.buyingTimeline
-        },
-        {
-          question: "What type of property interests you?",
-          answer: propertyTypeMap[data.propertyType] || data.propertyType
-        }
-      ];
+      // Build questions array from formQuestions config
+      const questions = formQuestions
+        .filter(q => data[q.key]) // Only include answered questions
+        .map(q => {
+          // Find the option that matches the selected value
+          const selectedOption = q.options.find(opt => opt.value === data[q.key]);
+          return {
+            question: q.question,
+            answer: selectedOption ? selectedOption.label : data[q.key]
+          };
+        });
 
       const leadPayload = {
         name: data.name,
         email: data.email,
         phone: data.phone,
         questions: questions,
-        source: 'Open House Registration',
+        source: 'Exclusive Package',
         repo: contactInfo.agent?.repo || '',
         agentEmail: contactInfo.agent?.email || '',
-        propertyAddress: property?.address || undefined
+        propertyAddress: property?.address || undefined,
+        crmLeadParsingEmail: formAutomations?.crmLeadParsingEmail || '',
+        sgApiKey: formAutomations?.sgApiKey || ''
       };
       return apiRequest('POST', '/api/leads', leadPayload);
     },
     onSuccess: () => {
-      setFormStep(5); // Show success state
+      setFormStep(2 + formQuestions.length + 1); // Show success state (after all questions)
     },
     onError: (error) => {
       toast({
@@ -271,34 +289,52 @@ const ExclusivePackage = () => {
   const handleContinueToQuestions = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validFields.name || !validFields.phone || !validFields.consent) return;
-    setFormStep(3); // Go to Question 1
+    // If no questions, submit directly
+    if (formQuestions.length === 0) {
+      mutation.mutate(formData);
+    } else {
+      setFormStep(3); // Go to first question
+    }
   };
   
   // Handle question selection with auto-advance
-  const handleQuestionSelect = (questionKey: 'buyingTimeline' | 'propertyType', value: string) => {
+  const handleQuestionSelect = (questionKey: string, value: string) => {
     setFormData(prev => ({ ...prev, [questionKey]: value }));
+    
+    // Find current question index
+    const currentQuestionIndex = formQuestions.findIndex(q => q.key === questionKey);
     
     // Auto-advance after selection with smooth delay
     setTimeout(() => {
-      if (questionKey === 'buyingTimeline') {
-        setFormStep(4); // Go to Question 2
+      if (currentQuestionIndex !== -1) {
+        const nextQuestionIndex = currentQuestionIndex + 1;
+        if (nextQuestionIndex < formQuestions.length) {
+          // Go to next question
+          setFormStep(3 + nextQuestionIndex);
+        } else {
+          // All questions answered, go to success
+          setFormStep(3 + formQuestions.length);
+        }
       }
-      // Note: Form submission is handled by useEffect when both questions are answered
     }, 400); // Slight delay for visual feedback
   };
   
-  // Auto-submit when both questions are answered
+  // Auto-submit when all questions are answered
   useEffect(() => {
-    if (formStep === 4 && formData.buyingTimeline && formData.propertyType && !mutation.isPending) {
+    if (formQuestions.length === 0) return; // No questions to answer
+    
+    const lastQuestionStep = 2 + formQuestions.length;
+    const allQuestionsAnswered = formQuestions.every(q => formData[q.key] && formData[q.key] !== '');
+    
+    if (formStep === lastQuestionStep && allQuestionsAnswered && !mutation.isPending) {
       // Small delay to ensure state is fully updated
       const submitTimer = setTimeout(() => {
-        // Use the latest formData to ensure both question values are included
         mutation.mutate(formData);
       }, 100);
       
       return () => clearTimeout(submitTimer);
     }
-  }, [formStep, formData, mutation]);
+  }, [formStep, formData, formQuestions, mutation]);
   
   // Handle phone input with auto-formatting
   const handlePhoneChange = (value: string) => {
@@ -333,7 +369,7 @@ const ExclusivePackage = () => {
             {/* Center: Simple Text */}
             <div className="hidden md:block">
               <p className="text-white text-sm font-medium">
-                Register for Open House
+                Get Complete Property Package
               </p>
             </div>
             
@@ -345,7 +381,7 @@ const ExclusivePackage = () => {
               className="px-6 py-2 rounded-lg text-black font-medium text-sm transition-all duration-200 flex items-center gap-2 shadow-lg"
               style={{ backgroundColor: primaryColor }}
             >
-              <span>RSVP Now</span>
+              <span>Access Now</span>
               <ArrowRight className="w-4 h-4" />
             </motion.button>
           </div>
@@ -417,7 +453,7 @@ const ExclusivePackage = () => {
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 w-11 h-11 rounded-lg bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
                         <span style={{ color: primaryColor }}>
-                        {iconMap[item.iconName]}
+                        {iconMap[item.icon]}
                       </span>
                     </div>
                       <div className="flex-1 min-w-0">
@@ -598,7 +634,7 @@ const ExclusivePackage = () => {
                           </>
                         ) : (
                           <>
-                            Register for Open House
+                            Get Instant Access
                             <ArrowRight className="w-5 h-5" />
                           </>
                         )}
@@ -629,149 +665,89 @@ const ExclusivePackage = () => {
                       Your information is secure and will never be shared
                     </p>
                   </>
-                ) : formStep === 3 ? (
-                  /* QUESTION 1 - Typeform Style */
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="py-2"
-                  >
-                    {/* Progress */}
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-white/40 text-[10px]">Step 3 of 4</span>
-                        <span className="text-white/40 text-[10px]">75%</span>
-                      </div>
-                      <div className="h-0.5 bg-white/10 rounded-full w-full relative">
-                        <motion.div
-                          initial={{ width: '50%' }}
-                          animate={{ width: '75%' }}
-                          transition={{ duration: 0.5 }}
-                          className="h-full rounded-full absolute left-0 top-0"
-                          style={{ backgroundColor: primaryColor, maxWidth: '100%' }}
-                        />
-                      </div>
-                    </div>
+                ) : formStep >= 3 && formStep < 3 + formQuestions.length ? (
+                  /* DYNAMIC QUESTIONS - Typeform Style */
+                  (() => {
+                    const questionIndex = formStep - 3;
+                    const question = formQuestions[questionIndex];
+                    if (!question) return null;
                     
-                    {/* Question */}
-                    <h3 className="text-lg md:text-xl font-medium text-white mb-6">
-                      When are you looking to buy?
-                    </h3>
+                    const totalSteps = 2 + formQuestions.length + 1; // email + name/phone + questions + success
+                    const currentStepNumber = formStep;
+                    const progressPercent = Math.round((currentStepNumber / (totalSteps - 1)) * 100);
                     
-                    {/* Options */}
-                    <div className="space-y-3">
-                      {[
-                        { value: 'immediately', label: 'Immediately', emoji: '🚀' },
-                        { value: '1-3months', label: '1-3 months', emoji: '📅' },
-                        { value: '3-6months', label: '3-6 months', emoji: '⏰' },
-                        { value: '6+months', label: '6+ months', emoji: '🔮' },
-                        { value: 'just-exploring', label: 'Just exploring', emoji: '👀' }
-                      ].map((option) => (
-                        <motion.button
-                          key={option.value}
-                          type="button"
-                          onClick={() => handleQuestionSelect('buyingTimeline', option.value)}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`w-full p-4 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
-                            formData.buyingTimeline === option.value
-                              ? 'border-[' + primaryColor + '] bg-white/10'
-                              : 'border-white/10 hover:border-white/20 bg-white/5'
-                          }`}
-                        >
-                          <span className="text-2xl">{option.emoji}</span>
-                          <span className="text-white text-base font-medium">{option.label}</span>
-                          {formData.buyingTimeline === option.value && (
+                    return (
+                      <motion.div
+                        key={question.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="py-2"
+                      >
+                        {/* Progress */}
+                        <div className="mb-5">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-white/40 text-[10px]">Step {currentStepNumber} of {totalSteps - 1}</span>
+                            <span className="text-white/40 text-[10px]">{progressPercent}%</span>
+                          </div>
+                          <div className="h-0.5 bg-white/10 rounded-full w-full relative">
                             <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="ml-auto"
+                              initial={{ width: `${((currentStepNumber - 1) / (totalSteps - 1)) * 100}%` }}
+                              animate={{ width: `${progressPercent}%` }}
+                              transition={{ duration: 0.5 }}
+                              className="h-full rounded-full absolute left-0 top-0"
+                              style={{ backgroundColor: primaryColor, maxWidth: '100%' }}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Question */}
+                        <h3 className="text-lg md:text-xl font-medium text-white mb-6">
+                          {question.question}
+                        </h3>
+                        
+                        {/* Options */}
+                        <div className="space-y-3">
+                          {question.options.map((option) => (
+                            <motion.button
+                              key={option.value}
+                              type="button"
+                              onClick={() => handleQuestionSelect(question.key, option.value)}
+                              disabled={mutation.isPending}
+                              whileHover={{ scale: 1.02, x: 4 }}
+                              whileTap={{ scale: 0.98 }}
+                              className={`w-full p-4 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
+                                formData[question.key] === option.value
+                                  ? 'border-[' + primaryColor + '] bg-white/10'
+                                  : 'border-white/10 hover:border-white/20 bg-white/5'
+                              } ${mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                              <Check className="w-5 h-5" style={{ color: primaryColor }} />
-                            </motion.div>
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
-                  </motion.div>
-                ) : formStep === 4 ? (
-                  /* QUESTION 2 - Typeform Style */
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="py-2"
-                  >
-                    {/* Progress */}
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-white/40 text-[10px]">Step 4 of 4</span>
-                        <span className="text-white/40 text-[10px]">100%</span>
-                      </div>
-                      <div className="h-0.5 bg-white/10 rounded-full w-full relative">
-                        <motion.div
-                          initial={{ width: '75%' }}
-                          animate={{ width: '100%' }}
-                          transition={{ duration: 0.5 }}
-                          className="h-full rounded-full absolute left-0 top-0"
-                          style={{ backgroundColor: primaryColor, maxWidth: '100%' }}
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Question */}
-                    <h3 className="text-lg md:text-xl font-medium text-white mb-6">
-                      What type of property interests you?
-                    </h3>
-                    
-                    {/* Options */}
-                    <div className="space-y-3">
-                      {[
-                        { value: 'house', label: 'Single Family Home', emoji: '🏠' },
-                        { value: 'condo', label: 'Condo/Apartment', emoji: '🏢' },
-                        { value: 'townhouse', label: 'Townhouse', emoji: '🏘️' },
-                        { value: 'investment', label: 'Investment Property', emoji: '💼' },
-                        { value: 'any', label: 'Open to anything', emoji: '✨' }
-                      ].map((option) => (
-                        <motion.button
-                          key={option.value}
-                          type="button"
-                          onClick={() => handleQuestionSelect('propertyType', option.value)}
-                          disabled={mutation.isPending}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`w-full p-4 rounded-lg border-2 text-left transition-all duration-200 flex items-center gap-3 ${
-                            formData.propertyType === option.value
-                              ? 'border-[' + primaryColor + '] bg-white/10'
-                              : 'border-white/10 hover:border-white/20 bg-white/5'
-                          } ${mutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                          <span className="text-2xl">{option.emoji}</span>
-                          <span className="text-white text-base font-medium">{option.label}</span>
-                          {formData.propertyType === option.value && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="ml-auto"
-                            >
-                              <Check className="w-5 h-5" style={{ color: primaryColor }} />
-                            </motion.div>
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
-                    
-                    {mutation.isPending && (
-                      <p className="text-white/60 text-xs text-center mt-4">
-                        Sending your package...
-                      </p>
-                    )}
-                  </motion.div>
-                ) : (
-                  /* SUCCESS STATE - Step 5 */
+                              <span className="text-2xl">{option.emoji}</span>
+                              <span className="text-white text-base font-medium">{option.label}</span>
+                              {formData[question.key] === option.value && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="ml-auto"
+                                >
+                                  <Check className="w-5 h-5" style={{ color: primaryColor }} />
+                                </motion.div>
+                              )}
+                            </motion.button>
+                          ))}
+                        </div>
+                        
+                        {mutation.isPending && questionIndex === formQuestions.length - 1 && (
+                          <p className="text-white/60 text-xs text-center mt-4">
+                            Sending your package...
+                          </p>
+                        )}
+                      </motion.div>
+                    );
+                  })()
+                ) : formStep === 2 + formQuestions.length + 1 ? (
+                  /* SUCCESS STATE */
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -791,13 +767,47 @@ const ExclusivePackage = () => {
                     
                     {/* Success Message */}
                     <h3 className="text-2xl font-medium text-white mb-2">
-                      Registration Confirmed!
+                      Package Sent!
                     </h3>
                     <p className="text-white/60 text-sm mb-6">
-                      You're registered for the Open House, see you on {openHouseDetails?.nextDate ? formatOpenHouseDate(openHouseDetails.nextDate) : 'Sunday Nov 16th'}, {openHouseDetails?.time ? formatOpenHouseTime(openHouseDetails.time) : '3-6pm'}
+                      Check your inbox for the complete property details
                     </p>
-              </motion.div>
-                )}
+                    
+                    {/* What's Included List */}
+                    <div className="text-left space-y-2 mb-6 bg-white/5 rounded-lg p-4">
+                      <p className="text-white/80 text-xs font-medium mb-3">You'll receive:</p>
+                      <div className="flex items-center gap-2 text-white/70 text-xs">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                        <span>Floor plans & specifications</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/70 text-xs">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                        <span>Market analysis report</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/70 text-xs">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                        <span>Virtual tour access</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/70 text-xs">
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                        <span>Neighborhood insights</span>
+                      </div>
+                    </div>
+                    
+                    {/* Agent Follow-up */}
+                    <div className="pt-4 border-t border-white/5">
+                      <p className="text-white/50 text-xs mb-3">
+                        {contactInfo.agent.name} will follow up within 2 hours
+                      </p>
+                      <button
+                        onClick={() => setFormStep(1)}
+                        className="text-white/60 hover:text-white text-xs transition-colors"
+                      >
+                        Submit another request →
+                      </button>
+                    </div>
+                  </motion.div>
+                ) : null}
               </div>
             </motion.div>
           </div>

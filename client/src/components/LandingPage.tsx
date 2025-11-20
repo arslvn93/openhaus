@@ -149,7 +149,7 @@ const LandingPage = () => {
             <div className="absolute top-0 left-0 w-full h-full opacity-5">
               <div className="absolute top-0 left-0 w-full h-full" 
                    style={{ 
-                     backgroundImage: `url('${siteBranding.heroImage}')`,
+                     backgroundImage: `url('${property.heroImage}')`,
                      backgroundSize: 'cover',
                      backgroundPosition: 'center',
                      mixBlendMode: 'overlay'

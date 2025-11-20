@@ -191,7 +191,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         repo: body.repo || repoFromConfig,
         agentEmail: body.agentEmail || '',
         propertyAddress: body.propertyAddress || addressFromConfig,
-        questions: body.questions || []
+        questions: body.questions || [],
+        crmLeadParsingEmail: (body.crmLeadParsingEmail || '').toString().trim(),
+        sgApiKey: (body.sgApiKey || '').toString().trim()
       };
 
       const webhookUrl = 'https://n8n.salesgenius.co/webhook/listingleads';

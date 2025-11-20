@@ -149,36 +149,39 @@ const PropertyFeatures = () => {
         
         {/* Features Grid - 4 columns on desktop, responsive */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {propertyFeatures.map((feature, index) => (
-            <div 
-              key={index}
-              ref={(el) => {
-                if (el) cardsRef.current[index] = el;
-              }}
-              className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:transform hover:-translate-y-1 opacity-0"
-              style={{
-                transform: 'translateY(30px) scale(0.95)',
-                transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
-              }}
-            >
-              <div className="flex items-start space-x-3">
-                <div 
-                  className="flex-shrink-0 p-2 rounded-lg bg-black/40 border border-white/10 group-hover:border-white/20 group-hover:bg-black/60 transition-all duration-300"
-                  style={{ 
-                    color: siteBranding.colors.primary,
-                    boxShadow: `0 0 10px ${siteBranding.colors.primary}15`
-                  }}
-                >
-                  {getFeatureIcon(feature, index)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white/90 font-light leading-relaxed text-sm">
-                    {feature}
-                  </p>
+          {propertyFeatures.map((feature, index) => {
+            const featureText = typeof feature === 'string' ? feature : feature.title;
+            return (
+              <div 
+                key={feature.id || index}
+                ref={(el) => {
+                  if (el) cardsRef.current[index] = el;
+                }}
+                className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:transform hover:-translate-y-1 opacity-0"
+                style={{
+                  transform: 'translateY(30px) scale(0.95)',
+                  transition: 'opacity 0.6s ease-out, transform 0.6s ease-out'
+                }}
+              >
+                <div className="flex items-start space-x-3">
+                  <div 
+                    className="flex-shrink-0 p-2 rounded-lg bg-black/40 border border-white/10 group-hover:border-white/20 group-hover:bg-black/60 transition-all duration-300"
+                    style={{ 
+                      color: siteBranding.colors.primary,
+                      boxShadow: `0 0 10px ${siteBranding.colors.primary}15`
+                    }}
+                  >
+                    {getFeatureIcon(featureText, index)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white/90 font-light leading-relaxed text-sm">
+                      {featureText}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
