@@ -602,7 +602,7 @@ const ExclusivePackage = () => {
                                 )}
                               </div>
                               <span className="text-white/60 text-xs md:text-sm leading-relaxed group-hover:text-white/80 transition-colors">
-                                I consent to receive property information and agree to the{' '}
+                                I agree to be contacted by <strong>{contactInfo?.agent?.company || 'us'}</strong> via call, email, and text. To opt-out, you can reply 'stop' at any time or click the unsubscribe link in the emails. Message and data rates may apply.{' '}
                                 <a href={siteBranding?.footer?.privacyPolicyUrl || '#privacy'} target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: primaryColor }}>
                                   Privacy Policy
                                 </a>
