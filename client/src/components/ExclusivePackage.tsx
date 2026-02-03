@@ -431,10 +431,10 @@ const ExclusivePackage = () => {
                   <span className="text-white/60 text-xs uppercase tracking-wider">{property?.address?.street || 'Premium Package'}</span>
                   </motion.div>
                 <h2 className="text-3xl md:text-5xl font-light text-white mb-4 tracking-tight">
-                  Register for Our Open House
+                  Everything You Need to Know
                 </h2>
                 <p className="text-white/60 text-base md:text-lg leading-relaxed max-w-2xl">
-                  Register to attend our upcoming open house and receive exclusive property information, market analysis, and detailed insights—all in one premium package.
+                  Get instant access to comprehensive property details, market analysis, and exclusive insights—all in one premium package.
                 </p>
               </div>
               
@@ -486,7 +486,7 @@ const ExclusivePackage = () => {
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-xl md:text-2xl font-medium text-white">
-                          Register for Open House
+                           Get Instant Access
                         </h3>
                         {formStep === 2 && (
                           <span className="text-white/40 text-xs">Step 2 of 4</span>
@@ -494,7 +494,7 @@ const ExclusivePackage = () => {
                       </div>
                       <p className="text-white/60 text-sm">
                         {formStep === 1 
-                          ? 'Enter your email to register for the open house'
+                          ? 'Enter your email to receive the complete package'
                           : 'Just a few more details to complete your registration'}
                       </p>
                     </div>
